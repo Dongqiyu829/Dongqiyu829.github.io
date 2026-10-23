@@ -194,6 +194,12 @@ button[aria-pressed="true"] code { color: inherit; background: transparent; }
   tab-size: 2;
 }
 .code-editor:focus { border-color: #65b8c0; outline: 3px solid rgba(14, 102, 112, 0.2); }
+.language-switch { display: flex; gap: 8px; margin: 16px 0; }
+.language-switch button { min-width: 108px; }
+.external-editor { width: min(1200px, calc(100vw - 32px)); margin-left: 50%; transform: translateX(-50%); border: 2px solid var(--line); border-radius: 12px; overflow: hidden; background: #fff; }
+.external-editor iframe { display: block; width: 100%; height: min(78vh, 760px); min-height: 540px; border: 0; }
+.editor-note { color: var(--muted); font: 0.9rem/1.5 "Segoe UI", sans-serif; }
+details pre { white-space: pre; max-height: 360px; }
 .code-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
 .run-button { color: #fff; background: var(--accent); border-color: var(--accent); }
 .test-results { display: grid; gap: 8px; margin-top: 14px; }
@@ -248,6 +254,8 @@ nav.lesson-nav { display: flex; justify-content: space-between; gap: 16px; margi
   .course-grid { grid-template-columns: 1fr; }
   .search-space { grid-template-columns: 1fr; }
   .course-nav .crumb { display: none; }
+  .external-editor { width: calc(100vw - 20px); }
+  .external-editor iframe { height: 68vh; min-height: 500px; }
 }
 
 @media print {
