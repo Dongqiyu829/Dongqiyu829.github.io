@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>算法设计题四件套 · 快速参考</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+<nav class="course-nav" aria-label="课程导航">
+  <a href="../index.html">← 算法学习主页</a>
+  <span class="crumb">快速参考 · 四件套</span>
+</nav>
+<main>
+  <header class="hero">
+    <p class="eyebrow">COMP3711H · Reference</p>
+    <h1>算法设计题四件套</h1>
+    <p class="lede">一页检查表：让答案既能实现，也能被证明和评分。它来自历届 COMP3711H 明确给出的答题结构。</p>
+  </header>
+
+  <section>
+    <h2>1 · 核心想法</h2>
+    <p>先用 2–4 句话说清“利用了什么结构”。不要把伪代码翻译成中文；要指出为什么问题规模变小、为什么局部选择安全，或状态为何足够。</p>
+    <div class="callout"><strong>自检：</strong>删掉代码后，读者还能复述你的策略吗？</div>
+  </section>
+
+  <section>
+    <h2>2 · 精确算法</h2>
+    <p>给出足以无歧义实现的 pseudocode 或 plain-language algorithm。写明输入、输出、初始化、更新、终止条件和边界情况。</p>
+    <div class="callout"><strong>自检：</strong>另一个人能只靠这段描述写出同一个算法吗？</div>
+  </section>
+
+  <section>
+    <h2>3 · Tight complexity</h2>
+    <p>先定义输入规模，再数主导操作。若声称 Θ 而非 O，需要同时说明上界和匹配的下界；递归算法要先写 recurrence。</p>
+    <div class="formula">输入规模 → 每层代价 × 层数，或 recurrence → bound</div>
+  </section>
+
+  <section>
+    <h2>4 · Correctness proof</h2>
+    <p>证明必须对应算法结构，而不是复述“显然正确”。</p>
+    <table>
+      <thead><tr><th>算法类型</th><th>常用证明骨架</th></tr></thead>
+      <tbody>
+        <tr><td>循环</td><td>初始化 → 保持 → 终止（loop invariant）</td></tr>
+        <tr><td>递归 / DP</td><td>归纳假设 → 子问题覆盖 → 合并正确</td></tr>
+        <tr><td>贪心</td><td>exchange argument / stays-ahead / cut property</td></tr>
+        <tr><td>图搜索</td><td>可达性不变量 + 首次发现/最终确定时刻</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="sources">
+    <h2>来源</h2>
+    <p><a href="https://amir.goharshady.com/teaching/honors-algorithms">Amir Goharshady, COMP 3711H</a> 明确要求 main idea、精确描述、tight running-time analysis 与 proof of correctness；<a href="https://seng.hkust.edu.hk/sites/default/files/IMCE/UG/Course%20Syllabus/Spring_2025-26/COMP3711H_Spring25-26.pdf">HKUST Spring 2025–26 syllabus</a> 的评分量表同样把设计、正确性与复杂度分析列为核心学习结果。</p>
+  </section>
+
+  <nav class="lesson-nav">
+    <a href="../lessons/0001-binary-search-loop-invariant.html">← 第一课</a>
+    <a href="course-route.html">课程路线 →</a>
+  </nav>
+</main>
+</body>
+</html>
+
