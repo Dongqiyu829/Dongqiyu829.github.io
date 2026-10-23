@@ -66,19 +66,16 @@ print(f'{passed}/{len(tests)} passed')
   };
 
   let language = "cpp";
-  let loadCount = 0;
   function populate() {
     const current = language;
     const message = {
       eventType: "populateCode", language: current,
       files: [{ name: current === "cpp" ? "main.cpp" : "main.py", content: programs[current] }]
     };
-    const send = () => frame.contentWindow?.postMessage(message, "https://onecompiler.com");
-    send();
-    window.setTimeout(send, 1000);
+    frame.contentWindow?.postMessage(message, "https://onecompiler.com");
     status.textContent = `已载入 ${current === "cpp" ? "C++" : "Python"}。补全 TODO，再按编辑器中的 Run。`;
   }
-  frame.addEventListener("load", () => { loadCount++; populate(); });
+  frame.addEventListener("load", populate);
   buttons.forEach(button => button.addEventListener("click", () => {
     const next = button.dataset.language;
     if (next === language) return;
