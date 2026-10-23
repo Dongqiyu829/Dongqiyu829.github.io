@@ -1,0 +1,20 @@
+/* Interactive cost-model comparison, reused by asymptotic-analysis lessons. */
+.complexity-lab { overflow: hidden; }
+.lab-toolbar { display: flex; flex-wrap: wrap; gap: 4px; margin: 12px 0 18px; }
+.lab-toolbar button { margin: 3px 4px 3px 0; }
+.lab-stats { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; margin: 16px 0; }
+.lab-stats > div { padding: 15px; border-radius: 10px; background: var(--accent-soft); }
+.lab-stats > div:nth-child(2) { background: var(--warm-soft); }
+.lab-stats span { display: block; color: var(--muted); font: 0.85rem/1.4 "Segoe UI",sans-serif; }
+.lab-stats strong { display: block; font: 700 clamp(1.7rem,4vw,2.4rem)/1.4 "Segoe UI",sans-serif; font-variant-numeric: tabular-nums; }
+.work-bars { margin: 18px 0; display: grid; gap: 13px; }
+.work-row { display: grid; grid-template-columns: 3.2rem minmax(0,1fr); gap: 10px; align-items: center; font: 700 0.87rem/1.3 "Segoe UI", sans-serif; }
+.work-track { width: 100%; height: 21px; border-radius: 6px; background: #ece9e1; overflow: hidden; }
+.work-fill { height: 100%; border-radius: 6px; transition: width 200ms ease; }
+.work-fill-geometric { background: var(--accent); }
+.work-fill-triangular { background: var(--warm); }
+.complexity-lab details { margin-top: 20px; }
+.complexity-lab summary { cursor: pointer; color: var(--accent); font-weight: 700; }
+@media (max-width: 460px) { .lab-stats { grid-template-columns: 1fr; } .lab-toolbar button { flex: 1 1 42%; } }
+@media (prefers-reduced-motion: reduce) { .work-fill { transition: none; } }
+@media print { .work-fill { print-color-adjust: exact; -webkit-print-color-adjust: exact; } }
