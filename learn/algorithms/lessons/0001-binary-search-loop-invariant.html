@@ -7,6 +7,7 @@
   <title>第 1 课：二分搜索为何正确</title>
   <link rel="stylesheet" href="../assets/course.css">
   <script defer src="../assets/quiz.js"></script>
+  <script defer src="../assets/code-runner.js"></script>
 </head>
 <body>
 <nav class="course-nav" aria-label="课程导航">
@@ -98,9 +99,9 @@
     <h2>互动 1：先别看代码</h2>
     <div class="exercise" data-quiz>
       <p><strong>若 <code>a[mid] ≥ x</code>，为了保留 mid 这个候选位置，应怎样更新？</strong></p>
-      <button type="button" data-answer="correct" data-feedback="正确。mid 仍可能是第一个满足条件的位置，因此不能丢掉。" aria-pressed="false"><code>hi = mid</code></button>
-      <button type="button" data-answer="incorrect" data-feedback="再看不变量：这样会把 mid 放进“已知小于 x”的左侧，和 a[mid] ≥ x 冲突。" aria-pressed="false"><code>lo = mid</code></button>
-      <p class="feedback" data-feedback aria-live="polite"></p>
+      <button type="button" data-answer="correct" data-message="mid 仍可能是第一个满足条件的位置，因此不能丢掉。" aria-pressed="false"><code>hi = mid</code></button>
+      <button type="button" data-answer="incorrect" data-message="再看不变量：这样会把 mid 放进“已知小于 x”的左侧，和 a[mid] ≥ x 冲突。" aria-pressed="false"><code>lo = mid</code></button>
+      <p class="feedback" data-feedback-output aria-live="polite"></p>
     </div>
   </section>
 
@@ -135,6 +136,33 @@
       </ol>
       <p>把三条答案发给我。我会先判断你的证明是否真正闭合，再决定下一课直接进入 tight asymptotic analysis，还是先补一个边界反例练习。</p>
     </div>
+  </section>
+
+  <section>
+    <h2>最终挑战：写代码并跑边界测试</h2>
+    <p>先完成上面的三条推导，再把它翻译成代码。这个轻量实验区直接在浏览器中运行 JavaScript，目的是检验边界逻辑；之后把同一个不变量迁移到 C++ 即可。</p>
+    <div class="code-lab" data-code-challenge="upper-bound-js">
+      <label for="upper-bound-editor"><strong>实现 <code>upperBound(a, x)</code>：返回第一个严格大于 x 的下标</strong></label>
+      <textarea id="upper-bound-editor" class="code-editor" data-code-editor spellcheck="false" autocapitalize="off">function upperBound(a, x) {
+  let lo = 0;
+  let hi = a.length;
+
+  while (lo < hi) {
+    const mid = lo + Math.floor((hi - lo) / 2);
+
+    // TODO: 用 upper_bound 的不变量完成边界更新。
+    throw new Error("请完成循环体");
+  }
+
+  return lo;
+}</textarea>
+      <div class="code-actions">
+        <button class="run-button" type="button" data-run-tests>运行 5 个测试</button>
+        <button type="button" data-reset-code>恢复起始代码</button>
+      </div>
+      <div class="test-results" data-test-results aria-live="polite"></div>
+    </div>
+    <div class="callout"><strong>通过标准：</strong>重复值、空数组、目标在范围外和负数重复值全部通过。若运行超时，优先检查每轮是否让 <code>hi - lo</code> 严格变小。</div>
   </section>
 
   <section class="win complete-row">
