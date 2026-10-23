@@ -198,6 +198,7 @@ button[aria-pressed="true"] code { color: inherit; background: transparent; }
 .language-switch button { min-width: 108px; }
 .external-editor { width: min(1200px, calc(100vw - 32px)); margin-left: 50%; transform: translateX(-50%); border: 2px solid var(--line); border-radius: 12px; overflow: hidden; background: #fff; }
 .external-editor iframe { display: block; width: 100%; height: min(78vh, 760px); min-height: 540px; border: 0; }
+.external-editor.is-loading iframe { pointer-events: none; opacity: 0.7; }
 .editor-note { color: var(--muted); font: 0.9rem/1.5 "Segoe UI", sans-serif; }
 details pre { white-space: pre; max-height: 360px; }
 .code-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
