@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="用 lower_bound 学会用 loop invariant 证明二分搜索正确。">
   <title>第 1 课：二分搜索为何正确</title>
-  <link rel="stylesheet" href="../assets/course.css">
-  <script defer src="../assets/quiz.js"></script>
-  <script defer src="../assets/code-runner.js"></script>
+  <link rel="stylesheet" href="../assets/course.css?v=20261023b">
+  <script defer src="../assets/quiz.js?v=20261023b"></script>
+  <script defer src="../assets/code-runner.js?v=20261023b"></script>
 </head>
 <body>
 <nav class="course-nav" aria-label="课程导航">
@@ -140,29 +140,19 @@
 
   <section>
     <h2>最终挑战：写代码并跑边界测试</h2>
-    <p>先完成上面的三条推导，再把它翻译成代码。这个轻量实验区直接在浏览器中运行 JavaScript，目的是检验边界逻辑；之后把同一个不变量迁移到 C++ 即可。</p>
-    <div class="code-lab" data-code-challenge="upper-bound-js">
-      <label for="upper-bound-editor"><strong>实现 <code>upperBound(a, x)</code>：返回第一个严格大于 x 的下标</strong></label>
-      <textarea id="upper-bound-editor" class="code-editor" data-code-editor spellcheck="false" autocapitalize="off">function upperBound(a, x) {
-  let lo = 0;
-  let hi = a.length;
-
-  while (lo < hi) {
-    const mid = lo + Math.floor((hi - lo) / 2);
-
-    // TODO: 用 upper_bound 的不变量完成边界更新。
-    throw new Error("请完成循环体");
-  }
-
-  return lo;
-}</textarea>
-      <div class="code-actions">
-        <button class="run-button" type="button" data-run-tests>运行 5 个测试</button>
-        <button type="button" data-reset-code>恢复起始代码</button>
+    <p>先完成上面的三条推导，再选择 C++ 或 Python。编辑器中已经放入测试框架；只需补全 <code>upperBound</code> 的循环，按编辑器里的 Run 查看结果。</p>
+    <div class="code-lab" data-code-challenge>
+      <div class="language-switch" role="group" aria-label="选择编程语言">
+        <button type="button" data-language="cpp" aria-pressed="true">C++</button>
+        <button type="button" data-language="python" aria-pressed="false">Python</button>
       </div>
-      <div class="test-results" data-test-results aria-live="polite"></div>
+      <div class="external-editor">
+        <iframe data-compiler-frame title="C++ 在线代码编辑器" src="https://onecompiler.com/embed/cpp?listenToEvents=true&amp;hideLanguageSelection=true" loading="lazy" allow="clipboard-write" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      </div>
+      <p class="editor-note" data-editor-status role="status">正在载入 C++ 编辑器和测试代码…</p>
+      <details><summary>编辑器没有加载？查看可复制的起始代码</summary><pre data-fallback-code></pre></details>
     </div>
-    <div class="callout"><strong>通过标准：</strong>重复值、空数组、目标在范围外和负数重复值全部通过。若运行超时，优先检查每轮是否让 <code>hi - lo</code> 严格变小。</div>
+    <div class="callout"><strong>通过标准：</strong>重复值、空数组、目标在范围外和负数重复值全部通过。在线编译器由 OneCompiler 提供；点击运行时，编辑器中的代码会发送到其服务。不要在代码中放私人资料。</div>
   </section>
 
   <section class="win complete-row">
