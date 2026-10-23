@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
       button.textContent = done ? "取消完成标记" : "标记本课已完成";
       button.setAttribute("aria-pressed", String(done));
       const status = document.querySelector("[data-completion-status]");
-      if (status) status.textContent = done ? "本设备已记录完成。" : "完成迁移题后再标记。";
+      if (status) status.textContent = done ? "本设备已记录完成；可随时取消标记。" : "自愿标记进度；无需完成互动即可访问其他课程。";
     });
   };
 
