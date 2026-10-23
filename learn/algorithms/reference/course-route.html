@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>COMP3711H 短课路线</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+<nav class="course-nav" aria-label="课程导航">
+  <a href="../index.html">← 算法学习主页</a>
+  <span class="crumb">23 节短课路线</span>
+</nav>
+<main>
+  <header class="hero">
+    <p class="eyebrow">COMP3711H Prep · Curriculum</p>
+    <h1>从会写代码到会设计算法</h1>
+    <p class="lede">路线不是固定日历。每课约 20–35 分钟；互动回答会决定下一次继续、补洞，还是提高难度。</p>
+  </header>
+
+  <section>
+    <h2>为什么这样排</h2>
+    <p>HKUST 官方课程目录定义目标边界；历届 COMP3711H 资料提供基础顺序、C++ 实现和本校题型；UMD CMSC451 用于深化图算法、设计范式、网络流、NP 完全性与近似算法。路线因此采用“短基础校准 → 设计范式主线 → honors 扩展”。</p>
+  </section>
+
+  <section>
+    <h2>Phase A · 证明与分析的语言</h2>
+    <ol class="route-list">
+      <li><a href="../lessons/0001-binary-search-loop-invariant.html"><strong>二分搜索为何正确：loop invariant</strong></a></li>
+      <li>渐进分析不是数循环：cost model、Θ 与 tight bound</li>
+      <li>递推式上：从递归树看 Merge Sort</li>
+      <li>递推式下：Master theorem 的适用边界</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>Phase B · 分治、选择与数据结构</h2>
+    <ol class="route-list" start="5">
+      <li>Counting inversions：把跨区间贡献塞进 merge</li>
+      <li>Randomized Quickselect：期望时间从哪里来</li>
+      <li>Heap + priority queue：数据结构怎样改变算法代价</li>
+      <li>Union–Find 与 amortized analysis（上/下）</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>Phase C · 三大设计范式</h2>
+    <ol class="route-list" start="9">
+      <li>Greedy exchange argument：interval scheduling</li>
+      <li>贪心何时会错：局部选择与反例生成</li>
+      <li>DP 上：状态是“足够的过去”</li>
+      <li>DP 下：weighted interval scheduling</li>
+      <li>字符串 DP：LCS 与 edit distance</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>Phase D · 图与优化</h2>
+    <ol class="route-list" start="14">
+      <li>DFS：时间戳、不变量与 topological order</li>
+      <li>Strongly connected components（上/下）</li>
+      <li>Shortest paths：Dijkstra 的贪心证明与负边界线</li>
+      <li>MST：cut property 统一 Prim 与 Kruskal</li>
+      <li>Network flow（上/下）：residual graph 到 max-flow min-cut</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>Phase E · Honors 视角</h2>
+    <ol class="route-list" start="19">
+      <li>Randomized algorithms：随机性放在哪里</li>
+      <li>NP-completeness（上/下/应用）：验证、归约与证明方向</li>
+      <li>Approximation：Vertex Cover 与 Set Cover 的保证</li>
+      <li>Linear programming：建模语言与算法接口</li>
+      <li>Capstone：一题限时完成四件套并复盘</li>
+    </ol>
+  </section>
+</main>
+</body>
+</html>
+
