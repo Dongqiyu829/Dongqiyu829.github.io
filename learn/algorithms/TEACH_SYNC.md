@@ -32,3 +32,10 @@ This file is a lightweight handoff between the ongoing Teach/Codex workspace and
 ## Sources
 - https://amir.goharshady.com/teaching/honors-algorithms
 - https://www.cs.umd.edu/class/spring2025/cmsc451-0101/lectures.html
+
+## Navigation and access update (2026-10-23)
+- All published lessons are independently accessible from `index.html`: there is NO prerequisite unlocking requirement.
+- Completion checkboxes are optional, device-local progress markers only. The site must not block navigation based on quiz results or completion status.
+- Lesson 01 has a prominent "进入第二课" action plus a footer next-lesson button; Lesson 02 links back to Lesson 01 and the course catalog (Lesson 03 is not yet published).
+- Shared responsive styles live in `assets/course.css`; progress messaging lives in `assets/quiz.js`. Both use cache-busting version `20261023e` on the published pages.
+- Future lessons should maintain clear previous/next/catalog navigation while leaving all published lessons freely accessible.
