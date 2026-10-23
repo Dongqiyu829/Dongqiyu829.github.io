@@ -216,7 +216,16 @@ th, td { padding: 10px 12px; border-bottom: 1px solid var(--line); text-align: l
 th { font-family: "Segoe UI", sans-serif; font-size: 0.88rem; color: var(--muted); }
 
 a { color: var(--accent); text-underline-offset: 3px; }
-nav.lesson-nav { display: flex; justify-content: space-between; gap: 16px; margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--line); }
+nav.lesson-nav { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--line); }
+nav.lesson-nav a { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; }
+nav.lesson-nav .lesson-nav-next { background: var(--accent); border: 1px solid var(--accent); border-radius: 9px; color: #fff; font: 700 0.95rem/1.3 "Segoe UI", sans-serif; padding: 12px 18px; text-decoration: none; box-shadow: 0 5px 13px rgba(14,102,112,.15); }
+nav.lesson-nav .lesson-nav-next:hover, nav.lesson-nav .lesson-nav-next:focus-visible { background: #0a4f57; outline: 3px solid rgba(14,102,112,.23); outline-offset: 2px; }
+.lesson-continue { display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; padding: 24px 28px; border: 1px solid var(--line); border-left: 5px solid var(--accent); border-radius: 14px; background: var(--paper-strong); box-shadow: 0 8px 24px rgba(24,36,47,.05); }
+.lesson-continue > div { flex: 1 1 330px; }
+.lesson-continue h2 { margin: 4px 0 10px; font-size: clamp(1.2rem, 3vw, 1.6rem); }
+.lesson-continue p:last-child { margin: 0; color: var(--muted); }
+.lesson-next-button { display: inline-flex; align-items: center; justify-content: center; gap: 12px; flex: 0 0 auto; min-height: 48px; padding: 13px 18px; border: 1px solid var(--accent); border-radius: 9px; background: var(--accent); color: #fff; text-decoration: none; font: 700 0.95rem/1.3 "Segoe UI", sans-serif; box-shadow: 0 5px 13px rgba(14,102,112,.15); }
+.lesson-next-button:hover, .lesson-next-button:focus-visible { background: #0a4f57; outline: 3px solid rgba(14,102,112,.23); outline-offset: 2px; }
 .sources { color: var(--muted); font-size: 0.9rem; }
 
 .course-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
@@ -257,6 +266,10 @@ nav.lesson-nav { display: flex; justify-content: space-between; gap: 16px; margi
   .course-nav .crumb { display: none; }
   .external-editor { width: calc(100vw - 20px); }
   .external-editor iframe { height: 68vh; min-height: 500px; }
+  .lesson-continue { padding: 20px; }
+  .lesson-next-button { width: 100%; }
+  nav.lesson-nav a { width: 100%; }
+  nav.lesson-nav .lesson-nav-next { justify-content: center; }
 }
 
 @media print {
