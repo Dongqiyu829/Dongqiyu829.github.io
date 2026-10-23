@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   document.querySelectorAll("[data-quiz]").forEach((quiz) => {
-    const feedback = quiz.querySelector("[data-feedback]");
+    const feedback = quiz.querySelector("[data-feedback-output]");
     quiz.querySelectorAll("button[data-answer]").forEach((button) => {
       button.addEventListener("click", () => {
         quiz.querySelectorAll("button[data-answer]").forEach((peer) => {
@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         button.setAttribute("aria-pressed", "true");
         const isCorrect = button.dataset.answer === "correct";
-        feedback.textContent = button.dataset.feedback;
+        feedback.textContent = button.dataset.message;
         feedback.className = `feedback ${isCorrect ? "correct" : "incorrect"}`;
       });
     });
