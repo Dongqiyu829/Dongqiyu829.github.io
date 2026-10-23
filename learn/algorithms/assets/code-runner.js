@@ -1,108 +1,94 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const challenge = document.querySelector("[data-code-challenge]");
-  if (!challenge) return;
+  const lab = document.querySelector("[data-code-challenge]");
+  if (!lab) return;
+  const frame = lab.querySelector("[data-compiler-frame]");
+  const status = lab.querySelector("[data-editor-status]");
+  const fallback = lab.querySelector("[data-fallback-code]");
+  const buttons = [...lab.querySelectorAll("[data-language]")];
+  const programs = {
+    cpp: `#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
 
-  const editor = challenge.querySelector("[data-code-editor]");
-  const runButton = challenge.querySelector("[data-run-tests]");
-  const resetButton = challenge.querySelector("[data-reset-code]");
-  const results = challenge.querySelector("[data-test-results]");
-  const storageKey = "comp3711h-code-upper-bound-v1";
-  const starterCode = editor.value;
-
-  const tests = [
-    { name: "重复目标", input: [[1, 2, 2, 4, 7], 2], expected: 3 },
-    { name: "空数组", input: [[], 3], expected: 0 },
-    { name: "目标更小", input: [[1, 2, 2], 0], expected: 0 },
-    { name: "目标更大", input: [[1, 2, 2], 9], expected: 3 },
-    { name: "重复负数", input: [[-2, -2, 0, 5], -2], expected: 2 }
-  ];
-
-  const savedCode = localStorage.getItem(storageKey);
-  if (savedCode) editor.value = savedCode;
-  editor.addEventListener("input", () => localStorage.setItem(storageKey, editor.value));
-
-  const addTextBlock = (className, text) => {
-    const node = document.createElement("div");
-    node.className = className;
-    node.textContent = text;
-    results.appendChild(node);
-  };
-
-  const renderResults = (payload) => {
-    results.replaceChildren();
-    if (payload.error) {
-      addTextBlock("test-summary fail", `代码未通过：${payload.error}`);
-      return;
+int upperBound(const vector<int>& a, int x) {
+    int lo = 0, hi = static_cast<int>(a.size());
+    while (lo < hi) {
+        int mid = lo + (hi - lo) / 2;
+        // TODO: 比较 a[mid] 与 x，更新 lo 或 hi。
+        break; // 补完 TODO 后删掉这行
     }
-    const passed = payload.cases.filter((item) => item.pass).length;
-    addTextBlock(
-      `test-summary ${passed === payload.cases.length ? "pass" : "fail"}`,
-      passed === payload.cases.length
-        ? `✓ ${passed} / ${payload.cases.length} 全部通过`
-        : `${passed} / ${payload.cases.length} 通过；查看下面的反例`
-    );
-    payload.cases.forEach((item) => {
-      const actual = typeof item.actual === "undefined" ? "undefined" : JSON.stringify(item.actual);
-      addTextBlock(
-        `test-case ${item.pass ? "pass" : "fail"}`,
-        `${item.pass ? "PASS" : "FAIL"} · ${item.name}\n输入 ${JSON.stringify(item.input)} · 期望 ${JSON.stringify(item.expected)} · 得到 ${actual}`
-      );
-    });
+    return lo;
+}
+
+int main() {
+    struct Test { vector<int> a; int x, expected; string name; };
+    vector<Test> tests = {
+        {{1,2,2,4,7},2,3,"重复目标"},
+        {{},3,0,"空数组"},
+        {{1,2,2},0,0,"目标更小"},
+        {{1,2,2},9,3,"目标更大"},
+        {{-2,-2,0,5},-2,2,"重复负数"}
+    };
+    int passed = 0;
+    for (const auto& t : tests) {
+        int actual = upperBound(t.a, t.x);
+        bool ok = actual == t.expected;
+        passed += ok;
+        cout << (ok ? "PASS " : "FAIL ") << t.name
+             << " | expected=" << t.expected << " got=" << actual << endl;
+    }
+    cout << passed << "/" << tests.size() << " passed" << endl;
+}`,
+    python: `def upper_bound(a, x):
+    lo, hi = 0, len(a)
+    while lo < hi:
+        mid = lo + (hi - lo) // 2
+        # TODO: 比较 a[mid] 与 x，更新 lo 或 hi。
+        break  # 补完 TODO 后删掉这行
+    return lo
+
+tests = [
+    ([1, 2, 2, 4, 7], 2, 3, "重复目标"),
+    ([], 3, 0, "空数组"),
+    ([1, 2, 2], 0, 0, "目标更小"),
+    ([1, 2, 2], 9, 3, "目标更大"),
+    ([-2, -2, 0, 5], -2, 2, "重复负数"),
+]
+passed = 0
+for a, x, expected, name in tests:
+    actual = upper_bound(a, x)
+    ok = actual == expected
+    passed += ok
+    print(f'{"PASS" if ok else "FAIL"} {name} | expected={expected} got={actual}')
+print(f'{passed}/{len(tests)} passed')
+`
   };
 
-  runButton.addEventListener("click", () => {
-    results.replaceChildren();
-    addTextBlock("test-summary", "正在运行 5 个边界测试…");
-
-    const workerSource = `
-      self.onmessage = (event) => {
-        const { code, functionName, tests } = event.data;
-        try {
-          const fn = new Function(code + "\\nreturn " + functionName + ";")();
-          if (typeof fn !== "function") throw new Error("没有找到函数 " + functionName);
-          const cases = tests.map((test) => {
-            try {
-              const args = JSON.parse(JSON.stringify(test.input));
-              const actual = fn(...args);
-              return { ...test, actual, pass: JSON.stringify(actual) === JSON.stringify(test.expected) };
-            } catch (error) {
-              return { ...test, actual: "运行错误: " + error.message, pass: false };
-            }
-          });
-          self.postMessage({ cases });
-        } catch (error) {
-          self.postMessage({ error: error.message });
-        }
-      };
-    `;
-    const workerUrl = URL.createObjectURL(new Blob([workerSource], { type: "text/javascript" }));
-    const worker = new Worker(workerUrl);
-    const timeout = window.setTimeout(() => {
-      worker.terminate();
-      URL.revokeObjectURL(workerUrl);
-      renderResults({ error: "运行超时；检查循环区间是否严格缩小。" });
-    }, 1500);
-
-    worker.onmessage = (event) => {
-      window.clearTimeout(timeout);
-      worker.terminate();
-      URL.revokeObjectURL(workerUrl);
-      renderResults(event.data);
+  let language = "cpp";
+  let loadCount = 0;
+  function populate() {
+    const current = language;
+    const message = {
+      eventType: "populateCode", language: current,
+      files: [{ name: current === "cpp" ? "main.cpp" : "main.py", content: programs[current] }]
     };
-    worker.onerror = (event) => {
-      window.clearTimeout(timeout);
-      worker.terminate();
-      URL.revokeObjectURL(workerUrl);
-      renderResults({ error: event.message || "无法启动测试。" });
-    };
-    worker.postMessage({ code: editor.value, functionName: "upperBound", tests });
-  });
-
-  resetButton.addEventListener("click", () => {
-    editor.value = starterCode;
-    localStorage.removeItem(storageKey);
-    results.replaceChildren();
-    editor.focus();
-  });
+    const send = () => frame.contentWindow?.postMessage(message, "https://onecompiler.com");
+    send();
+    window.setTimeout(send, 1000);
+    status.textContent = `已载入 ${current === "cpp" ? "C++" : "Python"}。补全 TODO，再按编辑器中的 Run。`;
+  }
+  frame.addEventListener("load", () => { loadCount++; populate(); });
+  buttons.forEach(button => button.addEventListener("click", () => {
+    const next = button.dataset.language;
+    if (next === language) return;
+    language = next;
+    buttons.forEach(item => item.setAttribute("aria-pressed", String(item.dataset.language === language)));
+    fallback.textContent = programs[language];
+    status.textContent = `正在载入 ${language === "cpp" ? "C++" : "Python"} 编辑器…`;
+    frame.title = `${language === "cpp" ? "C++" : "Python"} 在线代码编辑器`;
+    frame.src = `https://onecompiler.com/embed/${language}?listenToEvents=true&hideLanguageSelection=true`;
+  }));
+  fallback.textContent = programs.cpp;
 });
 
