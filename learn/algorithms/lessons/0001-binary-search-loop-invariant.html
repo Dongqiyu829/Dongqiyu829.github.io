@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="用 lower_bound 学会用 loop invariant 证明二分搜索正确。">
+  <title>第 1 课：二分搜索为何正确</title>
+  <link rel="stylesheet" href="../assets/course.css">
+  <script defer src="../assets/quiz.js"></script>
+</head>
+<body>
+<nav class="course-nav" aria-label="课程导航">
+  <a href="../index.html">← 算法学习主页</a>
+  <span class="crumb">第 1 课 · Loop invariant</span>
+</nav>
+<main>
+  <header class="hero">
+    <p class="eyebrow">COMP3711H Prep · Lesson 01</p>
+    <h1>二分搜索为何真的正确</h1>
+    <p class="lede">今天不背 binary search 模板。我们只学一个可迁移的工具：用 <em>loop invariant</em> 推出每一次边界更新，并在结束时得到答案。</p>
+    <div class="meta">
+      <span>约 25 分钟</span>
+      <span>证明 + 手算</span>
+      <span>难度：基础校准</span>
+    </div>
+  </header>
+
+  <section class="win">
+    <strong>本课胜利条件：</strong>给定一个陌生的二分变体，你能先写“不变量”，再从不变量推出更新规则，而不是靠记忆猜 <code>+1</code> 与 <code>-1</code>。
+  </section>
+
+  <section>
+    <h2>任务：找第一个不小于 x 的位置</h2>
+    <p>输入一个非降序数组 <code>a[0..n)</code> 和目标值 <code>x</code>。返回最小的下标 <code>i</code> 使 <code>a[i] ≥ x</code>；若不存在，返回 <code>n</code>。这就是常见的 <code>lower_bound</code>。</p>
+    <p>例：<code>a = [1, 2, 2, 4, 7]</code>，<code>x = 2</code>，答案是 <code>1</code>，不是随便某个值为 2 的位置。</p>
+  </section>
+
+  <section>
+    <h2>唯一需要守住的画面</h2>
+    <p>我们维护半开区间 <code>[lo, hi)</code> 作为“尚未判断”的区域。</p>
+    <div class="search-space" role="img" aria-label="左侧都小于 x，中间未知，右侧都大于等于 x">
+      <div class="left"><strong>已知 &lt; x</strong><small>i &lt; lo</small></div>
+      <div class="unknown"><strong>未知区域</strong><small>lo ≤ i &lt; hi</small></div>
+      <div class="right"><strong>已知 ≥ x</strong><small>hi ≤ i &lt; n</small></div>
+    </div>
+    <p>这句话就是不变量：</p>
+    <div class="formula">∀ 0 ≤ i &lt; lo, a[i] &lt; x　且　∀ hi ≤ i &lt; n, a[i] ≥ x</div>
+    <p>答案始终藏在边界之间；我们只是不断把已经证明的部分从未知区移出去。</p>
+  </section>
+
+  <section>
+    <h2>算法由不变量“长出来”</h2>
+<pre><code>lower_bound(a, x):
+    lo = 0
+    hi = length(a)          // 注意：hi 可以等于 n
+
+    while lo &lt; hi:
+        mid = lo + (hi - lo) // 2
+        if a[mid] &lt; x:
+            lo = mid + 1
+        else:
+            hi = mid
+
+    return lo</code></pre>
+    <p>若 <code>a[mid] &lt; x</code>，由有序性可知 <code>0..mid</code> 都不是答案，所以令 <code>lo = mid + 1</code>。否则 <code>mid</code> 可能正是第一个满足条件的位置，不能丢掉它，因此令 <code>hi = mid</code>。</p>
+  </section>
+
+  <section>
+    <h2>正确性证明：三步足够</h2>
+    <div class="proof-grid">
+      <article class="proof-step">
+        <h3>1. 初始化</h3>
+        <p><code>lo = 0, hi = n</code>。在合法下标 <code>0..n-1</code> 中，左侧 <code>i &lt; 0</code> 与右侧 <code>i ≥ n</code> 都是空集合，因此两条断言自动成立。</p>
+      </article>
+      <article class="proof-step">
+        <h3>2. 保持</h3>
+        <p>若 <code>a[mid] &lt; x</code>，排序性证明直到 <code>mid</code> 都小于 x；否则从 <code>mid</code> 起都不小于 x。两种更新都不破坏不变量。</p>
+      </article>
+      <article class="proof-step">
+        <h3>3. 终止</h3>
+        <p>区间宽度严格变小，最终 <code>lo = hi</code>。未知区为空；左边全小于 x，右边从 lo 起全不小于 x，所以 lo 正是所求。</p>
+      </article>
+    </div>
+  </section>
+
+  <section>
+    <h2>为什么是 Θ(log(n+1))</h2>
+    <p>令第 t 轮前未知区宽度为 <code>wₜ = hi - lo</code>。每轮后至多保留一半：</p>
+    <div class="formula">wₜ₊₁ ≤ ⌈wₜ / 2⌉</div>
+    <p>从 <code>w₀ = n</code> 开始，经过 t 轮后宽度至多约为 <code>n / 2ᵗ</code>。宽度降到 1 后再做至多一轮便成为 0，因此迭代次数是 <code>Θ(log(n+1))</code>；当 <code>n ≥ 2</code> 时通常简写为 <code>Θ(log n)</code>。每轮只做常数次比较与赋值，额外空间为 <code>Θ(1)</code>。</p>
+  </section>
+
+  <section class="callout">
+    <strong>最常见的坑：</strong>半开区间写法 <code>[lo, hi)</code> 与闭区间写法 <code>[lo, hi]</code> 都能正确，但它们的初始化、循环条件和更新规则是成套的。混用才会制造 off-by-one bug。
+  </section>
+
+  <section>
+    <h2>互动 1：先别看代码</h2>
+    <div class="exercise" data-quiz>
+      <p><strong>若 <code>a[mid] ≥ x</code>，为了保留 mid 这个候选位置，应怎样更新？</strong></p>
+      <button type="button" data-answer="correct" data-feedback="正确。mid 仍可能是第一个满足条件的位置，因此不能丢掉。" aria-pressed="false"><code>hi = mid</code></button>
+      <button type="button" data-answer="incorrect" data-feedback="再看不变量：这样会把 mid 放进“已知小于 x”的左侧，和 a[mid] ≥ x 冲突。" aria-pressed="false"><code>lo = mid</code></button>
+      <p class="feedback" data-feedback aria-live="polite"></p>
+    </div>
+  </section>
+
+  <section>
+    <h2>互动 2：手算一次</h2>
+    <div class="exercise">
+      <p>对 <code>[1, 2, 2, 4, 7]</code> 查找 <code>x = 2</code>。先在纸上写出每轮开始时的 <code>(lo, hi)</code>，以及最终返回值。</p>
+      <button type="button" data-reveal-target="#trace-answer" aria-expanded="false">查看参考</button>
+      <div class="answer" id="trace-answer">
+        <table>
+          <thead><tr><th>轮次</th><th>(lo, hi)</th><th>mid</th><th>判断与更新</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>(0, 5)</td><td>2</td><td>a[2] = 2 ≥ 2 → hi = 2</td></tr>
+            <tr><td>2</td><td>(0, 2)</td><td>1</td><td>a[1] = 2 ≥ 2 → hi = 1</td></tr>
+            <tr><td>3</td><td>(0, 1)</td><td>0</td><td>a[0] = 1 &lt; 2 → lo = 1</td></tr>
+          </tbody>
+        </table>
+        <p>现在 <code>lo = hi = 1</code>，返回 1。</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>迁移：把 lower_bound 改成 upper_bound</h2>
+    <p>新任务是找第一个 <code>a[i] &gt; x</code> 的位置。不要重背模板：把不变量中的左右判定一起改掉。</p>
+    <div class="exercise">
+      <p><strong>请你闭卷写出：</strong></p>
+      <ol>
+        <li>新的两条不变量；</li>
+        <li><code>a[mid] ≤ x</code> 时更新哪一侧；</li>
+        <li>为什么终止时返回 <code>lo</code>。</li>
+      </ol>
+      <p>把三条答案发给我。我会先判断你的证明是否真正闭合，再决定下一课直接进入 tight asymptotic analysis，还是先补一个边界反例练习。</p>
+    </div>
+  </section>
+
+  <section class="win complete-row">
+    <button type="button" data-complete-lesson="lesson-0001" aria-pressed="false">标记本课已完成</button>
+    <p data-completion-status aria-live="polite">完成迁移题后再标记。</p>
+  </section>
+
+  <section class="sources">
+    <h2>主参考与延伸</h2>
+    <ul>
+      <li><a href="https://amir.goharshady.com/teaching/honors-algorithms">Amir Goharshady · COMP3711H</a>：课程的 Binary Search TA session 与“想法—算法—复杂度—证明”答题标准。</li>
+      <li><a href="https://prog-crs.hkust.edu.hk/ugcourse/2026-27/COMP">HKUST 2026–27 Course Catalog</a>：COMP3711H 明确要求正确性证明与运行时间分析。</li>
+      <li><a href="https://www.cs.umd.edu/class/spring2025/cmsc451-0101/Lects/cmsc451-spring25-lects.pdf">UMD CMSC451 Lecture Notes</a>：把算法设计、正确性与渐进分析作为后续主题的共同语言。</li>
+    </ul>
+    <p>如果某一步不清楚，直接问我；这套工作区的目的就是让你在进入下一课前把逻辑缝隙补上。</p>
+  </section>
+
+  <nav class="lesson-nav">
+    <a href="../reference/algorithm-answer-template.html">四件套参考卡</a>
+    <a href="../reference/course-route.html">查看课程路线 →</a>
+  </nav>
+</main>
+</body>
+</html>
+
