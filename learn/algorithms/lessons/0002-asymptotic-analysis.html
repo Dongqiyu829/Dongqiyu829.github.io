@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="COMP3711H 第 2 课：从 cost model 推导 tight bound，弄清 O、Ω、Θ 和循环次数。">
   <title>第 2 课：渐进分析不是数循环</title>
-  <link rel="stylesheet" href="../assets/course.css?v=20261023c">
+  <link rel="stylesheet" href="../assets/course.css?v=20261023e">
   <link rel="stylesheet" href="../assets/asymptotic-lab.css?v=20261023a">
-  <script defer src="../assets/quiz.js?v=20261023b"></script>
+  <script defer src="../assets/quiz.js?v=20261023e"></script>
   <script defer src="../assets/asymptotic-lab.js?v=20261023a"></script>
 </head>
 <body>
@@ -167,7 +167,16 @@ for (i = 1; i &lt;= n; i++):
 
   <section class="win complete-row">
     <button type="button" data-complete-lesson="lesson-0002" aria-pressed="false">标记本课已完成</button>
-    <p data-completion-status aria-live="polite">完成迁移题后再标记。</p>
+    <p data-completion-status aria-live="polite">完成标记是自愿的，不影响前后课程的访问。</p>
+  </section>
+
+  <section class="lesson-continue" aria-label="继续学习">
+    <div>
+      <p class="eyebrow">EXPLORE · ALL LESSONS</p>
+      <h2>随时回顾或选择其他课程</h2>
+      <p>第二课没有前置解锁条件。学完也无需立即标记完成；新的课程会发布在课程目录中。</p>
+    </div>
+    <a class="lesson-next-button" href="../index.html">返回课程目录 <span aria-hidden="true">→</span></a>
   </section>
 
   <section class="sources">
@@ -180,9 +189,9 @@ for (i = 1; i &lt;= n; i++):
     <p>有任何推导不明白，把你卡住的那一步发到我们的学习对话；尤其欢迎你尝试用反例挑战我的复杂度判断。</p>
   </section>
 
-  <nav class="lesson-nav">
-    <a href="0001-binary-search-loop-invariant.html">← 第一课：Loop invariant</a>
-    <a href="../reference/course-route.html">课程路线 →</a>
+  <nav class="lesson-nav" aria-label="课程切换">
+    <a href="0001-binary-search-loop-invariant.html">← 上一课：Loop invariant</a>
+    <a class="lesson-nav-next" href="../reference/course-route.html">查看后续课程路线 <span aria-hidden="true">→</span></a>
   </nav>
 </main>
 </body>
