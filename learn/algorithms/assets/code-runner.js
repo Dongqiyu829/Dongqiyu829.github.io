@@ -72,14 +72,19 @@ print(f'{passed}/{len(tests)} passed')
       eventType: "populateCode", language: current,
       files: [{ name: current === "cpp" ? "main.cpp" : "main.py", content: programs[current] }]
     };
-    frame.contentWindow?.postMessage(message, "https://onecompiler.com");
-    status.textContent = `已载入 ${current === "cpp" ? "C++" : "Python"}。补全 TODO，再按编辑器中的 Run。`;
+    window.setTimeout(() => {
+      if (language !== current) return;
+      frame.contentWindow?.postMessage(message, "https://onecompiler.com");
+      frame.parentElement.classList.remove("is-loading");
+      status.textContent = `已载入 ${current === "cpp" ? "C++" : "Python"}。补全 TODO，再按编辑器中的 Run。`;
+    }, 1000);
   }
   frame.addEventListener("load", populate);
   buttons.forEach(button => button.addEventListener("click", () => {
     const next = button.dataset.language;
     if (next === language) return;
     language = next;
+    frame.parentElement.classList.add("is-loading");
     buttons.forEach(item => item.setAttribute("aria-pressed", String(item.dataset.language === language)));
     fallback.textContent = programs[language];
     status.textContent = `正在载入 ${language === "cpp" ? "C++" : "Python"} 编辑器…`;
