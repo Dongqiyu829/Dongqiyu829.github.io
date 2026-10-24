@@ -45,5 +45,5 @@
 
 <details class="beyond"><summary>Beyond the Course · 体积、复合与计算机（不参与自测）</summary><h3>更高维：面积换成体积</h3><p>3×3 行列式记录单位立方体变换后的有向体积；更高维用“有向体积”的推广。不要把本课 2×2 的交叉乘法直接套在 3×3 或更大的矩阵上。</p><h3>接两台机器：倍数相乘</h3><p>先用 N 再用 M，写成 MN。面积先乘 |det(N)| 再乘 |det(M)|，方向的正负也依次累积，所以 det(MN)=det(M)det(N)。但相加没有这个规则：I+I=2I，det(2I)=4，而 det(I)+det(I)=2。</p><h3>非零与“计算可靠”不是同一件事</h3><p>精确数学里，方阵行列式非零等价于可逆；计算机只保存有限位小数，不能随意把一个很小的数当作零。矩阵 diag(1000,0.001) 的行列式为 1，却把两个方向拉伸得极不均匀。工程中还会用条件数、SVD 等判断误差敏感程度，后续进阶课再讲；不应只靠行列式大小判断计算是否稳定。这里 diag 表示把给定数字放到主对角线，其余位置填 0。</p></details>
 <section class="complete-row"><button type="button" data-complete-lesson="linear-07" aria-pressed="false">标记本课已完成</button><p data-completion-status>自愿记录，只保存在本设备；不记录也能直接访问全部已开放课程。</p></section>
-<nav class="lesson-nav"><a href="06-inverse-rank-nullspace.html">← 第 06 课</a><a href="../index.html">课程目录</a><a href="../reference/course-route.html">第 08 课计划与后续路线 →</a></nav>
+<nav class="lesson-nav"><a href="06-inverse-rank-nullspace.html">← 第 06 课</a><a href="../index.html">课程目录</a><a href="08-euclidean-inner-product.html">第 08 课 · 欧几里得内积 →</a></nav>
 </main></body></html>

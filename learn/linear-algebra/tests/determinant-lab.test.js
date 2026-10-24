@@ -33,5 +33,6 @@ for(const [,url] of html.matchAll(/(?:href|src)="([^"#]+)"/g)) {
 }
 assert.equal((html.match(/data-det-preset=/g)||[]).length,6);
 assert.equal((html.match(/type="range"/g)||[]).length,4);
-assert.ok(fs.readFileSync(path.join(root,'index.html'),'utf8').includes('data-total="8"'));
+const index=fs.readFileSync(path.join(root,'index.html'),'utf8');
+assert.equal(Number(index.match(/data-total="(\d+)"/)[1]),[...index.matchAll(/data-lesson-id=/g)].length);
 console.log(`Passed: ${count} matrices checked against signed polygon area, determinant laws, lesson structure and links.`);
