@@ -13,7 +13,7 @@ This file is a lightweight handoff between the ongoing Teach/Codex workspace and
 - Main materials: HKUST Honors Algorithms (Amir Goharshady) and UMD CMSC451.
 
 ## Existing course
-- Lesson 01: `lessons/0001-binary-search-loop-invariant.html` (lower_bound, loop invariant, upper_bound transfer)
+- Lesson 01: `lessons/0001-binary-search-loop-invariant.html` (beginner-first lower_bound: indices and return contract → discard reasoning → step-by-step boundary demo → invariant → C++ / Python two-line exercise). Formal proof and upper_bound transfer are optional reveals. Review card: `reference/binary-search-boundaries.html`.
 - Lesson 02: `lessons/0002-asymptotic-analysis.html` (one pair-comparison example: hand count → exact sum → two-sided bounds → Θ(n²); a one-line transfer change)
 - Lesson 02 now linked on `index.html`, `reference/course-route.html` and from Lesson 01.
 - Lesson 02 reuses `assets/course.css` and `assets/quiz.js`, with shared `assets/short-lesson.css`. The old `asymptotic-lab` assets are no longer used by Lesson 02. Quick review: `reference/asymptotic-bounds.html`.
@@ -24,6 +24,7 @@ This file is a lightweight handoff between the ongoing Teach/Codex workspace and
 - This interval scheduling discussion is a preview of planned Lesson 09, not a reason to skip the foundation sequence.
 
 ## Current state and next move
+- Lesson 01 rewritten on 2026-10-24 with beginner scaffolding. The main code challenge now practices lower_bound and has 8 visible edge tests; do not keep using the old upper_bound challenge description. New demo assets are `assets/binary-search-demo.{css,js}`. Preserve the large C++ / Python editor and freely accessible lessons.
 - Lesson 02 rewritten on 2026-10-24 around a single worked example. Keep main lessons short: concrete problem, intuition, learner attempt, rigorous derivation, then a small transfer. Optional definitions and extensions are collapsed or on reference cards.
 - Do **not** mark either lesson completed merely because it is published; completion is based on the learner's actual work and local UI status.
 - Current Lesson 02 transfer: change the inner loop start from `j=i+1` to `j=i`; derive W(n)=n(n+1)/2 and, for n>=1, (1/2)n²<=W(n)<=n². Ask for the learner's own three-line derivation before inferring mastery.

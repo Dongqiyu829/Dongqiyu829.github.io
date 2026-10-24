@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>二分搜索：边界与证明参考卡</title>
+  <link rel="stylesheet" href="../assets/course.css?v=20261023e">
+  <link rel="stylesheet" href="../assets/short-lesson.css?v=20261024a">
+</head>
+<body>
+<nav class="course-nav"><a href="../lessons/0001-binary-search-loop-invariant.html">← 返回第一课</a><span class="crumb">参考卡 · 复习时用</span></nav>
+<main>
+  <header class="hero"><p class="eyebrow">Reference · Binary search</p><h1>找分界线，守住两侧的事实</h1><p class="lede">输入已从小到大排序，允许重复。先讲清任务与返回值，再选对应的更新规则。</p></header>
+  <section><h2>lower_bound 的任务</h2><p>返回第一个 a[i]≥x 的下标；若不存在，返回数组长度 n。例如 [1,2,2,4,7] 中，x=2 返回 1，x=3 返回 3，x=9 返回 5。返回 n 不表示可以访问 a[n]。</p></section>
+  <section><h2>一套边界约定</h2><ul><li>0≤lo≤hi≤n；lo 左边所有合法元素均&lt;x，hi 起所有合法元素均≥x。</li><li>尚待判断的元素在 [lo,hi)；答案下标则可能在闭区间 [lo,hi] 中，包括 hi。</li><li>从 lo=0、hi=n 开始，循环条件 lo&lt;hi；mid=lo+(hi−lo)//2。</li><li>a[mid]&lt;x：lo=mid+1，连 mid 一起排除。</li><li>a[mid]≥x：hi=mid，mid 成为已知满足条件的右边界，仍可能作为最终答案。</li><li>lo=hi 时返回 lo；空数组直接返回 0。</li></ul></section>
+  <section><h2>正确性证明骨架</h2><p><strong>初始化：</strong>两侧已判断区域都为空，两条断言成立。</p><p><strong>保持：</strong>有序性把关于 mid 的判断推广到它的一整侧；按上述更新，两条断言仍成立。</p><p><strong>终止：</strong>lo≤mid&lt;hi，每次使非负整数 hi−lo 严格减小。结束时 lo=hi，左边全&lt;x，右边从 lo 起全≥x，得到第一个满足条件的位置；lo=n 则不存在。</p><p><strong>比较次数：</strong>宽度每轮至多减半。对 n≥1，最坏情况比较次数为 ⌊log₂n⌋+1；这可由每次走 hi=mid 的分支达到。对 n≥2，最坏时间 Θ(log n)，额外空间 Θ(1)。n=0 时不作元素比较，函数为常数开销。</p></section>
+  <section><h2>完整实现：C++</h2>
+<pre><code>#include &lt;vector&gt;
+using namespace std;
+
+int lowerBound(const vector&lt;int&gt;&amp; a, int x) {
+    int lo = 0, hi = static_cast&lt;int&gt;(a.size());
+    while (lo &lt; hi) {
+        int mid = lo + (hi - lo) / 2;
+        if (a[mid] &lt; x) lo = mid + 1;
+        else hi = mid;
+    }
+    return lo;
+}</code></pre>
+    <p>这里用 int 表示下标，假定数组长度可以由 int 表示。const vector&lt;int&gt;&amp; 表示引用传入数组、函数不修改它；static_cast&lt;int&gt; 是把长度转成这里使用的下标类型。</p>
+  </section>
+  <section><h2>完整实现：Python</h2>
+<pre><code>def lower_bound(a, x):
+    lo, hi = 0, len(a)
+    while lo &lt; hi:
+        mid = lo + (hi - lo) // 2
+        if a[mid] &lt; x:
+            lo = mid + 1
+        else:
+            hi = mid
+    return lo</code></pre>
+  </section>
+  <section><h2>理解后再迁移到 upper_bound</h2><p>目标改为第一个 a[i]&gt;x，则相等也应放在左侧。把分支条件改为 a[mid]≤x 时令 lo=mid+1，否则 hi=mid。对应不变量是“lo 左边都≤x，hi 起都&gt;x”；其他边界约定不变。</p><p>不要混用其他二分模板的初始化、循环条件或 ±1 规则；从你选择的不变量推导更新。</p></section>
+  <section class="sources"><p>语义核验：<a href="https://docs.python.org/3/library/bisect.html#bisect.bisect_left">Python 官方文档 · bisect_left</a>；概念延伸：<a href="https://cp-algorithms.com/num_methods/binary_search.html#lower-bound-and-upper-bound">CP-Algorithms · Binary Search</a>。后者采用另一种边界实现；本卡所有公式与代码统一采用 [lo,hi) 这一套。</p></section>
+</main>
+</body>
+</html>

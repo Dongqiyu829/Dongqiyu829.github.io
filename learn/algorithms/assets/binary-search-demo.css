@@ -1,0 +1,35 @@
+.array-example { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 5px; padding: 15px 8px; margin: 20px 0; border: 1px solid var(--line); border-radius: 10px; background: #fff; text-align: center; }
+.array-example span, .array-example strong { display: block; }
+.array-example span { font: .85rem/1.6 "Segoe UI", sans-serif; color: var(--muted); }
+.array-example strong { padding-top: 8px; font-size: 1.25rem; }
+.binary-demo h3 { margin-top: 0; }
+.demo-cases { display: flex; flex-wrap: wrap; gap: 6px; }
+.demo-cases button { margin: 0; min-height: 44px; font-size: .87rem; }
+.demo-array { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; margin: 20px 0; }
+.demo-cell { min-width: 0; padding: 9px 3px; border: 1px solid var(--line); border-radius: 8px; text-align: center; background: #fff; }
+.demo-cell span, .demo-cell strong, .demo-cell small { display: block; }
+.demo-cell span { color: var(--muted); font: .8rem/1.5 "Segoe UI", sans-serif; }
+.demo-cell strong { margin: 5px 0; font: 700 1.2rem/1.4 Consolas, monospace; }
+.demo-cell small { min-height: 2.8em; font-size: .76rem; line-height: 1.4; }
+.demo-cell.known-small { border-color: #0e6670; background: #dceced; }
+.demo-cell.known-large { border-color: #a35524; background: #f5e4d7; }
+.demo-cell.is-mid { outline: 3px solid #18242f; outline-offset: 1px; }
+.demo-cell.is-answer { border: 3px solid #24633f; background: #e4f3e8; }
+.demo-cell.sentinel { border-style: dashed; }
+.demo-state { padding: 12px; border: 1px solid var(--line); border-radius: 8px; font: 600 .95rem/1.6 Consolas, monospace; overflow-wrap: anywhere; }
+.demo-explanation { padding: 14px; border-left: 4px solid var(--accent); background: var(--accent-soft); min-height: 5em; }
+.demo-controls { display: flex; gap: 8px; flex-wrap: wrap; }
+.demo-controls button { min-height: 44px; }
+button:disabled { cursor: default; opacity: .55; }
+.binary-demo details { margin-bottom: 0; }
+.binary-demo ol { padding-left: 1.3em; }
+.binary-demo li + li { margin-top: 12px; }
+@media (max-width: 600px) {
+  .demo-cases { display: grid; grid-template-columns: 1fr 1fr; }
+  .demo-cases button { font-size: .82rem; padding: 10px 4px; }
+  .demo-array { gap: 4px; }
+  .demo-cell span { font-size: .69rem; }
+  .demo-cell small { font-size: .67rem; }
+  .demo-cell { padding: 7px 1px; }
+  .array-example span { font-size: .8rem; }
+}
