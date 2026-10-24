@@ -49,6 +49,27 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  document.querySelectorAll("[data-number-check]").forEach((exercise) => {
+    const fields = [...exercise.querySelectorAll("input[data-expected]")];
+    const output = exercise.querySelector("[data-check-output]");
+    exercise.querySelector("[data-check-values]").addEventListener("click", () => {
+      const incomplete = fields.some((field) => !field.value.trim() || !Number.isFinite(Number(field.value)));
+      if (incomplete) {
+        output.className = "feedback incorrect";
+        output.textContent = "先填完每一格再核对；空白和 0 的意思不同。";
+        return;
+      }
+      const wrong = fields.filter((field) => Math.abs(Number(field.value)-Number(field.dataset.expected)) > 1e-8);
+      fields.forEach((field) => field.setAttribute("aria-invalid", String(wrong.includes(field))));
+      output.className = `feedback ${wrong.length ? "incorrect" : "correct"}`;
+      output.textContent = wrong.length ? `已有 ${fields.length-wrong.length} / ${fields.length} 格正确。再检查${wrong.map((field) => field.getAttribute("aria-label")).join("、")}。${exercise.dataset.hint}` : exercise.dataset.success;
+    });
+    fields.forEach((field) => field.addEventListener("input", () => {
+      fields.forEach((peer) => peer.removeAttribute("aria-invalid"));
+      output.textContent = ""; output.className = "feedback";
+    }));
+  });
+
   document.querySelectorAll("button[data-complete-lesson]").forEach((button) => {
     button.addEventListener("click", () => {
       const completed = loadProgress();

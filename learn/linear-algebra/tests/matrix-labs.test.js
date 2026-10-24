@@ -11,10 +11,29 @@ assert.deepEqual(math.scale(B, 2), [2, 2, 0, 2]);
 assert.deepEqual(math.transpose(B), [1, 0, 1, 1]);
 assert.deepEqual(math.multiply(A, B), [2, 3, 1, 3]);
 assert.deepEqual(math.multiply(B, A), [3, 3, 1, 2]);
-assert.deepEqual(math.multiply(A, [2 / 3, -1 / 3, -1 / 3, 2 / 3]).map((n) => Math.round(n)), [1, 0, 0, 1]);
+const inverse = [2 / 3, -1 / 3, -1 / 3, 2 / 3];
+for (const product of [math.multiply(A,inverse),math.multiply(inverse,A)]) {
+  product.forEach((value,i) => assert.ok(Math.abs(value-[1,0,0,1][i]) < 1e-12));
+}
 assert.deepEqual(math.apply(A, [2, 1]), [5, 4]);
 assert.deepEqual([math.rank(A), math.rank(S), math.rank([0, 0, 0, 0])], [2, 1, 0]);
 assert.deepEqual(math.apply(S, math.nullVector(S)), [0, 0]);
+
+// Cover all 2,401 matrices reachable with the integer sliders, including
+// zero rows/columns, negative entries and rank changes.
+let matrixCount = 0;
+for (let a=-3;a<=3;a++) for(let b=-3;b<=3;b++) for(let c=-3;c<=3;c++) for(let d=-3;d<=3;d++) {
+  const M=[a,b,c,d]; matrixCount++;
+  for (const t of [-2,0,0.5,2]) {
+    const demo=math.collisionExample(M,t);
+    const sameOutput=demo.startOutput.every((value,i) => value === demo.movedOutput[i]);
+    assert.equal(sameOutput,math.rank(M)<2 || t===0,`collision ${M}, t=${t}`);
+    if (math.rank(M)===1) {
+      assert.ok(demo.direction.some((value)=>value!==0));
+      assert.ok(math.apply(M,demo.direction).every((value)=>value===0));
+    }
+  }
+}
 
 for (const [number, file] of [
   ["04", "04-matrix-operations.html"],
@@ -31,4 +50,4 @@ for (const [number, file] of [
     assert.ok(fs.existsSync(path.resolve(__dirname, "../lessons", url)), `${file} broken link ${url}`);
   }
 }
-console.log("Matrix math, lesson components, and local links: OK");
+console.log(`Matrix math, ${matrixCount} interactive matrices, lesson components, and local links: OK`);

@@ -13,7 +13,12 @@
   };
   const fmt = (n) => Number.isInteger(n) ? String(n) : n.toFixed(1);
   const pair = ([x, y]) => `(${fmt(x)}, ${fmt(y)})`;
-  const core = { add, scale, transpose, multiply, apply, rank, nullVector };
+  const collisionExample = (M, t) => {
+    const start = [1, 0], direction = nullVector(M) || [0, 1];
+    const moved = add(start, scale(direction, t));
+    return { start, moved, direction, startOutput: apply(M, start), movedOutput: apply(M, moved) };
+  };
+  const core = { add, scale, transpose, multiply, apply, rank, nullVector, collisionExample };
   if (typeof module !== "undefined") module.exports = core;
   if (typeof document === "undefined") return;
 
@@ -45,7 +50,7 @@
       const fields = [...board.querySelectorAll("[data-bcell]")];
       const result = board.querySelector("[data-board-result]");
       const explain = board.querySelector("[data-board-explain]");
-      let operation = "AB";
+      let operation = "sum";
       function render() {
         const B = fields.map((field) => Number(field.value));
         if (fields.some((field) => field.value.trim() === "" || !Number.isInteger(Number(field.value)) || Number(field.value) < -3 || Number(field.value) > 3)) {
@@ -72,14 +77,20 @@
         render();
       }));
       fields.forEach((field) => field.addEventListener("input", render));
+      board.querySelector("[data-reset-board]")?.addEventListener("click", () => {
+        fields.forEach((field, i) => { field.value = [1, 1, 0, 1][i]; });
+        render();
+      });
       render();
     });
 
     document.querySelectorAll("[data-column-lab]").forEach((lab) => {
-      const canvas = lab.querySelector("canvas");
+      const canvas = lab.querySelector("[data-output-plane]") || lab.querySelector("canvas");
+      const inputCanvas = lab.querySelector("[data-input-plane]");
       const ctx = canvas.getContext("2d");
       const mode = lab.dataset.columnLab;
       const get = (name, fallback = 0) => Number(lab.querySelector(`[data-matrix-value="${name}"]`)?.value ?? fallback);
+      let dragView, activeView = null, draggedColumn = null;
       function draw() {
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
         const width = canvas.getBoundingClientRect().width;
@@ -87,73 +98,129 @@
         if (!width || !height) return;
         canvas.width = Math.round(width * dpr); canvas.height = Math.round(height * dpr);
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        const origin = { x: width / 2, y: height / 2 };
-        const unit = Math.min(width, height) / 12;
-        const point = ([x, y]) => ({ x: origin.x + x * unit, y: origin.y - y * unit });
         const M = [get("a", 2), get("b", 1), get("c", 1), get("d", 2)];
         const input = [get("x", 1), get("y", 1)];
+        const collision = collisionExample(M, get("t", 1));
+        const output = apply(M, input);
+        // Fit the full allowed input range, so moving the input does not move
+        // the camera and make an unchanged output appear to change position.
+        const coordinates = mode === "rank" ? [-2,2].flatMap((t) => {const demo=collisionExample(M,t);return [...demo.moved,...demo.startOutput,...demo.movedOutput];}) : [-2,2].flatMap((x) => [-2,2].flatMap((y) => apply(M,[x,y])));
+        const extent = activeView?.extent ?? Math.max(4, ...M.map(Math.abs), ...coordinates.map(Math.abs)) + 1;
+        const origin = { x: width / 2, y: height / 2 + 8 };
+        const unit = (Math.min(width, height) - 68) / (2 * extent);
+        const point = ([x, y]) => ({ x: origin.x + x * unit, y: origin.y - y * unit });
+        dragView = { origin, unit, extent };
+        lab.querySelector("[data-current-matrix]")?.replaceChildren(document.createTextNode("M = "),matrixNode(M));
         ctx.clearRect(0, 0, width, height);
-        for (let n = -5; n <= 5; n++) {
+        for (let n = -Math.ceil(extent); n <= Math.ceil(extent); n++) {
           ctx.strokeStyle = "#dedbd1"; ctx.lineWidth = 1;
-          [[[-5,n],[5,n]],[[n,-5],[n,5]]].forEach(([start,end]) => {
+          [[[-extent,n],[extent,n]],[[n,-extent],[n,extent]]].forEach(([start,end]) => {
             const p = point(start), q = point(end);
             ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(q.x,q.y); ctx.stroke();
           });
           ctx.strokeStyle = "rgba(8,108,114,.30)";
+          if (Math.abs(n) > 4) continue;
           [[[-5,n],[5,n]],[[n,-5],[n,5]]].forEach(([start,end]) => {
             const p = point(apply(M,start)), q = point(apply(M,end));
             ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(q.x,q.y); ctx.stroke();
           });
         }
         ctx.strokeStyle = "#7a8588"; ctx.lineWidth = 1.5;
-        [[[-5,0],[5,0]],[[0,-5],[0,5]]].forEach(([start,end]) => {
+        [[[-extent,0],[extent,0]],[[0,-extent],[0,extent]]].forEach(([start,end]) => {
           const p = point(start), q = point(end);
           ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(q.x,q.y); ctx.stroke();
         });
         drawArrow(ctx,point,[M[0],M[2]],"#b7861b",2.5);
         drawArrow(ctx,point,[M[1],M[3]],"#6862a8",2.5);
+        ctx.clearRect(0,0,width,34);
         ctx.font = "bold 13px Segoe UI, sans-serif";
         const first = point([M[0],M[2]]), second = point([M[1],M[3]]);
-        ctx.fillStyle = "#80600f"; ctx.fillText("第1列", first.x + 7, first.y - 7);
-        ctx.fillStyle = "#514b8a"; ctx.fillText("第2列", second.x + 7, second.y + 15);
+        const sameColumns = M[0] === M[1] && M[2] === M[3];
+        ctx.fillStyle = "#80600f"; ctx.fillText(sameColumns ? "第1、2列" : "第1列", sameColumns ? Math.max(8,first.x-75) : first.x+9, first.y+20);
+        if (!sameColumns) { ctx.fillStyle = "#514b8a"; ctx.fillText("第2列", Math.max(8,second.x - 65), second.y - 12); }
+        ctx.fillStyle = "#465457";
+        ctx.fillText(mode === "rank" ? "输出平面：所有箭头经过 M 之后" : "原网格与变换后网格（叠放比较）", 12, 23);
+        ctx.fillText("0", origin.x - 12, origin.y + 15);
+        ctx.fillText("1", origin.x + unit - 3, origin.y + 15);
         if (mode === "transform") {
           drawArrow(ctx,point,input,"#086c72",3);
           drawArrow(ctx,point,apply(M,input),"#c35c3a",3.5);
-          lab.querySelector("[data-readout]").textContent = `第 1 列 T(e₁)=${pair([M[0],M[2]])}；第 2 列 T(e₂)=${pair([M[1],M[3]])}；T${pair(input)}=${pair(apply(M,input))}。`;
+          lab.querySelector("[data-readout]").textContent = `第 1 列 T(e₁)=${pair([M[0],M[2]])}；第 2 列 T(e₂)=${pair([M[1],M[3]])}；T${pair(input)}=${pair(output)}。移动输入时刻度固定；换矩阵时自动调整视野，0→1 始终是一个单位。`;
         } else {
-          const r = rank(M), kernel = nullVector(M);
-          if (kernel) drawArrow(ctx,point,kernel,"#086c72",3);
-          lab.querySelector("[data-readout]").textContent = r === 2 ? "秩 2：输出能覆盖整个平面；零输出只有零输入。" : r === 1 ? `秩 1：所有输出沿一条线；非零输入 ${pair(kernel)} 被送到 (0, 0)。` : "秩 0：整个平面都被压成 (0, 0)；每个输入都在零空间。";
+          const r = rank(M);
+          const note = r === 2 ? "秩 2：输出覆盖平面；零空间只有零向量。t≠0 时，两输入的输出不同。" : r === 1 ? `秩 1：输出沿一条线；n=${pair(collision.direction)} 是零空间中的非零方向。沿 n 移动，输出不动。` : "秩 0：输出只有原点；整个输入平面都是零空间，不只图中那一条线。";
+          drawArrow(ctx, point, collision.startOutput, "#086c72", 5);
+          drawArrow(ctx, point, collision.movedOutput, "#c35c3a", 2.5);
+          const fixedTarget = point(collision.startOutput);
+          const sameOutputs = collision.startOutput.every((value,i) => value === collision.movedOutput[i]);
+          if (!sameOutputs) { ctx.fillStyle="#086c72";ctx.fillText("Mu",fixedTarget.x+9,fixedTarget.y-12); }
+          const target = point(collision.movedOutput);
+          ctx.fillStyle = "#c35c3a"; ctx.beginPath(); ctx.arc(target.x,target.y,4,0,Math.PI*2); ctx.fill();
+          ctx.fillText(sameOutputs ? "Mu=Mv" : "Mv", target.x + 9, target.y - 12);
+          lab.querySelector("[data-readout]").textContent = `${note} 输入 u=${pair(collision.start)}、v=${pair(collision.moved)}；Mu=${pair(collision.startOutput)}，Mv=${pair(collision.movedOutput)}。`;
+          if (inputCanvas) {
+            const inputCtx = inputCanvas.getContext("2d");
+            inputCanvas.width = Math.round(width*dpr); inputCanvas.height = Math.round(height*dpr);
+            inputCtx.setTransform(dpr,0,0,dpr,0,0);
+            inputCtx.clearRect(0,0,width,height);
+            if (r === 0) { inputCtx.fillStyle="rgba(8,108,114,.09)";inputCtx.fillRect(0,34,width,height-34); }
+            inputCtx.strokeStyle = "#dedbd1"; inputCtx.lineWidth = 1;
+            for (let n=-Math.ceil(extent); n<=Math.ceil(extent); n++) {
+              [[[-extent,n],[extent,n]],[[n,-extent],[n,extent]]].forEach(([a,b]) => {
+                const p=point(a),q=point(b); inputCtx.beginPath(); inputCtx.moveTo(p.x,p.y); inputCtx.lineTo(q.x,q.y); inputCtx.stroke();
+              });
+            }
+            inputCtx.strokeStyle="#7a8588";
+            [[[-extent,0],[extent,0]],[[0,-extent],[0,extent]]].forEach(([a,b]) => {const p=point(a),q=point(b);inputCtx.beginPath();inputCtx.moveTo(p.x,p.y);inputCtx.lineTo(q.x,q.y);inputCtx.stroke();});
+            if (r < 2) {
+              if (r === 1) {
+                const a=point(scale(collision.direction,-extent)),b=point(scale(collision.direction,extent));
+                inputCtx.setLineDash([5,5]);inputCtx.strokeStyle="#086c72";inputCtx.lineWidth=2;
+                inputCtx.beginPath();inputCtx.moveTo(a.x,a.y);inputCtx.lineTo(b.x,b.y);inputCtx.stroke();
+              }
+              const p=point(add(collision.start,scale(collision.direction,-extent))),q=point(add(collision.start,scale(collision.direction,extent)));
+              inputCtx.setLineDash([5,5]); inputCtx.strokeStyle="#6862a8";inputCtx.beginPath();inputCtx.moveTo(p.x,p.y);inputCtx.lineTo(q.x,q.y);inputCtx.stroke();inputCtx.setLineDash([]);
+            }
+            drawArrow(inputCtx,point,collision.start,"#086c72",5);
+            drawArrow(inputCtx,point,collision.moved,"#c35c3a",2.5);
+            inputCtx.clearRect(0,0,width,34);
+            inputCtx.font="bold 13px Segoe UI, sans-serif";inputCtx.fillStyle="#465457";
+            inputCtx.fillText("输入平面：u 固定，v 随 t 移动",12,23);
+            inputCtx.fillText("0",origin.x-12,origin.y+15);inputCtx.fillText("1",origin.x+unit-3,origin.y+15);
+            const u=point(collision.start),v=point(collision.moved);
+            inputCtx.fillStyle="#086c72";inputCtx.fillText("u",u.x+7,u.y+17);
+            inputCtx.fillStyle="#c35c3a";inputCtx.fillText("v",v.x+7,v.y-8);
+          }
         }
         lab.querySelectorAll("[data-number]").forEach((node) => { node.textContent = fmt(get(node.dataset.number)); });
       }
       lab.querySelectorAll("[data-matrix-value]").forEach((input) => input.addEventListener("input", () => {
-        lab.querySelectorAll("[data-preset]").forEach((peer) => peer.setAttribute("aria-pressed", "false"));
+        if (["a","b","c","d"].includes(input.dataset.matrixValue)) lab.querySelectorAll("[data-preset]").forEach((peer) => peer.setAttribute("aria-pressed", "false"));
         draw();
       }));
-      let draggedColumn = null;
       canvas.addEventListener("pointerdown", (event) => {
         const rect = canvas.getBoundingClientRect();
-        const unit = Math.min(rect.width, rect.height) / 12;
-        const endpoints = [[get("a"),get("c")],[get("b"),get("d")]].map(([x,y]) => ({x:rect.width/2+x*unit,y:rect.height/2-y*unit}));
+        const { origin, unit } = dragView;
+        const endpoints = [[get("a"),get("c")],[get("b"),get("d")]].map(([x,y]) => ({x:origin.x+x*unit,y:origin.y-y*unit}));
         const distances = endpoints.map((p) => Math.hypot(event.clientX-rect.left-p.x,event.clientY-rect.top-p.y));
         draggedColumn = Math.min(...distances) <= 28 ? (distances[0] <= distances[1] ? 0 : 1) : null;
-        if (draggedColumn !== null) canvas.setPointerCapture(event.pointerId);
+        if (draggedColumn !== null) { activeView = dragView; canvas.setPointerCapture(event.pointerId); }
       });
       canvas.addEventListener("pointermove", (event) => {
         if (draggedColumn === null) return;
         const rect = canvas.getBoundingClientRect();
-        const unit = Math.min(rect.width, rect.height) / 12;
-        const x = Math.max(-3, Math.min(3, Math.round((event.clientX-rect.left-rect.width/2)/unit)));
-        const y = Math.max(-3, Math.min(3, Math.round((rect.height/2-(event.clientY-rect.top))/unit)));
+        const { origin, unit } = activeView;
+        const x = Math.max(-3, Math.min(3, Math.round((event.clientX-rect.left-origin.x)/unit)));
+        const y = Math.max(-3, Math.min(3, Math.round((origin.y-(event.clientY-rect.top))/unit)));
         const names = draggedColumn === 0 ? ["a","c"] : ["b","d"];
         lab.querySelector(`[data-matrix-value="${names[0]}"]`).value = x;
         lab.querySelector(`[data-matrix-value="${names[1]}"]`).value = y;
         lab.querySelectorAll("[data-preset]").forEach((peer) => peer.setAttribute("aria-pressed", "false"));
         draw();
       });
-      canvas.addEventListener("pointerup", () => { draggedColumn = null; });
-      canvas.addEventListener("pointercancel", () => { draggedColumn = null; });
+      const finishDrag = () => { draggedColumn = null; activeView = null; draw(); };
+      canvas.addEventListener("pointerup", finishDrag);
+      canvas.addEventListener("pointercancel", finishDrag);
       lab.querySelectorAll("[data-preset]").forEach((button) => button.addEventListener("click", () => {
         const values = button.dataset.preset.split(",").map(Number);
         ["a","b","c","d"].forEach((name, i) => { lab.querySelector(`[data-matrix-value="${name}"]`).value = values[i]; });

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="线性代数第03课：基、线性无关、生成与坐标"><title>第 03 课 · 向量空间的基</title><link rel="stylesheet" href="../assets/course.css?v=20261024b"><script defer src="../assets/course.js?v=20261024b"></script><script defer src="../assets/vector-lab.js?v=20261024b"></script></head>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="线性代数第03课：基、线性无关、生成与坐标"><title>第 03 课 · 向量空间的基</title><link rel="stylesheet" href="../assets/course.css?v=20261024e"><script defer src="../assets/course.js?v=20261024e"></script><script defer src="../assets/vector-lab.js?v=20261024e"></script></head>
 <body><nav class="course-nav"><a href="../index.html">← 线性代数主页</a><span class="crumb">第 03 课 · 基与坐标</span></nav><main>
 <header class="hero"><p class="eyebrow">Lesson 03 · Basis of a Vector Space</p><h1>给整个空间选一套“尺子”</h1><p class="lede">一组好的方向，既不能缺，也不能重复。它们能拼出空间中的每个向量，并且每个向量只有一种拼法。</p><div class="meta"><span>约 30 分钟</span><span>互动坐标配方</span><span>生成 + 无关</span></div></header>
 <section class="win"><strong>本课胜利条件：</strong>你能用“生成整个空间”和“线性无关”判断一组向量是否为基，并能求一个向量在给定基下的坐标。</section>
@@ -11,7 +11,7 @@
 </section>
 
 <section><p class="eyebrow">02 · Span</p><h2>第一关：这些向量能不能生成整个空间？</h2>
-<p>让系数 a、b 取任意实数，看看能拼出哪些箭头；这整个结果集合叫这些向量的<strong>张成（span）</strong>，也说它们<strong>生成</strong>了这个集合。ℝ² 是所有二维实数向量构成的平面。在 ℝ² 中：</p><ul><li>一个非零向量的 span 是穿过原点的一条直线；</li><li>两个不平行向量的 span 是整个平面，因为可以分别调两个方向的用量；</li><li>两个平行向量仍只能生成一条直线，无法到达线外的点。</li></ul>
+<p>让系数 a、b 取任意实数，看看能拼出哪些箭头；这整个结果集合叫这些向量的<strong>张成（span）</strong>，也说它们<strong>生成</strong>了这个集合。ℝ² 是所有二维实数向量构成的平面。在 ℝ² 中：</p><ul><li>一个非零向量的 span 是穿过原点的一条直线；</li><li>两个不平行的非零向量的 span 是整个平面，因为可以分别调两个方向的用量；</li><li>若两支向量落在同一条过原点的直线上，且至少一支非零，就只能生成这条直线；若两支都是零，则只能生成零向量。</li></ul>
 <div class="exercise" data-quiz><h3>生成判断</h3><p><code>(1,2)</code> 和 <code>(2,4)</code> 能生成 ℝ² 吗？</p><button type="button" data-answer="incorrect" data-message="数量有两个不够；它们可能指向同一方向。">能，因为有两个向量</button><button type="button" data-answer="correct" data-message="对：第二个是第一个的 2 倍，所有组合都在同一条直线上。">不能，因为它们平行</button><button type="button" data-answer="incorrect" data-message="它们当然能生成很多向量，只是不能覆盖整个平面。">不能，因为只能生成零向量</button><p class="feedback" data-feedback-output></p></div>
 </section>
 

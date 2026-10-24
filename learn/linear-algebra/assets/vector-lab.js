@@ -1,6 +1,10 @@
 document.addEventListener("DOMContentLoaded", () => {
   const colors = { grid: "#d9d6cc", axis: "#7a8588", input: "#086c72", output: "#c35c3a", basis: "#b7861b", ghost: "rgba(8,108,114,.18)" };
   const arrow = (ctx, from, to, color, width = 3) => {
+    if (Math.hypot(to.x-from.x,to.y-from.y) < 1) {
+      ctx.fillStyle = color; ctx.beginPath(); ctx.arc(from.x,from.y,3,0,Math.PI*2); ctx.fill();
+      return;
+    }
     const angle = Math.atan2(to.y - from.y, to.x - from.x);
     ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = width;
     ctx.beginPath(); ctx.moveTo(from.x, from.y); ctx.lineTo(to.x, to.y); ctx.stroke();

@@ -1,18 +1,167 @@
 <!doctype html>
-<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="线性代数第06课：可逆矩阵、秩、零空间与逐步行消元"><title>第 06 课 · 可逆矩阵、秩与零空间</title><link rel="stylesheet" href="../assets/course.css?v=20261024d"><script defer src="../assets/course.js?v=20261024d"></script><script defer src="../assets/matrix-labs.js?v=20261024d"></script></head><body>
-<nav class="course-nav"><a href="../index.html">← 线性代数主页</a><span class="crumb">第 06 课 · 可逆矩阵、秩与零空间</span></nav><main>
-<header class="hero"><p class="eyebrow">Lesson 06 · Invertible Matrices, Rank and Null Space</p><h1>输出还能倒推输入吗？</h1><p class="lede">把二维平面压成一条线时，许多输入会撞在同一输出，丢掉的信息就找不回来了。拖动矩阵两列，看何时发生，再用消元实际找答案。</p><div class="meta"><span>约 40 分钟</span><span>秩与零空间实验</span><span>逐步消元</span></div></header>
-<section class="win"><strong>学完你应当能：</strong>用“能否唯一倒推”解释可逆；在 2×2 情况下识别秩 0、1、2 与零空间；对增广矩阵做合法行变换；把唯一解、无解、无穷多解与图像联系起来。互动图可拖动两列箭头端点，也可用滑块精确调整。</section>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="线性代数第06课：可逆矩阵、秩、零空间与逐步行消元"><title>第 06 课 · 可逆矩阵、秩与零空间</title><link rel="stylesheet" href="../assets/course.css?v=20261024e"><script defer src="../assets/course.js?v=20261024e"></script><script defer src="../assets/matrix-labs.js?v=20261024e"></script></head><body>
 
-<section><p class="eyebrow">01 · Information Lost or Preserved?</p><h2>可逆就是能把每个输出唯一倒回输入</h2><p>对贯穿矩阵 A，输入 <code>(2,1)</code> 给输出 <code>(5,4)</code>。若每个平面中的输出都恰好来自一个输入，就有“倒回去”的规则，记作<strong>逆矩阵</strong> A⁻¹。它满足 <code>A⁻¹A=AA⁻¹=I</code>。这只针对方阵，并非每个方阵都有逆。</p><p>把 A 的两列看成输出方向 <code>(2,1)</code> 与 <code>(1,2)</code>。它们不在同一条直线上，能拼出平面任意输出，并且配方唯一。若两列被调成同一方向，某些输入差异会在输出中消失。</p><div class="lab" data-column-lab="rank"><div class="lab-head"><h3>实验：把两列压到同一条线</h3><p>先用 A，再切到“压扁”矩阵 B；金色、紫色是两列，青色箭头是一个被送到零的非零输入。灰网格为原网格，浅青网格为输出。</p></div><div class="lab-grid"><canvas aria-label="秩与零空间的二维网格互动图"></canvas><div class="lab-controls"><div><button type="button" data-preset="2,1,1,2" aria-pressed="true">A：可倒回</button><button type="button" data-preset="1,1,2,2">B：压成线</button><button type="button" data-preset="0,0,0,0">零矩阵</button></div><label class="control">第一列上格 a <span data-number="a">2</span><input data-matrix-value="a" type="range" min="-3" max="3" step="1" value="2"></label><label class="control">第二列上格 b <span data-number="b">1</span><input data-matrix-value="b" type="range" min="-3" max="3" step="1" value="1"></label><label class="control">第一列下格 c <span data-number="c">1</span><input data-matrix-value="c" type="range" min="-3" max="3" step="1" value="1"></label><label class="control">第二列下格 d <span data-number="d">2</span><input data-matrix-value="d" type="range" min="-3" max="3" step="1" value="2"></label><p class="lab-readout" data-readout aria-live="polite"></p></div></div></div><p>“压扁”矩阵 B = <span class="matrix"><span>1</span><span>1</span><span>2</span><span>2</span></span> 把 <code>(x,y)</code> 送到 <code>(x+y,2x+2y)</code>。例如 <code>(3,0)</code> 和 <code>(2,1)</code> 都送到 (3,6)，无法根据输出区分这两个输入。反之 A 的两个输出方向独立，不会这样撞在一起。</p><div class="exercise" data-quiz><h3>即时自测：是否可逆？</h3><p>B 的两列相同。仅知道输出 (3,6)，可以唯一找出输入吗？</p><button type="button" data-answer="incorrect" data-message="(3,0) 与 (2,1) 都得到 (3,6)，输入并不唯一。">可以，输入一定是 (3,0)</button><button type="button" data-answer="correct" data-message="对。满足 x+y=3 的所有输入都得到 (3,6)，信息丢失了。">不能，有许多可能输入</button><p class="feedback" data-feedback-output aria-live="polite"></p></div></section>
+<nav class="course-nav"><a href="../index.html">← 线性代数主页</a><span class="crumb">第 06 课 · 可逆矩阵、秩与零空间</span>
+</nav><main>
 
-<section><p class="eyebrow">02 · Rank and Null Space</p><h2>输出方向有几个？哪些输入变成零？</h2><p>矩阵所有可能输出组成的集合叫<strong>列空间</strong>，因为每个输出都是列向量的线性组合。<strong>秩（rank）</strong>就是列空间里独立方向的数目；在二维例子中，只可能是 0、1、2。<strong>零空间（null space）</strong>是所有满足 Mx=0 的输入集合，不是一个数字。</p><div class="example"><h3>三个可见的情形</h3><ul><li>A 的两列不平行：秩 2，列空间是整个平面；零空间只有零向量。</li><li>B 的两列相同：秩 1，列空间是沿 <code>(1,2)</code> 的直线；因为 <code>B(1,−1)=(0,0)</code>，零空间是所有 <code>t(1,−1)</code>。</li><li>零矩阵：秩 0，列空间只有零向量；每个输入都在零空间。</li></ul></div><p>对于 2×2 矩阵，<strong>秩 2 ⇔ 可逆 ⇔ 零空间只有零向量</strong>。理由是：若两个不同输入有相同输出，它们的差会被送到零；反过来，若有非零输入被送到零，把它加到任何输入上，就得到同一输出的另一份输入。高维与非方阵情况要再细分。</p><div class="exercise" data-quiz><h3>即时自测：找零空间</h3><p>B 把 (x,y) 送到 (x+y,2x+2y)。下面哪一个<strong>非零</strong>输入会得到零？</p><button type="button" data-answer="correct" data-message="对。1+(−1)=0，两个输出分量都为 0；所有 (t,−t) 都在零空间。">(1,−1)</button><button type="button" data-answer="incorrect" data-message="(1,1) 给出 (2,4)，并非零输出。">(1,1)</button><button type="button" data-answer="incorrect" data-message="(0,0) 的确得到零，但题目要求非零输入。">(0,0)</button><p class="feedback" data-feedback-output aria-live="polite"></p></div></section>
+<header class="hero">
+<p class="eyebrow">Lesson 06 · Invertible Matrices, Rank and Null Space
+</p>
+<h1>输出还能倒推输入吗？
+</h1>
+<p class="lede">把二维平面压成一条线时，许多输入会撞在同一输出，丢掉的信息就找不回来了。拖动矩阵两列，看何时发生，再用消元实际找答案。
+</p>
+<div class="meta"><span>约 40 分钟</span><span>秩与零空间实验</span><span>逐步消元</span>
+</div>
+</header>
 
-<section><p class="eyebrow">03 · Row Reduction</p><h2>行消元：改变方程写法，不改变解</h2><p>想倒推 A 的输出 (5,4)，就是解 <code>2x+y=5</code>、<code>x+2y=4</code>。<strong>增广矩阵</strong>把每条方程的系数和等号右边数字排在同一行，竖线只是分隔符。合法的三种<strong>初等行变换</strong>是：交换两行；某行乘非零数；某行加上另一行的倍数。它们保持<strong>方程组的解集</strong>，但通常会改变矩阵作为几何变换的样子，这两个意思不要混淆。</p><div class="stepper" data-row-stepper><p class="eyebrow" data-step-index></p><h3 data-step-title></h3><div class="aug-matrix" data-step-matrix aria-live="polite"></div><p data-step-note aria-live="polite"></p><div class="step-controls"><button type="button" data-prev>← 上一步</button><button type="button" data-next>下一步 →</button></div></div><p>最后左边变成 I，右边是列向量 <span class="column-vector"><span>2</span><span>1</span></span>：所以输入是 (2,1)。代回原方程：<code>2·2+1=5</code>、<code>2+2·1=4</code>。这次消元解的是 Ax=(5,4)，不是直接在算 A⁻¹。</p><div class="exercise" data-quiz><h3>即时自测：行变换</h3><p>把第二行 R₂ 改成 R₂−2R₁ 时，竖线右边的数要不要一起变？</p><button type="button" data-answer="correct" data-message="对。整条方程都参与运算；5 的两倍也要从原右边 4 中减掉。">要，整行包括右边一起计算</button><button type="button" data-answer="incorrect" data-message="若右边不变，就换成了另一个方程组，原来的解可能不再满足。">不要，只改系数</button><p class="feedback" data-feedback-output aria-live="polite"></p></div></section>
+<section class="win"><strong>学完你应当能：</strong>用“能否唯一倒推”解释可逆；在 2×2 情况下识别秩 0、1、2 与零空间；对增广矩阵做合法行变换；把唯一解、无解、无穷多解与图像联系起来。互动图可拖动两列箭头端点，也可用滑块精确调整。
+</section>
 
-<section><p class="eyebrow">04 · Inverse in Practice</p><h2>同一台机器，能否用于所有输出倒推？</h2><p>对 A，我们可以写出固定的逆规则：A⁻¹ = <span class="matrix"><span>2/3</span><span>−1/3</span><span>−1/3</span><span>2/3</span></span>。验证时，不必猜：第一行第一列是 <code>2·(2/3)+1·(−1/3)=1</code>，第一行第二列是 <code>2·(−1/3)+1·(2/3)=0</code>；其余两格分别为 0、1，于是 AA⁻¹=I。再乘输出 <span class="column-vector"><span>5</span><span>4</span></span>，得到输入 <span class="column-vector"><span>2</span><span>1</span></span>。</p><p>对 B，输出 (3,6) 有无穷多输入；输出 (3,5) 则根本没有输入，因为 B 的输出第二分量必须是第一分量的两倍。于是“不可逆”不只是算不出一个公式，而是输出无法一一对应输入。</p><div class="checkpoint"><h3>纸笔训练：同一个矩阵，两种结局</h3><p>对 B = <span class="matrix"><span>1</span><span>1</span><span>2</span><span>2</span></span>，分别解 Bx=(3,6) 与 Bx=(3,5)。说清每个方程组有多少解，并写出理由。</p><button type="button" data-reveal-target="#answer06" aria-expanded="false">查看逐步解析</button><div class="answer" id="answer06"><p>第一组给 <code>x+y=3</code> 和 <code>2x+2y=6</code>；第二条只是第一条的 2 倍，因此有无穷多解：<code>(x,y)=(t,3−t)</code>，t 为任意实数。第二组给 <code>x+y=3</code> 和 <code>2x+2y=5</code>；第一条乘 2 应得到 6，却要求得到 5，矛盾，所以无解。几何上，两者对应目标是否落在 B 的输出直线上。</p></div></div></section>
+<section>
+<p class="eyebrow">01 · Information Lost or Preserved?
+</p>
+<h2>可逆就是能把每个输出唯一倒回输入
+</h2>
+<p>对贯穿矩阵 A，输入 <code>(2,1)</code> 给输出 <code>(5,4)</code>。若每个平面中的输出都恰好来自一个输入，就有“倒回去”的规则，记作<strong>逆矩阵</strong> A⁻¹。它满足 <code>A⁻¹A=AA⁻¹=I</code>：先变再倒回、先倒回再变，都会回到原输入。这里的逆是方阵的双侧逆，<strong>不是把四格数字分别取倒数</strong>。
+</p>
+<p>把 A 的两列看成输出方向 <code>(2,1)</code> 与 <code>(1,2)</code>。它们不在同一条直线上，能拼出平面任意输出，并且配方唯一。若两列被调成同一方向，某些输入差异会在输出中消失。
+</p>
+<div class="lab" data-column-lab="rank">
+<p class="term-note">本课 B 取 <span class="matrix"><span>1</span><span>1</span><span>2</span><span>2</span></span>，是 Lesson 02 的压扁例子，和 Lesson 04 的剪切矩阵 B 不同；贯穿各课保持不变的是 A。</p>
+<div class="lab-head">
+<h3>实验：把两列压到同一条线
+</h3>
+<p>将当前矩阵记作 M。上图是输入平面，下图是输出平面。青色 u 固定，珊瑚色 v 随 t 移动；比较下图 Mu 与 Mv 是否重合。下图金色、紫色箭头是矩阵两列，可拖动端点。所有数值都有文字读数。
+</p>
+<p>先记住图中的两个词：<strong>秩</strong>数的是“输出最多能独立变化几个方向”；<strong>零空间</strong>收集“会被送到零的输入”。下一节再给完整定义。零矩阵就是四格全为 0 的矩阵。</p>
+<div class="formula" data-current-matrix aria-label="当前矩阵 M" aria-live="polite"></div>
+</div>
+<div class="lab-grid"><div class="lab-views"><canvas data-input-plane aria-label="输入平面：固定输入 u 与可移动输入 v"></canvas><canvas data-output-plane aria-label="输出平面：比较 Mu 与 Mv 是否重合"></canvas></div>
+<div class="lab-controls">
+<div><button type="button" data-preset="2,1,1,2" aria-pressed="true">A：可倒回</button><button type="button" data-preset="1,1,2,2">B：压成线</button><button type="button" data-preset="0,0,0,0">零矩阵</button>
+</div><label class="control">第一列上格 a <span data-number="a">2</span><input data-matrix-value="a" type="range" min="-3" max="3" step="1" value="2"></label><label class="control">第二列上格 b <span data-number="b">1</span><input data-matrix-value="b" type="range" min="-3" max="3" step="1" value="1"></label><label class="control">第一列下格 c <span data-number="c">1</span><input data-matrix-value="c" type="range" min="-3" max="3" step="1" value="1"></label><label class="control">第二列下格 d <span data-number="d">2</span><input data-matrix-value="d" type="range" min="-3" max="3" step="1" value="2"></label>
+<label class="control">移动用量 t <span data-number="t">1</span><input data-matrix-value="t" type="range" min="-2" max="2" step=".5" value="1"></label>
+<p class="lab-readout" data-readout aria-live="polite">
+</p>
+</div>
+</div>
+</div>
+<ol class="guided-task"><li>选 B，把 t 从 0 调到 1。输入从 u=(1,0) 变为 v=(2,−1)，但两个输出仍是 (1,2)。继续移动 t，看“不同输入得到同一输出”。</li><li>B 的输入图中，青色虚线过原点，是零空间；紫色虚线过 u，是输出同为 Mu 的输入集合。它们平行，位置不同：零空间是“差多少仍不改变输出”的方向。</li><li>切回 A，取 t≠0：这次输入改变，输出也跟着改变。最后试零矩阵：所有输入都变成零，整个输入平面都是零空间。</li></ol>
+<p>“压扁”矩阵 B = <span class="matrix"><span>1</span><span>1</span><span>2</span><span>2</span></span> 把 <code>(x,y)</code> 送到 <code>(x+y,2x+2y)</code>。例如 <code>(3,0)</code> 和 <code>(2,1)</code> 都送到 (3,6)，无法根据输出区分这两个输入。反之 A 的两个输出方向独立，不会这样撞在一起。
+</p>
+<div class="exercise" data-quiz>
+<h3>即时自测：是否可逆？
+</h3>
+<p>B 的两列相同。仅知道输出 (3,6)，可以唯一找出输入吗？
+</p><button type="button" data-answer="incorrect" data-message="(3,0) 与 (2,1) 都得到 (3,6)，输入并不唯一。">可以，输入一定是 (3,0)</button><button type="button" data-answer="correct" data-message="对。满足 x+y=3 的所有输入都得到 (3,6)，信息丢失了。">不能，有许多可能输入</button>
+<p class="feedback" data-feedback-output aria-live="polite">
+</p>
+</div>
+</section>
 
-<details class="beyond"><summary>Beyond the Course · 进阶视角（不参与自测）</summary><h3>秩—零度定理</h3><p>对从 ℝⁿ 出发的矩阵，<strong>秩 + 零空间的维数 = n</strong>。在本课二维例子中，A 是 2+0=2，B 是 1+1=2，零矩阵是 0+2=2。它量化了“保留下来的输出方向”与“丢失的输入方向”。</p><h3>如何一次求出逆矩阵？</h3><p>把方阵 M 与 I 并排写成 <code>[M | I]</code>，对整张表做相同的行变换。若左半能化成 I，右半就是 M⁻¹；若化不成 I，就没有逆。这个办法本质是在同时求 M 对 e₁、e₂ 等每个基本输出的倒推输入。Lesson 07 会从面积角度再给二维可逆性一个数值信号。</p></details>
-<section class="sources"><h2>延伸参考</h2><p>概念顺序参考 <a href="https://www.ocw.mit.edu/courses/18-06sc-linear-algebra-fall-2011/pages/ax-b-and-the-four-subspaces/multiplication-and-inverse-matrices/">MIT OCW · Multiplication and Inverse Matrices</a>；本站文字、例题和互动独立编写。</p></section>
-<section class="complete-row"><button type="button" data-complete-lesson="linear-06" aria-pressed="false">标记本课已完成</button><p data-completion-status>可选：只记录本设备，不影响跳课。</p></section><nav class="lesson-nav"><a href="05-matrices-and-linear-transformations.html">← 第 05 课</a><a href="../index.html">课程目录</a><a href="../reference/course-route.html">查看后续路线 →</a></nav>
+<section>
+<p class="eyebrow">02 · Rank and Null Space
+</p>
+<h2>输出方向有几个？哪些输入变成零？
+</h2>
+<p>矩阵所有可能输出组成的集合叫<strong>列空间</strong>，因为每个输出都是列向量的线性组合。<strong>秩（rank）</strong>是这些输出中<strong>最多可选出的线性无关向量数</strong>，也就是列空间的维数；在二维例子中，只可能是 0、1、2。<strong>零空间（null space）</strong>是所有满足 Mx=0 的输入集合。注意：列空间位于输出端，零空间位于输入端；两者都是集合，秩才是一个数字。
+</p>
+<div class="example">
+<h3>三个可见的情形
+</h3><ul><li>A 的两列不平行：秩 2，列空间是整个平面；零空间只有零向量。</li><li>B 的两列相同：秩 1，列空间是沿 <code>(1,2)</code> 的直线；因为 <code>B(1,−1)=(0,0)</code>，零空间是所有 <code>t(1,−1)</code>。</li><li>零矩阵：秩 0，列空间只有零向量；每个输入都在零空间。</li></ul>
+</div>
+<p>对于 2×2 矩阵，<strong>秩 2 ⇔ 可逆 ⇔ 零空间只有零向量</strong>。理由是：若两个不同输入有相同输出，它们的差会被送到零；反过来，若有非零输入被送到零，把它加到任何输入上，就得到同一输出的另一份输入。高维与非方阵情况要再细分。
+</p>
+<div class="exercise" data-quiz>
+<h3>即时自测：找零空间
+</h3>
+<p>B 把 (x,y) 送到 (x+y,2x+2y)。下面哪一个<strong>非零</strong>输入会得到零？
+</p><button type="button" data-answer="correct" data-message="对。1+(−1)=0，两个输出分量都为 0；所有 (t,−t) 都在零空间。">(1,−1)</button><button type="button" data-answer="incorrect" data-message="(1,1) 给出 (2,4)，并非零输出。">(1,1)</button><button type="button" data-answer="incorrect" data-message="(0,0) 的确得到零，但题目要求非零输入。">(0,0)</button>
+<p class="feedback" data-feedback-output aria-live="polite">
+</p>
+</div>
+</section>
+
+<section>
+<p class="eyebrow">03 · Row Reduction
+</p>
+<h2>行消元：改变方程写法，不改变解
+</h2>
+<p>想倒推 A 的输出 (5,4)，就是解 <code>2x+y=5</code>、<code>x+2y=4</code>。<strong>增广矩阵</strong>把每条方程的系数和等号右边数字排在同一行，竖线只是分隔符。合法的三种<strong>初等行变换</strong>是：交换两行；某行乘非零数；某行加上另一行的倍数。它们保持<strong>方程组的解集</strong>，但通常会改变矩阵作为几何变换的样子，这两个意思不要混淆。
+</p>
+<div class="stepper" data-row-stepper>
+<p class="eyebrow" data-step-index>
+</p>
+<h3 data-step-title>
+</h3>
+<div class="aug-matrix" data-step-matrix aria-live="polite">
+</div>
+<p data-step-note aria-live="polite">
+</p>
+<div class="step-controls"><button type="button" data-prev>← 上一步</button><button type="button" data-next>下一步 →</button>
+</div>
+</div>
+<p>最后左边变成 I，右边是列向量 <span class="column-vector"><span>2</span><span>1</span></span>：所以输入是 (2,1)。代回原方程：<code>2·2+1=5</code>、<code>2+2·1=4</code>。这次消元求的是目标输出 <span class="column-vector"><span>5</span><span>4</span></span> 对应的输入；下一节才求能用于所有目标的 A⁻¹。
+</p>
+<div class="exercise" data-quiz>
+<h3>即时自测：行变换
+</h3>
+<p>把第二行 R₂ 改成 R₂−2R₁ 时，竖线右边的数要不要一起变？
+</p><button type="button" data-answer="correct" data-message="对。交换两行后，R₁ 的右端是 4、R₂ 的右端是 5，所以新 R₂ 的右端是 5−2×4=−3；系数同时变成 (0,−3)。">要，整行包括右边一起计算</button><button type="button" data-answer="incorrect" data-message="若右边不变，就换成了另一个方程组。交换两行后必须连右端一起算：5−2×4=−3。">不要，只改系数</button>
+<p class="feedback" data-feedback-output aria-live="polite">
+</p>
+</div>
+</section>
+
+<section>
+<p class="eyebrow">04 · Inverse in Practice
+</p>
+<h2>同一台机器，能否用于所有输出倒推？
+</h2>
+<p>逆矩阵的数字从哪里来？把目标从 (5,4) 改成任意 (p,q)，解 <code>2x+y=p</code>、<code>x+2y=q</code>。第一式乘 2 减第二式，得 <code>3x=2p−q</code>；第二式乘 2 减第一式，得 <code>3y=2q−p</code>。所以：</p>
+<div class="formula"><span class="math-line">x = (2p−q)/3， y = (−p+2q)/3</span><span class="math-line"><span class="column-vector"><span>x</span><span>y</span></span> = <span class="matrix"><span>2/3</span><span>−1/3</span><span>−1/3</span><span>2/3</span></span><span class="column-vector"><span>p</span><span>q</span></span></span></div>
+<p>对 A，我们可以写出固定的逆规则：A⁻¹ = <span class="matrix"><span>2/3</span><span>−1/3</span><span>−1/3</span><span>2/3</span></span>。验证时，不必猜：第一行第一列是 <code>2·(2/3)+1·(−1/3)=1</code>，第一行第二列是 <code>2·(−1/3)+1·(2/3)=0</code>；其余两格分别为 0、1，于是 AA⁻¹=I。再乘输出 <span class="column-vector"><span>5</span><span>4</span></span>，得到输入 <span class="column-vector"><span>2</span><span>1</span></span>。
+</p>
+<p>对 B，输出 (3,6) 有无穷多输入；输出 (3,5) 则根本没有输入，因为 B 的输出第二分量必须是第一分量的两倍。于是“不可逆”不只是算不出一个公式，而是输出无法一一对应输入。
+</p>
+<div class="exercise" data-number-check data-hint="将 p=7、q=8 代入 x=(2p−q)/3、y=(−p+2q)/3，再把输入送回 A 核对。" data-success="正确，输入是 (2,3)：2·2+3=7、2+2·3=8。逆矩阵给出输入，代回原矩阵验证输出。"><h3>亲手倒推一次：A 的输出是 (7,8)</h3><div class="number-fields"><label>输入 x<input type="number" data-expected="2" aria-label="输入 x"></label><label>输入 y<input type="number" data-expected="3" aria-label="输入 y"></label></div><button type="button" data-check-values>核对输入</button><p class="feedback" data-check-output aria-live="polite"></p></div>
+<div class="checkpoint">
+<h3>纸笔训练：同一个矩阵，两种结局
+</h3>
+<p>对 B = <span class="matrix"><span>1</span><span>1</span><span>2</span><span>2</span></span>，分别以列向量 <span class="column-vector"><span>3</span><span>6</span></span> 与 <span class="column-vector"><span>3</span><span>5</span></span> 为目标输出，求可能的输入。说清每个方程组有多少解，并写出理由。
+</p><button type="button" data-reveal-target="#answer06" aria-expanded="false">查看逐步解析</button>
+<div class="answer" id="answer06">
+<p>第一组给 <code>x+y=3</code> 和 <code>2x+2y=6</code>；第二条只是第一条的 2 倍，因此有无穷多解：<code>(x,y)=(t,3−t)</code>，t 为任意实数。第二组给 <code>x+y=3</code> 和 <code>2x+2y=5</code>；第一条乘 2 应得到 6，却要求得到 5，矛盾，所以无解。几何上，两者对应目标是否落在 B 的输出直线上。
+</p>
+</div>
+</div>
+</section>
+
+<details class="beyond">
+<summary>Beyond the Course · 进阶视角（不参与自测）
+</summary>
+<h3>秩—零度定理
+</h3>
+<p>对从 ℝⁿ 出发的矩阵，<strong>秩 + 零空间的维数 = n</strong>。在本课二维例子中，A 是 2+0=2，B 是 1+1=2，零矩阵是 0+2=2。它量化了“保留下来的输出方向”与“丢失的输入方向”。
+</p>
+<h3>如何一次求出逆矩阵？
+</h3>
+<p>把方阵 M 与 I 并排写成 <code>[M | I]</code>，对整张表做相同的行变换。若左半能化成 I，右半就是 M⁻¹；若化不成 I，就没有逆。这个办法本质是在同时求 M 对 e₁、e₂ 等每个基本输出的倒推输入。Lesson 07 会从面积角度再给二维可逆性一个数值信号。
+</p>
+</details>
+
+<section class="sources">
+<h2>延伸参考
+</h2>
+<p>概念顺序参考 <a href="https://www.ocw.mit.edu/courses/18-06sc-linear-algebra-fall-2011/pages/ax-b-and-the-four-subspaces/multiplication-and-inverse-matrices/">MIT OCW · Multiplication and Inverse Matrices</a>；本站文字、例题和互动独立编写。
+</p>
+</section>
+
+<section class="complete-row"><button type="button" data-complete-lesson="linear-06" aria-pressed="false">标记本课已完成</button>
+<p data-completion-status>可选：只记录本设备，不影响跳课。
+</p>
+</section>
+<nav class="lesson-nav"><a href="05-matrices-and-linear-transformations.html">← 第 05 课</a><a href="../index.html">课程目录</a><a href="../reference/course-route.html">查看后续路线 →</a>
+</nav>
 </main></body></html>

@@ -174,7 +174,16 @@ th { color: var(--muted); font: 800 .86rem/1.4 "Segoe UI", sans-serif; }
 .aug-matrix span:nth-child(3n) { border-left: 1px solid var(--teal); }
 .step-controls { margin-top: 12px; }
 button:disabled { opacity: .4; cursor: not-allowed; }
-.mini-equation { white-space: nowrap; }
+.mini-equation { display: inline-block; white-space: nowrap; }
+.lab-views { min-width: 0; }
+.lab-views canvas { height: 270px; }
+.lab-views canvas + canvas { border-top: 1px solid var(--line); }
+.number-fields { display: flex; flex-wrap: wrap; gap: 16px; margin: 16px 0; }
+.number-fields label { display: grid; gap: 5px; }
+.number-fields input { width: 110px; padding: 8px; border: 1px solid #849196; border-radius: 6px; background: #fff; }
+input[aria-invalid="true"] { border: 2px solid var(--danger); background: #fbe6e2; }
+.guided-task { margin: 18px 0; padding: 15px 20px; border-left: 4px solid var(--teal); background: var(--teal-soft); }
+.guided-task li + li { margin-top: 8px; }
 
 @media (max-width: 760px) {
   main { width: min(100% - 22px, 980px); padding-top: 18px; }
@@ -184,6 +193,7 @@ button:disabled { opacity: .4; cursor: not-allowed; }
   .route-item .status-tag { grid-column: 2; }
   .lab-grid { grid-template-columns: 1fr; }
   .lab canvas { height: 340px; }
+  .lab-views canvas { height: 270px; }
   .lab-controls { border-left: 0; border-top: 1px solid var(--line); }
   .course-nav .crumb { display: none; }
   .lesson-nav a { width: 100%; }
