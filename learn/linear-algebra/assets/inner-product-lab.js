@@ -41,7 +41,7 @@
       stroke([[0,0],p],color);const [x,y]=point(p),q=display(p),angle=Math.atan2(-q[1],q[0]);
       if(q[0]||q[1]) {ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x-10*Math.cos(angle-.45),y-10*Math.sin(angle-.45));ctx.lineTo(x-10*Math.cos(angle+.45),y-10*Math.sin(angle+.45));ctx.closePath();ctx.fillStyle=color;ctx.fill();}
       ctx.beginPath();ctx.arc(x,y,6,0,2*Math.PI);ctx.fillStyle=color;ctx.fill();
-      ctx.font='bold 14px sans-serif';ctx.fillText(label,Math.max(5,Math.min(width-80,x+9)),Math.max(16,Math.min(height-28,y+offset)));
+      ctx.font='bold 14px sans-serif';ctx.fillText(label,Math.max(5,Math.min(width-80,x+(label==='p'?-22:9))),Math.max(16,Math.min(height-28,y+offset)));
     }
     function size(c,context) {const r=c.getBoundingClientRect(),ratio=window.devicePixelRatio||1;c.width=Math.round(r.width*ratio);c.height=Math.round(r.height*ratio);context.setTransform(ratio,0,0,ratio,0,0);return r;}
     function draw() {
@@ -60,7 +60,7 @@
       }
       if(m.projection) {
         const n=length(v);stroke([v.map(x=>-10*x/n),v.map(x=>10*x/n)],'#c8a45c',[5,5]);
-        stroke([m.projection,u],'#725a99',[5,4]);arrow(m.projection,'#a57718','p',29);
+        stroke([m.projection,u],'#725a99',[5,4]);arrow(m.projection,'#a57718','p',-18);
       }
       arrow(u,'#087d82','u',-16);arrow(v,'#c05a3a','v',18);
       ctx.fillStyle='#4b6061';ctx.font='12px sans-serif';ctx.fillText(scaled?'缩放坐标：x′=√wₓ x，y′=√wᵧ y；每格 1':'原坐标：x 向右，y 向上；每格 1',10,height-12);
