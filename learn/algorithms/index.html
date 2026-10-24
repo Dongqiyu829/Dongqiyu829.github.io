@@ -6,12 +6,12 @@
   <meta name="description" content="面向 HKUST COMP3711H 的中文算法短课：严格证明、算法直觉与实践。">
   <title>COMP3711H 算法学习</title>
   <link rel="stylesheet" href="assets/course.css?v=20261023e">
-  <script defer src="assets/quiz.js?v=20261023e"></script>
+  <script defer src="assets/quiz.js?v=20261024a"></script>
 </head>
 <body>
 <nav class="course-nav" aria-label="课程导航">
   <a href="../../">董骐与 · 个人主页</a>
-  <span class="crumb" data-course-progress>0 / 23 已完成</span>
+  <span class="crumb" data-course-progress data-total="24">0 / 24 已完成</span>
 </nav>
 <main>
   <header class="hero">
@@ -27,7 +27,7 @@
 
   <section>
     <h2>现在学习</h2>
-    <p>两节课都已开放。可以从第一课开始，也可以直接跳到第二课或返回复习。</p>
+    <p>前三课都已开放。可以按顺序学习，也可以直接选课或返回复习。</p>
     <div class="course-grid">
       <article class="lesson-card" data-lesson-id="lesson-0001">
         <span class="status-tag" data-lesson-status>可开始</span>
@@ -41,6 +41,12 @@
         <p>沿着一个逐对比较的例子，先手算、再求和，最后用两侧界证明二次增长。</p>
         <a href="lessons/0002-asymptotic-analysis.html">开始第二课 →</a>
       </article>
+      <article class="lesson-card" data-lesson-id="lesson-0003">
+        <span class="status-tag" data-lesson-status>可开始</span>
+        <h3>03 · 两层循环，为什么只有 Θ(n)？</h3>
+        <p>逐轮数清倍增循环的工作，用几何求和解释为什么 n log n 可能只是较松的上界。</p>
+        <a href="lessons/0003-doubling-work-sum.html">开始第三课 →</a>
+      </article>
     </div>
   </section>
 
@@ -49,7 +55,7 @@
     <div class="course-grid">
       <article class="lesson-card">
         <span class="status-tag">路线</span>
-        <h3>23 节短课地图</h3>
+        <h3>24 个主题的短课地图</h3>
         <p>证明与分析、分治、贪心、DP、图、网络流、随机化、NP 完全性与近似算法。</p>
         <a href="reference/course-route.html">查看完整路线 →</a>
       </article>

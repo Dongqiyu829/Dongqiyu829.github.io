@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>倍增循环：逐轮计数参考卡</title><link rel="stylesheet" href="../assets/course.css?v=20261023e"><link rel="stylesheet" href="../assets/short-lesson.css?v=20261024a"></head>
+<body>
+<nav class="course-nav"><a href="../lessons/0003-doubling-work-sum.html">← 返回第三课</a><span class="crumb">参考卡 · 倍增求和</span></nav>
+<main>
+  <header class="hero"><p class="eyebrow">Reference · Geometric sums</p><h1>把实际各轮相加</h1><p class="lede">适用程序：i 从 1 开始，每轮翻倍；只要 i≤n 就执行这一轮，且这一轮恰好做 i 次常数时间工作。</p></header>
+  <section><h2>计数与边界</h2><p>n=0：W=0。n≥1：令 M 是不超过 n 的最大 2 的幂，则 M≤n&lt;2M。</p><div class="formula">W(n)=1+2+4+⋯+M=2M−1<br>n/2 &lt; M ≤ W(n) &lt; 2M ≤ 2n<br>所以 W(n)=Θ(n)</div><p>若 n 本身是 2 的幂，才可直接写 W(n)=2n−1。例如 W(8)=15，但 W(10)仍然是15，不是19。</p><p>外层轮数为 ⌊log₂n⌋+1（n≥1）。轮数乘最大一轮能推出 O(n log n)，但要得到紧确界，应计算实际的和。</p></section>
+  <section><h2>为什么能用这个和分析运行时间？</h2><p>work 每次花正常数时间。内层循环控制开销与工作次数加外层轮数成正比，而每轮至少执行一次 work。因此 n≥1 时，存在固定 a,b&gt;0，使 aW(n)≤T(n)≤b(W(n)+1)，从而 T(n)=Θ(n)。n=0 时函数仍有常数控制开销。</p></section>
+  <section><h2>计数实现：C++</h2><p>n 是非负 int；倍增变量和计数用 long long。测试的 n 都很小，方便直接观察每次调用。</p>
+<pre><code>#include &lt;iostream&gt;
+using namespace std;
+
+long long countWork(int n) {
+    long long count = 0;
+    for (long long i = 1; i &lt;= n; i *= 2)
+        for (long long j = 0; j &lt; i; ++j)
+            ++count;
+    return count;
+}
+
+int main() {
+    cout &lt;&lt; countWork(8) &lt;&lt; '\n';  // 15
+    cout &lt;&lt; countWork(10) &lt;&lt; '\n'; // 15
+}</code></pre>
+  </section>
+  <section><h2>计数实现：Python</h2>
+<pre><code>def count_work(n):
+    count = 0
+    i = 1
+    while i &lt;= n:
+        for j in range(i):
+            count += 1
+        i *= 2
+    return count
+
+print(count_work(8))   # 15
+print(count_work(10))  # 15</code></pre>
+  </section>
+  <section><h2>把 ≤ 改成 &lt;</h2><p>n=8 时总次数改为7；n=10时仍为15。对 n≥2，最后一轮 M 满足 M&lt;n≤2M，仍有 W=2M−1，并且 n/2≤W&lt;2n，所以紧确界仍为Θ(n)。n=0、1时新循环都执行0次。</p></section>
+  <section class="sources"><p>通式参考：<a href="https://www.cs.umd.edu/class/spring2021/cmsc420-0101/Handouts/420-reference.pdf#page=1">UMD CMSC420 Short Reference Guide，第1页 Geometric Series</a>。<a href="../lessons/0003-doubling-work-sum.html">返回逐步推导和互动实验</a>。</p></section>
+</main>
+</body>
+</html>

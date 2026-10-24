@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="第三课：逐轮数清倍增循环的工作量，用几何级数与双侧界解释为什么两层循环也可以是 Θ(n)。">
+  <title>第 3 课：两层循环，为什么只有 Θ(n)？</title>
+  <link rel="stylesheet" href="../assets/course.css?v=20261023e">
+  <link rel="stylesheet" href="../assets/short-lesson.css?v=20261024a">
+  <link rel="stylesheet" href="../assets/work-sum-lab.css?v=20261024a">
+  <script defer src="../assets/quiz.js?v=20261024a"></script>
+  <script defer src="../assets/work-sum-lab.js?v=20261024a"></script>
+  <script defer src="../assets/compiler-lab.js?v=20261024a"></script>
+</head>
+<body>
+<nav class="course-nav" aria-label="课程导航"><a href="../index.html">← 算法学习主页</a><span class="crumb">第 3 课 · 逐轮计数</span></nav>
+<main>
+  <header class="hero"><p class="eyebrow">COMP3711H Prep · Lesson 03</p><h1>两层循环，<br>为什么只有 Θ(n)？</h1><p class="lede">第二课把每轮次数加了起来。这次只改外层的走法：每次翻倍。我们看看，总工作量会怎样变。</p><div class="meta"><span>约 15–20 分钟</span><span>一个程序 · 一次求和</span><span>先预测，再展开</span></div></header>
+  <section class="win"><strong>今天只练一件事：</strong>写出每轮实际工作量，把它们相加，再给出匹配的上下界。你会用一个例子解释，为什么“轮数 × 最大一轮”有时只给了一个很松的上界。</section>
+
+  <section><h2>先回忆第二课的一个动作</h2><p>上一课，逐对比较的每轮工作量是 <code>n−1,n−2,…,1,0</code>。如果要证明总工作量为 Θ(n²)，除了上界，还差哪一边？先口头回答，再继续。</p><details><summary>想过后核对</summary><p>还需要一个固定正常数乘 n² 的下界。Θ 要上下两边；“至多这么多”只给了 O。若这一步还不熟，可以先回看<a href="0002-asymptotic-analysis.html#theta-title">第二课的两侧界</a>。</p></details></section>
+
+  <section aria-labelledby="program-title">
+    <p class="eyebrow">01 · 只看这个程序</p><h2 id="program-title">i 不再加 1，而是乘 2</h2>
+    <p>输入 <code>n</code> 是非负整数。约定 <code>work()</code> 每次只做固定的常数时间工作。我们先数调用次数 <code>W(n)</code>，再看整个程序的时间。</p>
+<pre><code>// C++：i *= 2 表示把 i 翻倍
+for (long long i = 1; i &lt;= n; i *= 2) {
+    for (long long j = 0; j &lt; i; ++j) {
+        work();
+    }
+}</code></pre>
+    <p>外层的 i 依次取 <code>1,2,4,8,…</code>，超过 n 就停止。固定某一轮 i，内层的 j 从 0 到 i−1，因此<strong>这一轮恰好做 i 次 work</strong>。</p>
+    <div class="exercise" data-quiz><p><strong>先手算：当 n=8 时，work 总共执行几次？</strong></p>
+      <button type="button" data-answer="correct" data-message="对。i 取 1、2、4、8，四轮分别做 1、2、4、8 次，总和 15。" aria-pressed="false">15 次</button>
+      <button type="button" data-answer="incorrect" data-message="别先乘循环轮数。把 i=1、2、4、8 四轮的工作量分别写出来再加。" aria-pressed="false">24 次</button>
+      <button type="button" data-answer="incorrect" data-message="32 是 4×8：它把前面三轮也当成了 8 次。真正的四轮工作量不同。" aria-pressed="false">32 次</button>
+      <p class="feedback" data-feedback-output aria-live="polite"></p></div>
+  </section>
+
+  <section aria-labelledby="sum-title">
+    <p class="eyebrow">02 · 先把四轮排开</p><h2 id="sum-title">1 + 2 + 4 + 8，不是 4 × 8</h2>
+    <p>n=8 时，前面三轮合起来只有 <code>1+2+4=7</code> 次，还不到最后一轮的 8 次。<strong>虽然有四轮，总和却不到最后一轮的两倍。</strong></p>
+    <div class="exercise work-sum-lab" data-work-sum-lab>
+      <h3>每次加一轮，看看累积了多少工作</h3>
+      <p>下一轮会做几次？先预测，再点按钮。柱长表示这一轮的调用次数，不表示运行秒数。</p>
+      <div class="sum-cases" role="group" aria-label="选择输入规模"><button type="button" data-sum-size="8" aria-pressed="true">n = 8</button><button type="button" data-sum-size="10" aria-pressed="false">n = 10</button><button type="button" data-sum-size="16" aria-pressed="false">n = 16</button><button type="button" data-sum-size="0" aria-pressed="false">n = 0</button></div>
+      <p data-sum-state class="sum-state"></p>
+      <div data-sum-rows class="sum-rows" aria-label="各轮工作量"></div>
+      <div class="sum-actions"><button type="button" data-sum-next>加下一轮</button><button type="button" data-sum-reset>重新开始</button></div>
+      <p data-sum-feedback class="sum-feedback" aria-live="polite"></p>
+      <noscript>n=8 时四轮依次做 1、2、4、8 次，累计为 1、3、7、15 次。</noscript>
+    </div>
+    <p>再取 n=16，会多出最后一轮的 16 次：</p><div class="formula">W(16) = 1+2+4+8+16 = 31</div>
+    <p>这种相邻项总按固定倍数变化的和，叫<strong>几何级数（geometric series）</strong>。今天只用“每项翻倍”这一种，不需要背通用公式。</p>
+  </section>
+
+  <section aria-labelledby="proof-title">
+    <p class="eyebrow">03 · 用减法把规律推出来</p><h2 id="proof-title">让一串数和它的两倍错开</h2>
+    <p>先看 n 是 2 的幂的情形，例如 1、2、4、8、16。此时最后一轮恰好做 n 次，记总和为 S：</p>
+<pre><code> S = 1 + 2 + 4 + … + n
+2S =     2 + 4 + … + n + 2n
+--------------------------------
+2S − S = 2n − 1</code></pre>
+    <p><strong>停一下：</strong>中间相同的项消掉后，为什么留下的是 2n−1？试着自己写一遍，再得到：</p>
+    <div class="formula">当 n 是 2 的幂时，W(n)=2n−1</div>
+    <p>对这些 n≥1，<code>n ≤ 2n−1 &lt; 2n</code>。所以总工作量被 n 的两个固定倍数夹住。这就是线性增长的直觉。</p>
+    <p>但<strong>n=10 时最后一轮是 i=8</strong>，不会额外执行 i=10。此时 W(10)=15，不能套成 2×10−1=19。要对所有 n 证明 Θ(n)，还需补上这一点。</p>
+    <details><summary>严谨补齐：n 不是 2 的幂时怎么办？</summary>
+      <p>对任意整数 n≥1，把最后执行的 i 记成 M。它一定是某个 2 的幂，而且 <code>M ≤ n &lt; 2M</code>：M 这一轮能执行，下一轮 2M 已超过 n。</p>
+      <p>同样用上面的减法，有 <code>W(n)=1+2+⋯+M=2M−1</code>。</p>
+      <p><strong>下界：</strong>光是最后一轮就做 M 次，因此 <code>W(n) ≥ M &gt; n/2</code>。</p>
+      <p><strong>上界：</strong><code>W(n)=2M−1 &lt; 2M ≤ 2n</code>。</p>
+      <div class="formula formula-key">对所有 n≥1：½n &lt; W(n) &lt; 2n<br>所以 W(n)=Θ(n)</div>
+      <p>严格不等式也推出定义需要的非严格不等式；例如取 c₁=½、c₂=2、n₀=1 即可。n=0 时没有任何一轮，W(0)=0；渐进结论并不要求小输入也满足同一双侧界。</p>
+    </details>
+    <p>这样，我们不只验证了几个样例，还能对所有充分大的 n 给出上下界：<strong>W(n)=Θ(n)</strong>。</p>
+    <details><summary>加上循环控制，整个程序也是 Θ(n) 吗？</summary><p>是，在本课的单位代价模型下。每次 work 花正的常数时间，给出与 W(n) 成正比的时间下界。内层比较、递增的次数至多与 W(n) 加外层轮数成正比。</p><p>n≥1 时，每轮至少做一次 work，所以外层轮数也不超过 W(n)。因此存在固定 a,b&gt;0，使 <code>aW(n) ≤ T(n) ≤ b(W(n)+1)</code>。于是 T(n)=Θ(n)。n=0 时函数仍有常数控制开销。C++ 示例假定 n 可由 int 表示，计数与倍增用 long long 避免这些输入下的溢出。</p></details>
+  </section>
+
+  <section aria-labelledby="bound-title">
+    <p class="eyebrow">04 · 回头检查那个容易写出的上界</p><h2 id="bound-title">“轮数 × 最大一轮”错在哪里？</h2>
+    <p>i 每轮翻倍，外层轮数是对数级；每轮内层至多做 n 次。所以相乘确实能给出 <code>O(n log n)</code> 上界。它把很多较小的轮次都按最大轮计费，因而不够紧。</p>
+    <div class="exercise" data-quiz><p><strong>已经证明 T(n)=Θ(n)，还能说它是 O(n log n) 吗？</strong></p><button type="button" data-answer="correct" data-message="能。n≥2 时 log₂n≥1，线性的上界也能被 n log n 的固定倍数盖住；但匹配的紧确界是 Θ(n)。" aria-pressed="false">能，它是较松上界</button><button type="button" data-answer="incorrect" data-message="上界不一定是最紧的。Θ(n) 与 O(n log n) 可以同时成立；不能从一个较松上界推出 Θ(n log n)。" aria-pressed="false">否，两种说法矛盾</button><p class="feedback" data-feedback-output aria-live="polite"></p></div>
+    <p>记住今天的检查动作：<strong>轮与轮之间工作量不一样，就先写实际的和。</strong>不是所有两层循环都二次，也不是出现乘 2 就能直接决定总时间。</p>
+  </section>
+
+  <section aria-labelledby="practice-title">
+    <p class="eyebrow">05 · 用计数器检验手算</p><h2 id="practice-title">自己记录每一次 work</h2>
+    <p>下面已写好两层循环。只需在内层的 TODO 处补一条语句：每执行到这里，就把 count 加 1。C++ 写 <code>++count;</code>，Python 写 <code>count += 1</code>。先预测 n=8 和 n=10 的输出，再运行。</p>
+    <div class="code-lab" data-compiler-lab data-programs-source="../assets/doubling-programs.json">
+      <div class="language-switch" role="group" aria-label="选择编程语言"><button type="button" data-lab-language="cpp" aria-pressed="true">C++</button><button type="button" data-lab-language="python" aria-pressed="false">Python</button></div>
+      <p class="editor-note">切换语言会载入起始代码，请先复制保留你已经写好的答案。</p>
+      <div class="external-editor is-loading"><iframe data-lab-frame title="C++ 在线计数实验" src="https://onecompiler.com/embed/cpp?listenToEvents=true&amp;hideLanguageSelection=true&amp;fontSize=16" loading="lazy" allow="clipboard-write" referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
+      <p data-lab-status class="editor-note" role="status">正在准备代码与测试…</p>
+      <button type="button" data-lab-starter disabled>重新填入起始代码（会覆盖当前代码）</button>
+      <details><summary>查看可复制的起始代码</summary><pre data-lab-fallback></pre></details>
+    </div>
+    <p class="editor-note">8 个测试包含 n=0、1、2、3、8、10、16、17，显示期望值与实际值；其中有 2 的幂，也有非 2 的幂。有限测试检验的是实现，不能替代刚才对任意 n 的证明。在线编辑与运行由 OneCompiler 提供；也可以把代码复制到自己的环境。</p>
+  </section>
+
+  <section aria-labelledby="transfer-title">
+    <p class="eyebrow">06 · 只改一个符号，你来推</p><h2 id="transfer-title">把 i ≤ n 改成 i &lt; n</h2>
+    <p>其余代码不变。先不运行、也不展开答案，写下：</p><ol><li>n=8 时各轮做几次？总共几次？</li><li>n=10 时呢？这次改动是否改变了它的次数？</li><li>时间复杂度的紧确界会不会改变？试着给一个理由。</li></ol>
+    <details><summary>写完之后核对</summary><p>n=8：i 只取 1、2、4，总共 7 次。n=10：i 仍取 1、2、4、8，总共 15 次，和改动前相同。</p><p>紧确界仍是 Θ(n)。对 n≥2，令最后一轮的 i 为 M，则 M&lt;n≤2M，仍有 W(n)=2M−1。于是 W(n)≥M≥n/2，且 W(n)&lt;2M&lt;2n，得到匹配的线性双侧界。</p><p>n=1 时新循环一次也不执行；这只改变小输入，不影响从 n≥2 开始的渐进结论。修改代码后，8 个测试的期望值要相应改成 0、0、1、3、7、15、15、31。</p></details>
+  </section>
+  <section class="win"><strong>合上页面前：</strong>用一句话解释“为什么有对数级的轮数，总工作量却是线性的？”把迁移题的三条回答发给我；我们可以先补不清楚的一步，再把“按层求和”迁移到递归树。</section>
+  <section class="complete-row"><button type="button" data-complete-lesson="lesson-0003" aria-pressed="false">标记本课已完成</button><p data-completion-status aria-live="polite">自愿记录本设备进度。</p></section>
+  <section class="sources"><h2>复习时再查</h2><p><a href="../reference/doubling-sums.html">一页参考卡：倍增循环的计数与双侧界</a>。</p><p>主参考：<a href="https://www.cs.umd.edu/class/spring2021/cmsc420-0101/Handouts/420-reference.pdf#page=1">UMD CMSC420 · Short Reference Guide，第 1 页的 Geometric Series 行</a>，核对“等比数列求和”的通式即可。本课的程序、逐轮演示和练习为自编，不必提前阅读该页的 Master Theorem。</p><p>哪一轮计数或哪一个不等式不清楚，直接把它发给我；不用先把所有展开内容读完。</p></section>
+  <nav class="lesson-nav" aria-label="课程切换"><a href="0002-asymptotic-analysis.html">← 第二课：数清工作量</a><a class="lesson-nav-next" href="../index.html">返回课程目录 →</a></nav>
+</main>
+</body>
+</html>

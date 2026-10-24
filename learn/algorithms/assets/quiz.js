@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const renderProgress = () => {
     const completed = loadProgress();
     document.querySelectorAll("[data-course-progress]").forEach((node) => {
-      node.textContent = `${completed.length} / 23 已完成`;
+      node.textContent = `${completed.length} / ${node.dataset.total || 24} 已完成`;
     });
     document.querySelectorAll("[data-lesson-id]").forEach((card) => {
       const done = completed.includes(card.dataset.lessonId);
@@ -66,4 +66,5 @@ document.addEventListener("DOMContentLoaded", () => {
 
   renderProgress();
 });
+
 
