@@ -99,7 +99,9 @@ for (int i = 0; i &lt; n; ++i) {
       <p>就写 <code>W(n) = Θ(f(n))</code>。本例取 <code>f(n)=n²</code>、<code>c₁=¼</code>、<code>c₂=½</code>、<code>n₀=2</code> 即可。只试几个 n 不是证明；两个不等式对所有 n≥2 成立才是。</p>
       <p>这与 <a href="https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2011/ce8348ec64dce3841ced6a9d0c9e48f2_MIT6_006F11_rec01.pdf#page=1">MIT 6.006 关于双侧界的解释（第 1 页）</a>一致。</p>
     </details>
-    <p>如果<strong>只证明上面那一边</strong>，记作 <code>W(n)=O(n²)</code>；只证明下面那一边，记作 <code>W(n)=Ω(n²)</code>。今天先把“Θ 要两边”用熟，三个符号的辨析放在<a href="../reference/asymptotic-bounds.html">复习卡</a>中。</p>
+    <p>如果<strong>只证明上面那一边</strong>，记作 <code>W(n)=O(n²)</code>；
+    <p></p><strong>只证明下面那一边</strong>，记作 <code>W(n)=Ω(n²)</code>。<p>
+    </p>今天先把“Θ 要两边”用熟，三个符号的辨析放在<a href="../reference/asymptotic-bounds.html">复习卡</a>中。</p>
     <div class="exercise" data-quiz>
       <p><strong>假如只知道 W(n) ≤ n²，足够推出 Θ(n²) 吗？</strong></p>
       <button type="button" data-answer="incorrect" data-message="还差下界。例如 W(n)=1 也满足 W(n)≤n²（n≥1），但它不会按 n² 的量级增长。" aria-pressed="false">足够，已经有上界</button>
