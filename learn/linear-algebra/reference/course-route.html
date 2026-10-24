@@ -1,26 +1,32 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Introduction to Linear Algebra Lesson 00–11 详细路线"><title>课程路线 · Introduction to Linear Algebra</title><link rel="stylesheet" href="../assets/course.css?v=20261024b"></head><body>
-<nav class="course-nav" aria-label="课程导航"><a href="../index.html">← 线性代数主页</a><span class="crumb">Lesson 00–11 · 详细路线</span></nav>
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Introduction to Linear Algebra Lesson 00–13 互动课程路线"><title>课程路线 · Introduction to Linear Algebra</title><link rel="stylesheet" href="../assets/course.css?v=20261024c"></head><body>
+<nav class="course-nav" aria-label="课程导航"><a href="../index.html">← 线性代数主页</a><span class="crumb">Lesson 00–13 · 互动路线</span></nav>
 <main>
-<header class="hero"><p class="eyebrow">Course Route</p><h1>十二课，从方程到特征分解</h1><p class="lede">每课围绕一个可观察的胜利条件：你不只“见过术语”，而是能画、能算、能解释，并知道它和下一课为什么相连。</p></header>
-<section><h2>阶段一 · 从方程到空间</h2>
+<header class="hero"><p class="eyebrow">Interactive Course Route</p><h1>十四课，从方程到工程矩阵</h1><p class="lede">课程不是文字定义的陈列架。每课先给一个能预测的问题，再让你拖动图像或改变参数，看见变化后才归纳规则、练习手算。前四课已开放；以下互动任务是后续开发验收标准，不代表计划中的页面已经上线。</p></header>
+<section class="win"><strong>每课的互动闭环：</strong>先预测结果 → 操作图像或数值 → 解释变化 → 做一次小计算 → 收到即时反馈。计算机负责重复运算，学习者负责判断“算出来的东西是什么意思”。</section>
+<section><h2>阶段一 · 从方程到空间（00–03，已开放）</h2>
 <div class="route">
-<div class="route-item"><div><strong>00 方程组</strong><p>能用消元法求 2×2 方程组，并从最后一行判断唯一解、无解或无穷多解。</p></div><span class="status-tag">已开放</span></div>
-<div class="route-item"><div><strong>01 向量与变换</strong><p>能把方程组读成列向量的线性组合，再逐项写出矩阵乘列向量；能在平面上画出向量加法。</p></div><span class="status-tag">已开放</span></div>
-<div class="route-item"><div><strong>02 线性变换与向量空间</strong><p>能用 T(u+v)=T(u)+T(v)、T(cu)=cT(u) 判断线性；能用零向量、加法与数乘封闭性筛选子空间。</p></div><span class="status-tag">已开放</span></div>
-<div class="route-item"><div><strong>03 基</strong><p>能判断一组向量是否既生成空间又线性无关，并求向量在给定基下的坐标。</p></div><span class="status-tag">已开放</span></div>
+<div class="route-item"><div><strong>方程组</strong><p>会消元，并判断两条直线的交点是一个、没有还是无穷多个。</p><p class="route-action">互动增强目标：拖动两条直线，预测消元结果会是哪一种。</p></div><span class="status-tag">已开放 · 待增强</span></div>
+<div class="route-item"><div><strong>向量与变换</strong><p>把方程组读成列向量的配方，逐项计算矩阵乘列向量。</p><p class="route-action">现有互动：调节两支箭头，观察加法结果。</p></div><span class="status-tag">已开放</span></div>
+<div class="route-item"><div><strong>线性变换与向量空间</strong><p>用加法、数乘与零向量的检查，判断集合能否“自成世界”。</p><p class="route-action">现有互动：调节输入，观察 A 如何拉动箭头和网格；未来增加集合封闭性实验。</p></div><span class="status-tag">已开放 · 待增强</span></div>
+<div class="route-item"><div><strong>基与坐标</strong><p>判断方向是否够用且不重复，并求同一箭头在不同基下的坐标。</p><p class="route-action">现有互动：调节两支基向量的系数，拼出目标箭头。</p></div><span class="status-tag">已开放</span></div>
 </div></section>
-<section><h2>阶段二 · 矩阵到底做了什么</h2><div class="route">
-<div class="route-item"><div><strong>04 一般线性变换</strong><p>从基本方向变换后的结果组装矩阵；理解先做一个变换、再做另一个变换；区分箭头本身与记录它的坐标。</p></div><span class="status-tag planned">计划中</span></div>
-<div class="route-item"><div><strong>05 可逆矩阵、秩与零空间</strong><p>把“能不能倒回去”“输出能覆盖多少方向”“哪些输入被压成零”统一起来；学习化简矩阵、数独立方向、找零输出的输入。</p></div><span class="status-tag planned">计划中</span></div>
-<div class="route-item"><div><strong>06 行列式</strong><p>先看面积缩放和方向翻转，再计算二阶与三阶行列式，并连到可逆性与列向量相关性。</p></div><span class="status-tag planned">计划中</span></div>
-<div class="route-item"><div><strong>07 迹</strong><p>计算主对角线数字之和；观察先后相乘时的一条规律，再看换坐标为何不改变迹。</p></div><span class="status-tag planned">计划中</span></div>
+<section><h2>阶段二 · 矩阵的操作与几何（04–07，计划中）</h2><div class="route" style="counter-reset:route 3">
+<div class="route-item"><div><strong>矩阵操作</strong><p>理解矩阵加法、数乘、转置、单位矩阵与矩阵乘法；手算小例子，解释运算顺序。迹仅定义为方阵主对角线数字之和，不谈特征值。</p><p class="route-action">必须有：编辑矩阵格子、拖动剪切强度、交换操作次序；先预测再看 AB 与 BA 的不同。主页已有可玩的预览。</p></div><span class="status-tag planned">计划中</span></div>
+<div class="route-item"><div><strong>矩阵与线性变换</strong><p>从两支基本方向的去向重建整张网格；区分箭头、它的坐标，以及变换的复合。</p><p class="route-action">必须有：直接拖动矩阵的两列，看方格与多个测试箭头一起移动；切换两套基作对照。</p></div><span class="status-tag planned">计划中</span></div>
+<div class="route-item"><div><strong>可逆矩阵、秩与零空间</strong><p>把“能否倒回去”“输出能到达几个方向”“哪些输入被压成零”连接起来，再做可视化行消元。</p><p class="route-action">必须有：拖动两列直到重合；观察不同输入挤到同一输出，并逐步操作行变换。</p></div><span class="status-tag planned">计划中</span></div>
+<div class="route-item"><div><strong>行列式</strong><p>从有向面积进入计算：面积变零意味着二维信息被压扁，符号翻转意味着方向颠倒。</p><p class="route-action">必须有：拖动单位正方形两条边，实时显示面积与符号，再核对 2×2 计算。</p></div><span class="status-tag planned">计划中</span></div>
 </div></section>
-<section><h2>阶段三 · 几何、主方向与二次型</h2><div class="route">
-<div class="route-item"><div><strong>08 欧几里得内积</strong><p>用点积计算长度和夹角；把向量投影到一条线，并逐步造出互相垂直的方向。</p></div><span class="status-tag planned">计划中</span></div>
-<div class="route-item"><div><strong>09 推广内积</strong><p>把普通点积扩展为新的长度与角度规则；理解不同权重如何改变“最近”。</p></div><span class="status-tag planned">计划中</span></div>
-<div class="route-item"><div><strong>10 特征分解</strong><p>求 A 的特征值与特征向量；把 A=[[2,1],[1,2]] 分解为沿 (1,1) 放大 3、沿 (1,−1) 放大 1。</p></div><span class="status-tag planned">计划中</span></div>
-<div class="route-item"><div><strong>11 正定性</strong><p>把向量代入一个二次表达式，从结果的正负读出碗状或倒碗状曲面；区分正定、半正定、负定、半负定。</p></div><span class="status-tag planned">计划中</span></div>
+<section><h2>阶段三 · 长度、主方向与二次型（08–11，计划中）</h2><div class="route" style="counter-reset:route 7">
+<div class="route-item"><div><strong>欧几里得内积</strong><p>从投影理解点积，再算长度、角度与“最近的点”。</p><p class="route-action">必须有：拖动两箭头，投影线、夹角和点积同步变化；比较预测与实际符号。</p></div><span class="status-tag planned">计划中</span></div>
+<div class="route-item"><div><strong>推广内积</strong><p>把普通点积扩展为带权规则，解释不同权重如何改变长度与垂直。</p><p class="route-action">必须有：调节权重，把单位圆拉成椭圆，寻找新规则下的最近点。</p></div><span class="status-tag planned">计划中</span></div>
+<div class="route-item"><div><strong>特征分解；然后回访迹</strong><p>先用方向不变的箭头理解特征向量与特征值，再沿两条主方向拆开贯穿矩阵 A。只在学完这些之后，用 A 的例子观察迹 4 与特征值 3+1；一般性关系放在独立折叠的 Beyond，不作入门主线考点。</p><p class="route-action">必须有：旋转输入箭头寻找“不转向”的方向；切换普通坐标与主方向坐标。</p></div><span class="status-tag planned">计划中</span></div>
+<div class="route-item"><div><strong>正定、半正定、负定与半负定</strong><p>观察二次表达式随输入变化的地形，再学习如何从矩阵判断向上碗、平谷或倒碗。</p><p class="route-action">必须有：调节对称矩阵的数字，看等高线与曲面同步变化，并寻找零方向。</p></div><span class="status-tag planned">计划中</span></div>
 </div></section>
-<section class="win"><strong>每课固定结构：</strong>动机 → 一个贯穿例子 → 互动图像／计算 → 即时自测 → 带解析练习 → 独立折叠的 Beyond the Course。已发布课程始终可直接访问，完成记录始终是可选的。</section>
+<section><h2>阶段四 · 工程进阶（12–13，计划中、非主线考核）</h2><div class="route" style="counter-reset:route 11">
+<div class="route-item"><div><strong>SVD、最小二乘与伪逆</strong><p>前面的特征分解不适用于每个矩阵；SVD 则把一般矩阵拆成旋转、按方向缩放、再旋转。用有噪声的数据理解最小二乘与伪逆，用压缩图像理解低秩近似。</p><p class="route-action">必须有：圆形网格变椭圆；拖动截断阈值，比较保留信息与压缩程度；调整数据点看拟合线。</p></div><span class="status-tag planned">进阶 · 计划中</span></div>
+<div class="route-item"><div><strong>Jordan 形、矩阵指数与动态系统</strong><p>先看不能凑齐独立特征向量的剪切例子，再把 Jordan 链当作“差一点对角化”的结构。用矩阵反复作用或连续时间演化解释工程系统；不把手算大型 Jordan 形当目标。</p><p class="route-action">必须有：逐帧播放剪切矩阵作用；对比可对角化与不可对角化的轨迹，观察额外的随时间增长项。</p></div><span class="status-tag planned">进阶 · 计划中</span></div>
+</div></section>
+<section class="win"><strong>发布标准：</strong>每课至少包含可操作图像、预测问题、计算训练、即时自测、带解析答案，以及独立折叠的 Beyond the Course。已开放课程可直接进入，完成记录始终自愿；00–03 尚未达到这个新标准的部分会逐步补齐。</section>
+<section class="sources"><h2>进阶内容参考</h2><p>工程进阶选题参考 <a href="https://ocw.mit.edu/courses/18-06sc-linear-algebra-fall-2011/pages/positive-definite-matrices-and-applications/singular-value-decomposition/">MIT OCW 的 SVD 课程</a>、<a href="https://www.ocw.mit.edu/courses/18-065-matrix-methods-in-data-analysis-signal-processing-and-machine-learning-spring-2018/resources/lecture-9-four-ways-to-solve-least-squares-problems/">最小二乘讲座</a>和 <a href="https://ocw.mit.edu/courses/18-06sc-linear-algebra-fall-2011/pages/positive-definite-matrices-and-applications/similar-matrices-and-jordan-form/">Jordan 形课程</a>；本站将重新组织为可交互的入门解释，不复制原讲义。</p></section>
 <nav class="lesson-nav"><a href="../index.html">← 返回课程主页</a><a href="../lessons/00-systems-of-linear-equations.html">开始第 00 课 →</a></nav>
 </main></body></html>

@@ -63,6 +63,24 @@ document.addEventListener("DOMContentLoaded", () => {
         arrow(ctx, point([0,0]), point([x,y]), colors.input);
         arrow(ctx, point([0,0]), point(out), colors.output);
         readout.textContent = `x=(${label(x)}, ${label(y)}) → Ax=(${label(out[0])}, ${label(out[1])})`;
+      } else if (mode === "composition") {
+        const k = val(lab,"k",1);
+        const afterA = [2*x+y, x+2*y];
+        const afterB = [x+k*y, y];
+        const aThenB = [afterA[0]+k*afterA[1], afterA[1]];
+        const bThenA = [2*afterB[0]+afterB[1], afterB[0]+2*afterB[1]];
+        ctx.setLineDash([5,5]);
+        ctx.lineWidth = 2;
+        [[afterA,aThenB,colors.basis],[afterB,bThenA,colors.output]].forEach(([from,to,color]) => {
+          const p = point(from), q = point(to);
+          ctx.strokeStyle = color;
+          ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(q.x,q.y); ctx.stroke();
+        });
+        ctx.setLineDash([]);
+        arrow(ctx, point([0,0]), point([x,y]), colors.input, 2.5);
+        arrow(ctx, point([0,0]), point(aThenB), colors.basis, 3);
+        arrow(ctx, point([0,0]), point(bThenA), colors.output, 3);
+        readout.textContent = `先 A 后 B：(${label(aThenB[0])}, ${label(aThenB[1])})；先 B 后 A：(${label(bThenA[0])}, ${label(bThenA[1])})。${aThenB[0] === bThenA[0] && aThenB[1] === bThenA[1] ? "这次重合。" : "这次不重合。"}`;
       } else if (mode === "span") {
         const a = val(lab,"a",1), b = val(lab,"b",1);
         const e1 = [1,1], e2 = [1,-1], s = [a+b,a-b];

@@ -29,7 +29,7 @@
 
 <section><p class="eyebrow">04 · Why We Care</p><h2>解集、输入集合、输出集合，都可能形成空间</h2>
 <p><strong>齐次方程组</strong>就是每条方程的右边都是 0。用列向量写，形式是 <code>A</code><span class="vector-name">x</span><code>=</code><span class="column-vector"><span>0</span><span>0</span></span>。把所有能得到零输出的输入集合叫作<strong>零空间</strong>。零输入必然在其中；若 u、v 都在其中，线性规则保证它们的和与任意倍数也在其中，因此它是子空间。</p>
-<p>另一面，把所有可能输出 <code>A</code><span class="vector-name">x</span> 收集起来，叫<strong>列空间</strong>：它正是 A 的列向量能用线性组合拼出的所有向量。零空间问“哪些输入会消失”，列空间问“哪些输出能到达”。Lesson 05 会计算它们。</p>
+<p>另一面，把所有可能输出 <code>A</code><span class="vector-name">x</span> 收集起来，叫<strong>列空间</strong>：它正是 A 的列向量能用线性组合拼出的所有向量。零空间问“哪些输入会消失”，列空间问“哪些输出能到达”。Lesson 06 会计算它们。</p>
 <div class="checkpoint"><h3>计算训练</h3><p>另取矩阵 <code>B</code>：第一行是 <code>1,1</code>，第二行是 <code>2,2</code>，即 <span class="matrix"><span>1</span><span>1</span><span>2</span><span>2</span></span>。找一支非零输入列向量，让 B 乘它后得到零向量。</p><button type="button" data-reveal-target="#answer02" aria-expanded="false">查看解析</button><div class="answer" id="answer02"><p>设输入为 <span class="column-vector"><span>x₁</span><span>x₂</span></span>。输出是 <span class="column-vector"><span>x₁+x₂</span><span>2x₁+2x₂</span></span>，所以只需 <code>x₁+x₂=0</code>（第二行自动成立）。取 <span class="column-vector"><span>1</span><span>−1</span></span>：</p><div class="formula"><span class="matrix"><span>1</span><span>1</span><span>2</span><span>2</span></span><span class="column-vector"><span>1</span><span>−1</span></span> = <span class="column-vector"><span>0</span><span>0</span></span></div><p>所有输入可写成 <code>t·(1,−1)</code>，其中 t 是任意实数；它们构成一条穿过原点的直线。</p></div></div>
 </section>
 
