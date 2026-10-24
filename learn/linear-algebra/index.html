@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="面向初学者的中文线性代数互动课程：从方程组、向量与变换走向特征分解。">
+  <title>Introduction to Linear Algebra · 互动线性代数</title>
+  <link rel="stylesheet" href="assets/course.css?v=20261024a">
+  <script defer src="assets/course.js?v=20261024a"></script>
+</head>
+<body>
+<nav class="course-nav" aria-label="课程导航">
+  <a href="../../">董骐与 · 个人主页</a>
+  <span class="crumb" data-course-progress data-total="4">0 / 4 节已完成（本设备）</span>
+</nav>
+<main>
+  <header class="hero">
+    <p class="eyebrow">Visual Mathematics Studio</p>
+    <h1>Introduction to<br>Linear Algebra</h1>
+    <p class="lede">不从一串定义开始。我们从“几条方程能不能同时成立”出发，把数字列看成箭头，把矩阵看成空间的动作，再一路走到基、行列式、内积与特征分解。</p>
+    <div class="meta"><span>中文通俗解释</span><span>几何直觉 + 手算</span><span>互动图像</span><span>Lesson 00–03 已开放</span></div>
+  </header>
+
+  <section class="win">
+    <strong>自由学习，也可以自愿留痕。</strong>所有已发布课程都能直接进入，不设解锁门槛。自测会立刻给出解释；“完成”按钮只把进度保存在当前浏览器，不上传账号，也不会阻止你跳课。
+  </section>
+
+  <section aria-labelledby="start-title">
+    <p class="eyebrow">Start Here</p>
+    <h2 id="start-title">先用四课搭好整门课的骨架</h2>
+    <div class="course-grid">
+      <article class="lesson-card" data-lesson-id="linear-00">
+        <span class="status-tag" data-lesson-status>可直接开始</span>
+        <h3>00 · 方程组：答案是交点，还是根本不存在？</h3>
+        <p>从两条直线出发，用消元法看唯一解、无解与无穷多解；第一次遇见贯穿矩阵 A。</p>
+        <a href="lessons/00-systems-of-linear-equations.html">开始第 00 课 →</a>
+      </article>
+      <article class="lesson-card" data-lesson-id="linear-01">
+        <span class="status-tag" data-lesson-status>可直接开始</span>
+        <h3>01 · 向量与变换：把方程改写成 Ax=b</h3>
+        <p>把列向量看成箭头与配方，用互动平行四边形理解线性组合，再把方程组压缩成一行。</p>
+        <a href="lessons/01-vectors-and-transformations.html">开始第 01 课 →</a>
+      </article>
+      <article class="lesson-card" data-lesson-id="linear-02">
+        <span class="status-tag" data-lesson-status>可直接开始</span>
+        <h3>02 · 线性变换与向量空间：什么样的集合“算完还在里面”？</h3>
+        <p>用矩阵 A 拉伸平面，再用封闭性判断直线、象限与解集是不是向量空间。</p>
+        <a href="lessons/02-vector-spaces.html">开始第 02 课 →</a>
+      </article>
+      <article class="lesson-card" data-lesson-id="linear-03">
+        <span class="status-tag" data-lesson-status>可直接开始</span>
+        <h3>03 · 基与坐标：给整个空间选一套“尺子”</h3>
+        <p>用两个方向唯一描述平面中的每个向量；区分生成、线性无关、基与坐标。</p>
+        <a href="lessons/03-basis-of-vector-space.html">开始第 03 课 →</a>
+      </article>
+    </div>
+  </section>
+
+  <section aria-labelledby="thread-title">
+    <p class="eyebrow">One Example, Many Ideas</p>
+    <h2 id="thread-title">贯穿全课的矩阵</h2>
+    <div class="example">
+      <p>我们反复使用</p>
+      <div class="formula">A = <span class="matrix"><span>2</span><span>1</span><span>1</span><span>2</span></span></div>
+      <p>它一开始只是方程组的系数表；随后变成“把向量 <strong>x</strong> 送到 <strong>Ax</strong>”的机器。以后我们会发现：它可逆，行列式为 3，迹为 4；方向 (1,1) 被放大 3 倍，方向 (1,−1) 保持原长度。这一个例子会把计算、几何和抽象概念串在一起。</p>
+    </div>
+  </section>
+
+  <section aria-labelledby="route-title">
+    <p class="eyebrow">Lesson 00–11</p>
+    <h2 id="route-title">完整课程路线</h2>
+    <p>前四课已经可学；后八课的学习目标和衔接点已经定好，会沿着同一套例子与视觉语言继续开发。</p>
+    <div class="route">
+      <div class="route-item"><div><strong>线性方程组</strong><p>解、消元、三种可能性；几何上是直线或平面的交集。</p></div><span class="status-tag">已开放</span></div>
+      <div class="route-item"><div><strong>向量与变换</strong><p>向量、线性组合、矩阵记号 Ax=b；列向量如何参与方程。</p></div><span class="status-tag">已开放</span></div>
+      <div class="route-item"><div><strong>线性变换与向量空间</strong><p>保持加法与数乘的变换；向量空间是对这些运算封闭的向量集合。</p></div><span class="status-tag">已开放</span></div>
+      <div class="route-item"><div><strong>向量空间的基</strong><p>生成、线性无关、基、坐标与维数。</p></div><span class="status-tag">已开放</span></div>
+      <div class="route-item"><div><strong>矩阵与线性变换：一般观点</strong><p>矩阵的列就是基向量的去向；复合变换对应矩阵乘法。</p></div><span class="status-tag planned">计划中</span></div>
+      <div class="route-item"><div><strong>可逆矩阵、秩与零空间</strong><p>什么信息会丢失；一一对应、满秩、零空间与方程解之间的关系。</p></div><span class="status-tag planned">计划中</span></div>
+      <div class="route-item"><div><strong>行列式</strong><p>有向面积／体积的缩放倍数；可逆性的一个数值检测器。</p></div><span class="status-tag planned">计划中</span></div>
+      <div class="route-item"><div><strong>迹</strong><p>对角线之和、基变换下的不变量，以及它为何等于特征值之和。</p></div><span class="status-tag planned">计划中</span></div>
+      <div class="route-item"><div><strong>内积：欧几里得空间</strong><p>长度、角度、正交、投影与最小二乘。</p></div><span class="status-tag planned">计划中</span></div>
+      <div class="route-item"><div><strong>内积：推广</strong><p>从点积推广到带权几何；函数空间中的“长度”和“垂直”。</p></div><span class="status-tag planned">计划中</span></div>
+      <div class="route-item"><div><strong>特征分解</strong><p>寻找变换不改变方向的轴；对角化与反复作用。</p></div><span class="status-tag planned">计划中</span></div>
+      <div class="route-item"><div><strong>正定、半正定、负定与半负定</strong><p>二次型的地形：碗、平谷、倒碗；与优化和稳定性的连接。</p></div><span class="status-tag planned">计划中</span></div>
+    </div>
+    <p><a class="button-link primary" href="reference/course-route.html">查看每课详细目标与先修关系</a></p>
+  </section>
+
+  <section class="sources">
+    <h2>课程定位与参考</h2>
+    <p>主线为自编的入门解释与互动练习，重理解和计算，不以抽象证明为第一目标。进阶折叠区会提示更严格的定义与后续方向。高级概念顺序参考用户提供的 <a href="https://stupid-benz.github.io/MATH2131/main.pdf">MATH2131 讲义</a>，但课程内容、例题与表达均重新组织。</p>
+  </section>
+</main>
+</body>
+</html>

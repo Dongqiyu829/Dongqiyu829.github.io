@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="线性代数第03课：基、线性无关、生成与坐标"><title>第 03 课 · 向量空间的基</title><link rel="stylesheet" href="../assets/course.css?v=20261024a"><script defer src="../assets/course.js?v=20261024a"></script><script defer src="../assets/vector-lab.js?v=20261024a"></script></head>
+<body><nav class="course-nav"><a href="../index.html">← 线性代数主页</a><span class="crumb">第 03 课 · 基与坐标</span></nav><main>
+<header class="hero"><p class="eyebrow">Lesson 03 · Basis of a Vector Space</p><h1>给整个空间选一套“尺子”</h1><p class="lede">一组好的方向，既不能缺，也不能重复。它们能拼出空间中的每个向量，并且每个向量只有一种拼法。</p><div class="meta"><span>约 30 分钟</span><span>互动坐标配方</span><span>生成 + 无关</span></div></header>
+<section class="win"><strong>本课胜利条件：</strong>你能用“生成整个空间”和“线性无关”判断一组向量是否为基，并能求一个向量在给定基下的坐标。</section>
+
+<section><p class="eyebrow">01 · Coordinates Are Recipes</p><h2>坐标不是向量本身，而是相对于某套基的配方</h2>
+<p>在熟悉的标准基 <code>e₁=(1,0)</code>、<code>e₂=(0,1)</code> 下，向量 <code>(3,1)</code> 的意思是：</p><div class="formula">(3,1)=3e₁+1e₂</div>
+<p>若换成 <code>b₁=(1,1)</code>、<code>b₂=(1,−1)</code>，同一个几何箭头可能有另一份配方。解</p><div class="formula">a(1,1)+b(1,−1)=(3,1)</div><p>得到 <code>a=2,b=1</code>。所以它在新基下的坐标是 <code>[v]ᵦ=(2,1)</code>。</p>
+<div class="lab" data-vector-lab="span"><div class="lab-head"><h3>互动：用 b₁、b₂ 配向量</h3><p>调节系数 a、b。青色走 a b₁，金色再走 b b₂，珊瑚色是最终向量。</p></div><div class="lab-grid"><canvas aria-label="非标准基下的二维坐标互动图"></canvas><div class="lab-controls"><label class="control">a <span data-number="a">2</span><input data-value="a" type="range" min="-3" max="3" step=".5" value="2"></label><label class="control">b <span data-number="b">1</span><input data-value="b" type="range" min="-3" max="3" step=".5" value="1"></label><p class="lab-readout" data-readout></p></div></div></div>
+</section>
+
+<section><p class="eyebrow">02 · Span</p><h2>第一关：这些向量能不能生成整个空间？</h2>
+<p>一组向量所有可能线性组合的集合叫它们的<strong>张成（span）</strong>。在 R² 中：</p><ul><li>一个非零向量的 span 是穿过原点的一条直线；</li><li>两个不平行向量的 span 是整个平面；</li><li>两个平行向量仍只能生成一条直线。</li></ul>
+<div class="exercise" data-quiz><h3>生成判断</h3><p><code>(1,2)</code> 和 <code>(2,4)</code> 能生成 R² 吗？</p><button type="button" data-answer="incorrect" data-message="数量有两个不够；它们可能指向同一方向。">能，因为有两个向量</button><button type="button" data-answer="correct" data-message="对：第二个是第一个的 2 倍，所有组合都在同一条直线上。">不能，因为它们平行</button><button type="button" data-answer="incorrect" data-message="它们当然能生成很多向量，只是不能覆盖整个平面。">不能，因为只能生成零向量</button><p class="feedback" data-feedback-output></p></div>
+</section>
+
+<section><p class="eyebrow">03 · Independence</p><h2>第二关：配方是不是唯一？</h2>
+<p>若存在不全为零的系数，使</p><div class="formula">c₁v₁+⋯+cₖvₖ=0</div><p>那么这些向量<strong>线性相关</strong>：至少一个方向可以由其他方向拼出来，是冗余的。只有零系数这一种拼法时，才叫<strong>线性无关</strong>。</p>
+<div class="example"><h3>为什么重复方向会让坐标不唯一？</h3><p>令 <code>v₁=(1,2)</code>、<code>v₂=(2,4)=2v₁</code>。零向量既可写成 <code>0v₁+0v₂</code>，也可写成 <code>2v₁−1v₂</code>。既然零都有两份配方，其他可生成的向量也会有多份配方。</p></div>
+<div class="callout"><strong>基 = 够用，但不浪费。</strong>“生成”保证每个向量至少有一种配方；“线性无关”保证至多有一种配方。两者同时成立，就恰好唯一。</div>
+<div class="exercise" data-quiz><h3>基判断</h3><p>下面哪一组是 R² 的基？</p><button type="button" data-answer="correct" data-message="对：两向量不平行，因此线性无关并生成整个 R²。">(1,1) 与 (1,−1)</button><button type="button" data-answer="incorrect" data-message="零向量永远造成冗余：1·0=0 给出非平凡关系。">(1,0) 与 (0,0)</button><button type="button" data-answer="incorrect" data-message="三个向量在二维空间里必然线性相关，配方不会唯一。">(1,0)、(0,1)、(1,1)</button><p class="feedback" data-feedback-output></p></div>
+</section>
+
+<section><p class="eyebrow">04 · Dimension</p><h2>维数：一套基需要几个独立方向</h2>
+<p>R² 的任何基都有 2 个向量，R³ 的任何基都有 3 个。更一般地，同一个向量空间的所有基都含相同数量的向量；这个数量就是<strong>维数（dimension）</strong>。</p>
+<p>贯穿矩阵 A 的两列 <code>(2,1)</code> 与 <code>(1,2)</code> 不平行，因此它们构成 R² 的一组基。也正因如此，每个目标 b 都有唯一配方 x，使 <code>Ax=b</code>；这预告了 A 是可逆矩阵。</p>
+<div class="checkpoint"><h3>计算训练</h3><p>在基 <code>B={(2,1),(1,2)}</code> 下，求 <code>v=(7,8)</code> 的坐标，也就是解 <code>a(2,1)+b(1,2)=(7,8)</code>。</p><button type="button" data-reveal-target="#answer03" aria-expanded="false">查看解析</button><div class="answer" id="answer03"><p>方程为 <code>2a+b=7</code>、<code>a+2b=8</code>。第一式乘 2 后减第二式，得 <code>3a=6</code>，所以 <code>a=2</code>；再得 <code>b=3</code>。</p><p>因此 <code>[v]ᵦ=(2,3)</code>。检查：<code>2(2,1)+3(1,2)=(7,8)</code>。</p></div></div>
+</section>
+
+<details class="beyond"><summary>Beyond the Course · 折叠的进阶视角</summary><h3>基不唯一，但维数唯一</h3><p>一个空间有无穷多组基。换基并没有改变向量，只是改变坐标语言。Lesson 04 会把换基写成矩阵乘法。</p><h3>无限维空间</h3><p>所有多项式组成的空间没有有限基，但 <code>{1,x,x²,…}</code> 是一组无限基：每个多项式只需其中有限项。函数空间与 Fourier 分析把这个想法推得更远。</p><h3>贯穿矩阵的特征方向</h3><p><code>(1,1)</code> 与 <code>(1,−1)</code> 不只是方便的基；它们还是 A 的特征向量。A 把前者放大 3 倍，把后者放大 1 倍。Lesson 10 会解释为何这种基能让矩阵变得几乎只剩“缩放”。</p></details>
+<section class="complete-row"><button type="button" data-complete-lesson="linear-03" aria-pressed="false">标记本课已完成</button><p data-completion-status>可选：只记录本设备，不影响其他课程。</p></section>
+<nav class="lesson-nav"><a href="02-vector-spaces.html">← 第 02 课</a><a href="../index.html">课程目录</a><a class="button-link" href="../reference/course-route.html">查看后续路线 →</a></nav>
+</main></body></html>

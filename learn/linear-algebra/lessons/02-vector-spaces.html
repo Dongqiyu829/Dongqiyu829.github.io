@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="线性代数第02课：线性变换与向量空间的直观解释"><title>第 02 课 · 线性变换与向量空间</title><link rel="stylesheet" href="../assets/course.css?v=20261024a"><script defer src="../assets/course.js?v=20261024a"></script><script defer src="../assets/vector-lab.js?v=20261024a"></script></head>
+<body><nav class="course-nav"><a href="../index.html">← 线性代数主页</a><span class="crumb">第 02 课 · 线性变换与向量空间</span></nav><main>
+<header class="hero"><p class="eyebrow">Lesson 02 · Linear Maps & Vector Spaces</p><h1>一个向量集合，怎样才算“自成世界”？</h1><p class="lede">向量空间不是神秘的新物体。它就是一群向量组成的集合，并且在做加法、缩放时不会跑到集合外面。</p><div class="meta"><span>约 30 分钟</span><span>动态变换网格</span><span>封闭性判断</span></div></header>
+<section class="win"><strong>本课胜利条件：</strong>你能解释线性变换为何保持加法和数乘，并能用“含零向量、对加法封闭、对数乘封闭”判断一个集合是否为向量空间（或子空间）。</section>
+
+<section><p class="eyebrow">01 · A Gentle Machine</p><h2>线性变换不会把直线掰弯</h2>
+<p>把 <code>T(x)=Ax</code> 想成一台改变整个空间的机器。我们的贯穿矩阵</p><div class="formula">A=<span class="matrix"><span>2</span><span>1</span><span>1</span><span>2</span></span></div>
+<p>会把方格拉成斜格，但原点仍在原点，平行线仍平行。它满足两条“线性规则”：</p>
+<div class="formula">T(u+v)=T(u)+T(v)<br>T(cu)=cT(u)</div>
+<p>第一条说“先相加再变换”和“分别变换再相加”相同；第二条说“先缩放再变换”和“先变换再缩放”相同。</p>
+<div class="lab" data-vector-lab="transform"><div class="lab-head"><h3>互动：输入 x，观察 Ax</h3><p>青色是输入，珊瑚色是输出；淡青斜网格显示整个平面被 A 拉成什么样。</p></div><div class="lab-grid"><canvas aria-label="矩阵A作用于二维向量的互动图"></canvas><div class="lab-controls"><label class="control">x₁ <span data-number="x">1</span><input data-value="x" type="range" min="-2" max="2" step=".5" value="1"></label><label class="control">x₂ <span data-number="y">1</span><input data-value="y" type="range" min="-2" max="2" step=".5" value="1"></label><div class="legend"><span><i class="dot input"></i>输入 x</span><span><i class="dot output"></i>输出 Ax</span></div><p class="lab-readout" data-readout></p></div></div></div>
+</section>
+
+<section><p class="eyebrow">02 · Is It Linear?</p><h2>平移看起来温和，却不是线性变换</h2>
+<p>考虑 <code>S(x)=Ax+(1,0)</code>。它在变换后又把所有点向右推一格。问题出在原点：</p><div class="formula">S(0)=A0+(1,0)=(1,0)≠0</div>
+<p>任何线性变换都必须把零向量送回零向量，因为 <code>T(0)=T(0+0)=T(0)+T(0)</code>，两边减去 <code>T(0)</code> 得到 <code>T(0)=0</code>。</p>
+<div class="exercise" data-quiz><h3>即时自测</h3><p>下面哪个规则一定是线性的？</p><button type="button" data-answer="correct" data-message="对：每个输出分量都是输入分量的线性组合，而且 0 被送到 0。">T(x,y)=(2x+y,x−y)</button><button type="button" data-answer="incorrect" data-message="常数 +1 让零向量不再映到零向量。">T(x,y)=(x+1,y)</button><button type="button" data-answer="incorrect" data-message="平方会破坏数乘：T(2x) 通常不等于 2T(x)。">T(x,y)=(x²,y)</button><p class="feedback" data-feedback-output></p></div>
+</section>
+
+<section><p class="eyebrow">03 · Vector Space</p><h2>向量空间：运算之后仍留在这个集合里</h2>
+<p>先把正式术语放轻一点：向量空间 V 就是一个向量集合，你可以在里面做向量加法和数乘，而且结果仍在 V 里。若 V 已经住在更大的空间（如 R²）中，我们常称它为<strong>子空间</strong>。</p>
+<div class="checkpoint"><h3>实用的三项检查</h3><ol><li><strong>零向量在里面吗？</strong></li><li>任取 u,v 在集合中，<strong>u+v 还在吗？</strong></li><li>任取 u 在集合中、任取数 c，<strong>cu 还在吗？</strong></li></ol><p>在 Rⁿ 的普通加法和数乘下，这三项通过就够了。</p></div>
+<div class="example"><h3>例 1：穿过原点的直线</h3><p><code>L={(t,2t): t∈R}</code>。零向量对应 t=0。两点 <code>(a,2a)+(b,2b)=(a+b,2(a+b))</code> 仍在 L；缩放 <code>c(a,2a)=(ca,2ca)</code> 也仍在 L。所以 L 是 R² 的子空间。</p></div>
+<div class="example"><h3>例 2：第一象限</h3><p><code>Q={(x,y):x≥0,y≥0}</code>。它含零向量，对加法也封闭；但乘以 −1 后通常跑到第三象限。因此 Q 不是向量空间。</p></div>
+<div class="exercise" data-quiz><h3>判断集合</h3><p><code>S={(x,y):x+y=1}</code> 是 R² 的子空间吗？</p><button type="button" data-answer="incorrect" data-message="它是一条直线，但不是所有直线都是子空间；关键看是否经过原点。">是，因为它是直线</button><button type="button" data-answer="correct" data-message="对：(0,0) 不满足 x+y=1，所以第一关就失败。">不是，因为不含零向量</button><button type="button" data-answer="incorrect" data-message="集合里当然有无穷多个向量；数量不是判断标准。">不是，因为向量太少</button><p class="feedback" data-feedback-output></p></div>
+</section>
+
+<section><p class="eyebrow">04 · Why We Care</p><h2>解集、输入集合、输出集合，都可能形成空间</h2>
+<p>齐次方程 <code>Ax=0</code> 的所有解一定形成向量空间：若 <code>Au=0</code>、<code>Av=0</code>，那么</p><div class="formula">A(u+v)=Au+Av=0，A(cu)=cAu=0</div>
+<p>这就是之后的<strong>零空间（null space）</strong>。同样，所有可能输出 <code>Ax</code> 组成<strong>列空间（column space）</strong>。线性代数常常在问：这些空间有多大？哪些方向能到达？哪些输入会被压到零？</p>
+<div class="checkpoint"><h3>计算训练</h3><p>考虑 <code>B=[[1,1],[2,2]]</code>。找出一个非零向量 x，使 <code>Bx=0</code>。</p><button type="button" data-reveal-target="#answer02" aria-expanded="false">查看解析</button><div class="answer" id="answer02"><p>方程是 <code>x₁+x₂=0</code>（第二行只是它的两倍），所以取 <code>x=(1,−1)</code> 即可：<code>B(1,−1)=(0,0)</code>。所有解是 <code>t(1,−1)</code>，一条穿过原点的直线。</p></div></div>
+</section>
+
+<details class="beyond"><summary>Beyond the Course · 折叠的进阶视角</summary><h3>正式定义为什么有十条公理？</h3><p>若不是 Rⁿ 的子集，我们必须明确加法、数乘应满足交换律、结合律、分配律等规则。对子空间而言，这些规则从外部大空间继承，所以只需检查三项封闭性。</p><h3>仿射空间（affine space）</h3><p><code>x+y=1</code> 不是向量子空间，但它是一个仿射子空间：可以看成穿过原点的直线 <code>x+y=0</code> 平移得到。仿射几何允许“选择一个原点之后再像向量一样计算”。</p></details>
+<section class="complete-row"><button type="button" data-complete-lesson="linear-02" aria-pressed="false">标记本课已完成</button><p data-completion-status>可选：只记录本设备，不影响其他课程。</p></section>
+<nav class="lesson-nav"><a href="01-vectors-and-transformations.html">← 第 01 课</a><a href="../index.html">课程目录</a><a class="button-link primary" href="03-basis-of-vector-space.html">下一课：基与坐标 →</a></nav>
+</main></body></html>
