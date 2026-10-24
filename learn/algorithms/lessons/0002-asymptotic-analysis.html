@@ -3,195 +3,188 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="COMP3711H 第 2 课：从 cost model 推导 tight bound，弄清 O、Ω、Θ 和循环次数。">
-  <title>第 2 课：渐进分析不是数循环</title>
+  <meta name="description" content="从逐对比较出发，先手算工作量，再亲手证明 Θ(n²)。一条主线学会渐进分析。">
+  <title>第 2 课：从数清工作量到证明 Θ(n²)</title>
   <link rel="stylesheet" href="../assets/course.css?v=20261023e">
-  <link rel="stylesheet" href="../assets/asymptotic-lab.css?v=20261023a">
+  <link rel="stylesheet" href="../assets/short-lesson.css?v=20261024a">
   <script defer src="../assets/quiz.js?v=20261023e"></script>
-  <script defer src="../assets/asymptotic-lab.js?v=20261023a"></script>
 </head>
 <body>
 <nav class="course-nav" aria-label="课程导航">
   <a href="../index.html">← 算法学习主页</a>
-  <span class="crumb">第 2 课 · Asymptotic analysis</span>
+  <span class="crumb">第 2 课 · 渐进分析（一）</span>
 </nav>
 <main>
   <header class="hero">
     <p class="eyebrow">COMP3711H Prep · Lesson 02</p>
-    <h1>渐进分析不是数循环</h1>
-    <p class="lede">今天只练一项能力：指定清楚 cost model，然后从实际执行的操作数证明 <em>tight bound</em>。不靠“看到两层循环就喊 n²”。</p>
-    <div class="meta"><span>约 25 分钟</span><span>推导 + 交互实验</span><span>衔接第 1 课的 Θ(log n)</span></div>
+    <h1>数清工作量，<br>再写 Θ(n²)</h1>
+    <p class="lede">上一课问“为什么答案正确”；这一课问“究竟做了多少工作”。我们跟着同一段代码走到底。</p>
+    <div class="meta"><span>约 15–20 分钟</span><span>一个例子 · 一次证明</span><span>先想，再展开答案</span></div>
   </header>
 
   <section class="win">
-    <strong>本课胜利条件：</strong>拿到一个循环，你能依次说清输入规模、单位代价、操作总次数、上界和匹配的下界；最后正确写出 Θ，而不仅仅给一个宽松的 O。
+    <strong>今天只带走一项能力：</strong>从逐对比较的代码得到工作次数，再用两个不等式证明它是 Θ(n²)。倍增循环、几何级数和不同输入情形，留到后面的短课。
   </section>
 
-  <section>
-    <h2>0 · 一个容易误判的程序</h2>
-    <p>先假设 <code>n ≥ 1</code>，而 <code>work()</code> 每执行一次只做常数时间的工作。</p>
-<pre><code>for (i = 1; i &lt; n; i *= 2):
-    for (j = 0; j &lt; i; j++):
-        work()</code></pre>
-    <p>外层执行 <code>Θ(log n)</code> 轮，内层最多执行 <code>O(n)</code> 次。于是有人直接得出 <code>Θ(n log n)</code>。</p>
+  <section aria-labelledby="recall-title">
+    <h2 id="recall-title">先回忆上次的一句话</h2>
+    <p>二分搜索中，“每轮把未知区缩小”解释了为什么能结束；“最终边界就是答案”解释了为什么正确。现在先用自己的话说说：<strong>算得对，是否就一定算得快？</strong></p>
+    <details><summary>想过之后，看看这次要补哪一块</summary>
+      <p>不一定。正确性证明保证返回正确答案；复杂度分析研究输入规模增大时，工作量怎样增长。两件事都需要论证。今天只练后者。</p>
+    </details>
+  </section>
+
+  <section aria-labelledby="problem-title">
+    <p class="eyebrow">01 · 一个具体问题</p>
+    <h2 id="problem-title">把数组中每一对位置比较一次</h2>
+    <p>数组有 <code>n</code> 个元素。我们想比较每一对不同位置，且 <code>(i,j)</code> 与 <code>(j,i)</code> 只算一对，因此只取 <code>i &lt; j</code>。</p>
+<pre><code>// C++：n 是数组长度
+for (int i = 0; i &lt; n; ++i) {
+    for (int j = i + 1; j &lt; n; ++j) {
+        work(a[i], a[j]);
+    }
+}</code></pre>
+    <p>先约定：一次 <code>work</code> 只比较两个机器字范围内的整数，花常数时间。记 <code>W(n)</code> 为它被调用的次数。循环不提前退出，所以数组里的数值不影响这个次数。</p>
     <div class="exercise" data-quiz>
-      <p><strong>你觉得这份分析最大的漏洞在哪里？</strong></p>
-      <button type="button" data-answer="incorrect" data-message="它确实是一个合法的 O(n log n) 上界；问题在于上界可能太松，不能直接写 Θ。" aria-pressed="false">外层根本不是对数轮</button>
-      <button type="button" data-answer="correct" data-message="对。把每轮的最大代价 n 乘以轮数，只是上界；要得到 tight bound，必须把实际各轮代价相加。" aria-pressed="false">把所有内层都当成最大轮</button>
-      <button type="button" data-answer="incorrect" data-message="n 的定义是输入规模，与是否写成 i *= 2 无关。真正的关键在于每轮内层的次数不同。" aria-pressed="false">变量 n 没有在循环里改变</button>
+      <p><strong>先别写复杂度：当 n = 4 时，work 一共执行几次？</strong></p>
+      <button type="button" data-answer="correct" data-message="对。四轮依次是 3、2、1、0 次，总和为 6。接下来把这个数法推广到任意 n。" aria-pressed="false">执行 6 次</button>
+      <button type="button" data-answer="incorrect" data-message="先固定 i=0：j 只能取 1、2、3。然后固定 i=1，再数一遍。不能把每轮都当成 4 次。" aria-pressed="false">执行 8 次</button>
+      <button type="button" data-answer="incorrect" data-message="16 会把 n×n 个有序位置组合全部算进去，包括自身和反向重复；代码只访问 i<j 的部分。" aria-pressed="false">执行16次</button>
       <p class="feedback" data-feedback-output aria-live="polite"></p>
     </div>
   </section>
 
-  <section>
-    <h2>1 · 先约定什么叫“时间”</h2>
-    <p>我们使用简化的 <strong>unit-cost RAM model</strong>：一个机器字范围内的比较、加减、赋值、数组访问等基本操作花费常数时间；这里假定 <code>work()</code> 自身也花常数时间。暂时不计缓存、I/O 和大整数位运算。</p>
-    <p><strong>输入规模</strong>是 <code>n</code>，运行时间 <code>T(n)</code> 则是这些基本操作的总成本。先数 <code>work()</code> 是一个方便的起点，但完整分析还需确认循环控制的开销不会改变渐进阶。</p>
-    <div class="callout"><strong>关键区分：</strong>输入大小、基本操作、分析情形（最好／最坏／期望）必须说明。缺少任意一个，“这个算法是 Θ(n)”都可能是不完整的陈述。</div>
+  <section aria-labelledby="count-title">
+    <p class="eyebrow">02 · 从手算到通式</p>
+    <h2 id="count-title">固定一轮，再把所有轮加起来</h2>
+    <p>当 <code>i = 0</code> 时，还有 <code>n−1</code> 个位置可配对；当 <code>i = 1</code> 时，还剩 <code>n−2</code> 个。一直到最后一轮，没有后面的位置可配对。</p>
+    <figure class="count-picture">
+      <svg viewBox="0 0 420 205" role="img" aria-labelledby="pairs-title pairs-desc">
+        <title id="pairs-title">n=4 时的六次配对</title>
+        <desc id="pairs-desc">第一行配对 01、02、03；第二行配对 12、13；第三行配对 23；第四行零次。</desc>
+        <g class="pair-label"><text x="16" y="35">i = 0</text><text x="16" y="85">i = 1</text><text x="16" y="135">i = 2</text><text x="16" y="185">i = 3</text></g>
+        <g class="pair-cell"><rect x="90" y="10" width="66" height="36" rx="7"/><rect x="170" y="10" width="66" height="36" rx="7"/><rect x="250" y="10" width="66" height="36" rx="7"/><rect x="90" y="60" width="66" height="36" rx="7"/><rect x="170" y="60" width="66" height="36" rx="7"/><rect x="90" y="110" width="66" height="36" rx="7"/></g>
+        <g class="pair-text"><text x="123" y="34">(0,1)</text><text x="203" y="34">(0,2)</text><text x="283" y="34">(0,3)</text><text x="123" y="84">(1,2)</text><text x="203" y="84">(1,3)</text><text x="123" y="134">(2,3)</text></g>
+        <g class="pair-label"><text x="345" y="35">3 次</text><text x="345" y="85">2 次</text><text x="345" y="135">1 次</text><text x="345" y="185">0 次</text></g>
+      </svg>
+      <figcaption>看每一行有多少工作，再求和。循环层数本身没有给出这个总和。</figcaption>
+    </figure>
+    <div class="formula">W(n) = (n−1) + (n−2) + ⋯ + 1 + 0</div>
+    <p><strong>停一下：</strong>把这串数倒着写在下面，两行相加，每一列会是多少？</p>
+    <details><summary>展开配对推导</summary>
+<pre><code>  W = (n−1) + (n−2) + … + 1     + 0
+  W = 0     + 1     + … + (n−2) + (n−1)
+------------------------------------------------
+ 2W = (n−1) + (n−1) + … + (n−1)   ← 共 n 列</code></pre>
+      <p>所以 <code>2W(n) = n(n−1)</code>。这不是记住一个求和公式，而是把两份三角形拼成矩形。</p>
+    </details>
+    <div class="formula">W(n) = n(n−1) / 2</div>
+    <p>代回 <code>n = 4</code>，得到 <code>4×3/2 = 6</code>，和刚才的逐轮计数一致。</p>
   </section>
 
-  <section>
-    <h2>2 · 别乘最大值；把每轮加起来</h2>
-    <p>取 <code>n = 16</code>。外层依次取 <code>i = 1, 2, 4, 8</code>，对应的 <code>work()</code> 执行次数分别为 <code>1, 2, 4, 8</code>。</p>
-    <div class="formula">W(16) = 1 + 2 + 4 + 8 = 15</div>
-    <p>推广到 <code>n = 2ᵏ</code>，共有 <code>k</code> 个外层值，几何级数给出：</p>
-    <div class="formula">W(n) = ∑(r=0…k−1) 2ʳ = 2ᵏ − 1 = n − 1</div>
-    <p>所以即使外层有 <code>log₂n</code> 轮，实际做的主要工作仍只有线性数量。下面的实验会让差异更直观。</p>
+  <section aria-labelledby="theta-title">
+    <p class="eyebrow">03 · 给增长方式起一个名字</p>
+    <h2 id="theta-title">为什么说它是“二次增长”？</h2>
+    <p><code>n(n−1)/2</code> 并不等于 <code>n²</code>。我们说它与 <code>n²</code> <strong>同阶</strong>，意思是：从某个规模开始，它始终能被两个固定倍数的 <code>n²</code> 夹住。</p>
+    <p>先看上界。因为 <code>n−1 ≤ n</code>：</p>
+    <div class="formula">W(n) = n(n−1)/2 ≤ n²/2</div>
+    <p>再看下界。当 <code>n ≥ 2</code> 时，<code>n−1 ≥ n/2</code>，所以：</p>
+    <div class="formula">W(n) = n(n−1)/2 ≥ n(n/2)/2 = n²/4</div>
+    <p>把这两句话放在一起：</p>
+    <div class="formula formula-key">对所有 n ≥ 2：<br>¼ n² ≤ W(n) ≤ ½ n²<br>因此 W(n) = Θ(n²)</div>
+    <p>这就是 <strong>Θ（Theta）</strong>：上下两边都夹住了。这里的 <code>¼</code>、<code>½</code> 可以不同，但都必须是<strong>不随 n 改变的正常数</strong>。</p>
+    <details><summary>现在再读正式定义</summary>
+      <p>对最终非负的工作量函数 <code>W</code> 和最终为正的比较函数 <code>f</code>，若存在常数 <code>c₁,c₂ &gt; 0</code> 与门槛 <code>n₀</code>，使所有 <code>n ≥ n₀</code> 都满足</p>
+      <div class="formula">c₁ f(n) ≤ W(n) ≤ c₂ f(n)</div>
+      <p>就写 <code>W(n) = Θ(f(n))</code>。本例取 <code>f(n)=n²</code>、<code>c₁=¼</code>、<code>c₂=½</code>、<code>n₀=2</code> 即可。只试几个 n 不是证明；两个不等式对所有 n≥2 成立才是。</p>
+      <p>这与 <a href="https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2011/ce8348ec64dce3841ced6a9d0c9e48f2_MIT6_006F11_rec01.pdf#page=1">MIT 6.006 关于双侧界的解释（第 1 页）</a>一致。</p>
+    </details>
+    <p>如果<strong>只证明上面那一边</strong>，记作 <code>W(n)=O(n²)</code>；只证明下面那一边，记作 <code>W(n)=Ω(n²)</code>。今天先把“Θ 要两边”用熟，三个符号的辨析放在<a href="../reference/asymptotic-bounds.html">复习卡</a>中。</p>
+    <div class="exercise" data-quiz>
+      <p><strong>假如只知道 W(n) ≤ n²，足够推出 Θ(n²) 吗？</strong></p>
+      <button type="button" data-answer="incorrect" data-message="还差下界。例如 W(n)=1 也满足 W(n)≤n²（n≥1），但它不会按 n² 的量级增长。" aria-pressed="false">足够，已经有上界</button>
+      <button type="button" data-answer="correct" data-message="对。W(n)=1 就是反例。要写 Θ(n²)，还需要一个正常数乘 n² 的下界。" aria-pressed="false">不够，还需要下界</button>
+      <p class="feedback" data-feedback-output aria-live="polite"></p>
+    </div>
+    <details><summary>我们数的是 work，为什么能说整段程序也是 Θ(n²)？</summary>
+      <p>令 <code>T(n)</code> 为整段程序在单位代价模型下的基本操作总成本。每次 work 都花正的常数时间，因此 <code>T(n) ≥ aW(n)</code>，其中 a&gt;0。</p>
+      <p>内层比较、递增等控制操作的次数至多是 W(n) 加上每轮外层的常数开销；外层只有 n 轮。因此存在固定常数 b&gt;0，使 <code>T(n) ≤ b(W(n)+n+1)</code>。</p>
+      <p>当 n≥2 时，n 和常数项都可被 n² 的固定倍数盖住，于是 T(n) 的上下界也是 n² 的固定倍数：<strong>T(n)=Θ(n²)</strong>。数组数值不影响循环次数，本例不用另分最好与最坏输入。</p>
+    </details>
+  </section>
 
-    <div class="exercise complexity-lab" data-complexity-lab>
-      <p><strong>交互实验：</strong>输入规模 <code>n</code> 选择为 2 的幂，分别比较“内层增长”和“内层逐行增长”的两种程序。</p>
-      <div class="lab-toolbar" role="group" aria-label="选择输入规模">
-        <button type="button" data-size="8" aria-pressed="false">n = 8</button>
-        <button type="button" data-size="16" aria-pressed="true">n = 16</button>
-        <button type="button" data-size="32" aria-pressed="false">n = 32</button>
-        <button type="button" data-size="64" aria-pressed="false">n = 64</button>
-      </div>
-      <div class="lab-stats" aria-live="polite">
-        <div><span>倍增版本的 work()</span><strong data-geometric-count>15</strong></div>
-        <div><span>逐行版本的 work()</span><strong data-triangular-count>136</strong></div>
-      </div>
-      <div class="work-bars" aria-label="操作次数对比">
-        <div class="work-row"><span>倍增</span><div class="work-track"><div class="work-fill work-fill-geometric" data-geometric-bar style="width:11.03%"></div></div></div>
-        <div class="work-row"><span>逐行</span><div class="work-track"><div class="work-fill work-fill-triangular" data-triangular-bar style="width:100%"></div></div></div>
-      </div>
-      <p class="editor-note" data-lab-caption>n=16：倍增版 15 次；逐行版 136 次。柱长按两者次数相对比较。</p>
-      <details><summary>展开：两个程序逐行究竟做了什么？</summary>
-<pre><code>// 倍增：1 + 2 + 4 + … = Θ(n)
-for (i = 1; i &lt; n; i *= 2):
-    for (j = 0; j &lt; i; j++):
-        work()
+  <section aria-labelledby="transfer-title">
+    <p class="eyebrow">04 · 只改一行，你来接着推</p>
+    <h2 id="transfer-title">把 j = i + 1 改成 j = i</h2>
+    <p>这次允许每个位置和自身配对，其他部分相同。<strong>先不展开参考，写下三句话：</strong></p>
+    <ol>
+      <li>当 n=4 时，每轮分别有几次 work？总共几次？</li>
+      <li>对任意 n，W(n) 等于什么？</li>
+      <li>找两个固定倍数的 n² 夹住它，并注明从多大的 n 开始成立。</li>
+    </ol>
+    <details><summary>写完后核对推导</summary>
+      <p>每轮依次有 4、3、2、1 次，共 10 次。一般地，<code>W(n)=n+(n−1)+⋯+1=n(n+1)/2</code>。</p>
+      <p>对 n≥1，<code>n ≤ n+1 ≤ 2n</code>，所以 <code>½n² ≤ W(n) ≤ n²</code>。取 c₁=½、c₂=1、n₀=1，得到 <code>W(n)=Θ(n²)</code>。</p>
+      <p>允许自身配对只增加了 n 次工作。精确次数变了，但上下两侧仍是 n² 的固定倍数，所以渐进阶没变。</p>
+    </details>
+    <details><summary>可选动手：用 C++ / Python 验证手算</summary>
+      <p>先预测 n=0、1、4、5 的次数，再运行。把内层起点改成 i，比较前后变化。程序中的 TODO 用来练计数；跑过有限几个样例仍不能代替上面的证明。</p>
+      <details><summary>C++ 起始代码</summary>
+<pre><code>#include &lt;iostream&gt;
+using namespace std;
 
-// 逐行：1 + 2 + … + n = Θ(n²)
-for (i = 1; i &lt;= n; i++):
-    for (j = 0; j &lt; i; j++):
-        work()</code></pre>
+long long countWork(int n) {
+    long long count = 0;
+    for (int i = 0; i &lt; n; ++i)
+        for (int j = i + 1; j &lt; n; ++j) {
+            // TODO: 每执行到这里，记录一次 work
+        }
+    return count;
+}
+
+int main() {
+    int ns[] = {0, 1, 4, 5};
+    long long expected[] = {0, 0, 6, 10};
+    for (int k = 0; k &lt; 4; ++k) {
+        auto got = countWork(ns[k]);
+        cout &lt;&lt; (got == expected[k] ? "PASS" : "FAIL")
+             &lt;&lt; " n=" &lt;&lt; ns[k] &lt;&lt; " got=" &lt;&lt; got
+             &lt;&lt; " expected=" &lt;&lt; expected[k] &lt;&lt; '\n';
+    }
+}</code></pre>
       </details>
-    </div>
+      <details><summary>Python 起始代码</summary>
+<pre><code>def count_work(n):
+    count = 0
+    for i in range(n):
+        for j in range(i + 1, n):
+            pass  # TODO: 每执行到这里，记录一次 work
+    return count
+
+for n, expected in [(0, 0), (1, 0), (4, 6), (5, 10)]:
+    got = count_work(n)
+    print("PASS" if got == expected else "FAIL",
+          f"n={n} got={got} expected={expected}")</code></pre>
+      </details>
+      <p>修改为 j=i 后，四组期望值应相应改为 0、1、10、15。可在你自己的环境，或 <a href="https://onecompiler.com/cpp" target="_blank" rel="noopener">C++ 在线编辑器</a> / <a href="https://onecompiler.com/python" target="_blank" rel="noopener">Python 在线编辑器</a>运行；在线运行会将代码发送给 OneCompiler。</p>
+    </details>
   </section>
 
-  <section>
-    <h2>3 · 当 n 不是 2 的幂，证明还成立吗？</h2>
-    <p>设 <code>k = ⌈log₂ n⌉</code>（对 <code>n = 1</code> 取 <code>k = 0</code>）。外层取到 <code>2⁰, 2¹, …, 2ᵏ⁻¹</code>，于是 <code>W(n) = 2ᵏ − 1</code>。</p>
-    <p>因为 <code>n ≤ 2ᵏ &lt; 2n</code>（<code>n ≥ 2</code>），有：</p>
-    <div class="formula">n − 1 ≤ W(n) &lt; 2n − 1</div>
-    <p>对充分大的 <code>n</code>，左边至少是 <code>n/2</code>，右边小于 <code>2n</code>。因此 <code>W(n) = Θ(n)</code>。外层控制开销是 <code>O(log n)</code>，内层控制开销与 <code>W(n)</code> 同阶，且每次 <code>work()</code> 至少花常数时间，所以整个程序也是 <strong>Θ(n)</strong>。</p>
-    <p>这一段就是严格分析常见的逻辑链：<strong>精确计数 → 两侧夹住 → tight bound</strong>。</p>
+  <section class="win">
+    <strong>合上页面前，试着复述：</strong>“先数每轮工作，再求总和；要证明 Θ，就找固定倍数的上界和下界。”把迁移题的三句话发给我，我会根据你的推导决定下一次补哪一步。无需先标记完成或解锁其他课程。
   </section>
-
-  <section>
-    <h2>4 · O、Ω、Θ 不是什么“不同速度”</h2>
-    <p>在 <code>T(n) ≥ 0</code> 且 <code>f(n) &gt; 0</code> 的充分大输入上，它们说的是三种数学关系：</p>
-    <table>
-      <thead><tr><th>记号</th><th>形式化含义（存在常数 c&gt;0、n₀）</th><th>直觉</th></tr></thead>
-      <tbody>
-        <tr><td><strong>O(f(n))</strong></td><td>所有 n ≥ n₀：T(n) ≤ c·f(n)</td><td>上界</td></tr>
-        <tr><td><strong>Ω(f(n))</strong></td><td>所有 n ≥ n₀：T(n) ≥ c·f(n)</td><td>下界</td></tr>
-        <tr><td><strong>Θ(f(n))</strong></td><td>同时满足 O(f(n)) 与 Ω(f(n))</td><td>匹配的双侧界</td></tr>
-      </tbody>
-    </table>
-    <p>例如 <code>T(n) = 3n² + 7n + 5</code>，对所有 <code>n ≥ 1</code>：</p>
-    <div class="formula">3n² ≤ T(n) ≤ 15n² ⇒ T(n) = Θ(n²)</div>
-    <p>这个算法也属于 <code>O(n³)</code>，甚至 <code>O(2ⁿ)</code>；但是后两者都不是 tight bound。<strong>写 O(n²) 并不自动代表你证明了 Θ(n²)。</strong></p>
-    <div class="exercise" data-quiz>
-      <p><strong>如果已知某算法最坏情况下 T(n)=5n+4，下面哪句话正确？</strong></p>
-      <button type="button" data-answer="incorrect" data-message="O(n²) 只是上界，T(n)=5n+4 并不具有二次阶的下界。" aria-pressed="false">既然是 O(n²)，就是 Θ(n²)</button>
-      <button type="button" data-answer="correct" data-message="对！线性 tight bound 与更松的二次上界可以同时成立。证明 Θ 要分别给上界和下界。" aria-pressed="false">既是 Θ(n)，也是 O(n²)</button>
-      <button type="button" data-answer="incorrect" data-message="O(n) 是 Θ(n) 的一半条件；线性的函数当然也是 O(n)。" aria-pressed="false">属于 Θ(n)，但不属于 O(n)</button>
-      <p class="feedback" data-feedback-output aria-live="polite"></p>
-    </div>
-  </section>
-
-  <section>
-    <h2>5 · 另一个常见陷阱：两个循环确实可能是二次</h2>
-<pre><code>for (i = 1; i &lt;= n; i++):
-    for (j = 0; j &lt; i; j++):
-        work()</code></pre>
-    <p>这里每次内层执行 <code>i</code> 次，故</p>
-    <div class="formula">W(n) = 1 + 2 + ⋯ + n = n(n+1)/2</div>
-    <p>对 <code>n ≥ 1</code>，<code>n²/2 ≤ W(n) ≤ n²</code>，所以 <code>Θ(n²)</code>。注意区别：<strong>不是“两层循环导致二次”，而是这两个循环的实际执行次数之和确实呈二次增长。</strong></p>
-  </section>
-
-  <section>
-    <h2>6 · 别忘记你在分析哪一种输入</h2>
-    <p>顺序查找一个元素，若它恰好位于数组第一项，一次比较就结束：最好情况 <code>Θ(1)</code>。若它不存在，必须检查所有 <code>n</code> 项：最坏情况 <code>Θ(n)</code>。</p>
-    <p>因此“顺序查找是 Θ(n)”通常隐含了“以 <code>n</code> 为规模的最坏情况”。若不说明分析情形，一个算法甚至可能没有唯一的运行时间函数 <code>T(n)</code>。</p>
-    <div class="callout"><strong>小结：</strong>先指定「度量什么、对谁度量」，再写渐进符号；把 worst-case、best-case、expected-case 混在一起，会让形式正确的不等式回答错误的问题。</div>
-  </section>
-
-  <section>
-    <h2>7 · 迁移题：再遇到两层循环</h2>
-    <p>这一次外层仍然倍增，但内层工作量却随着 <code>i</code> 增大而缩小。取整数 <code>n ≥ 1</code>：</p>
-<pre><code>for (i = 1; i &lt;= n; i *= 2):
-    for (j = 1; j &lt;= n / i; j++):  // 整数除法
-        work()</code></pre>
-    <div class="exercise">
-      <p><strong>先独立回答：</strong>① 对 <code>n = 8</code>，<code>work()</code> 共执行几次？② 对任意 <code>n</code>，请写出求和式；③ 给出一个下界和一个上界，并推出 tight bound。</p>
-      <p>不要直接把 <code>log n</code> 乘上 <code>n</code>；想想每轮的实际代价。</p>
-      <button type="button" data-reveal-target="#transfer-hint" aria-expanded="false">查看参考</button>
-      <div class="answer" id="transfer-hint">
-        <p>① <code>8 + 4 + 2 + 1 = 15</code>。② 操作次数为 <code>W(n)=∑(r=0…⌊log₂n⌋) ⌊n/2ʳ⌋</code>。③ 首项已给出 <code>W(n) ≥ n</code>，而 <code>W(n) ≤ n(1+1/2+1/4+⋯) &lt; 2n</code>，所以 <code>W(n) = Θ(n)</code>；控制开销不会改变总阶。</p>
-        <p>有趣的是：这一题虽然和第 0 节程序完全不同，但时间复杂度相同。算法分析关心的是求和结构，而不是代码表面长相。</p>
-      </div>
-    </div>
-  </section>
-
-  <section>
-    <h2>课后答题卡：四行完成 tight analysis</h2>
-    <div class="proof-grid">
-      <article class="proof-step"><h3>1 · Model</h3><p><code>n</code> 是什么？每次基本操作的成本是什么？分析哪种情况？</p></article>
-      <article class="proof-step"><h3>2 · Count</h3><p>写出总工作次数 <code>W(n)</code> 的和式或递推式，而不是数循环层数。</p></article>
-      <article class="proof-step"><h3>3 · Bounds</h3><p>找常数 <code>c₁,c₂&gt;0</code>，夹住工作量，且确认控制开销同阶或更低。</p></article>
-    </div>
-    <p>最后写出明确结论：<code>T(n) = Θ(f(n))</code>，并指出上下界适用的 <code>n ≥ n₀</code>。这是之后分析 Merge Sort、Heap、图算法时反复要用的基本动作。</p>
-  </section>
-
-  <section class="win complete-row">
+  <section class="complete-row">
     <button type="button" data-complete-lesson="lesson-0002" aria-pressed="false">标记本课已完成</button>
-    <p data-completion-status aria-live="polite">完成标记是自愿的，不影响前后课程的访问。</p>
+    <p data-completion-status aria-live="polite">自愿记录本设备进度。</p>
   </section>
-
-  <section class="lesson-continue" aria-label="继续学习">
-    <div>
-      <p class="eyebrow">EXPLORE · ALL LESSONS</p>
-      <h2>随时回顾或选择其他课程</h2>
-      <p>第二课没有前置解锁条件。学完也无需立即标记完成；新的课程会发布在课程目录中。</p>
-    </div>
-    <a class="lesson-next-button" href="../index.html">返回课程目录 <span aria-hidden="true">→</span></a>
-  </section>
-
   <section class="sources">
-    <h2>主参考与延伸</h2>
-    <ul>
-      <li><a href="https://www.cs.umd.edu/class/spring2025/cmsc451-0101/lectures.html">UMD CMSC451 · Lectures</a>：复习 asymptotic notation、recurrences 与算法证明的材料入口。</li>
-      <li><a href="https://amir.goharshady.com/teaching/honors-algorithms">Amir Goharshady · Honors Algorithms</a>：对应 COMP3711H 的分析与证明训练方向。</li>
-      <li><a href="../reference/algorithm-answer-template.html">本站：算法设计题四件套</a>：将 tight complexity 与 correctness proof 组织进标准答题结构。</li>
-    </ul>
-    <p>有任何推导不明白，把你卡住的那一步发到我们的学习对话；尤其欢迎你尝试用反例挑战我的复杂度判断。</p>
+    <h2>需要时再读</h2>
+    <p>主参考：<a href="https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2011/ce8348ec64dce3841ced6a9d0c9e48f2_MIT6_006F11_rec01.pdf#page=1">MIT 6.006 · Recitation 1，第 1 页</a>，看 Θ 如何把函数从两侧夹住即可，不必提前读后面的递推式。本文的逐对比较例题与分步练习为本课自编。</p>
+    <p>本课对应 <a href="https://amir.goharshady.com/teaching/honors-algorithms">COMP3711H</a> 的算法分析基础。复习时用<a href="../reference/asymptotic-bounds.html">一页参考卡</a>；哪一步不清楚，就把那一步发到学习对话里，我们从那里继续。</p>
   </section>
-
   <nav class="lesson-nav" aria-label="课程切换">
-    <a href="0001-binary-search-loop-invariant.html">← 上一课：Loop invariant</a>
-    <a class="lesson-nav-next" href="../reference/course-route.html">查看后续课程路线 <span aria-hidden="true">→</span></a>
+    <a href="0001-binary-search-loop-invariant.html">← 第一课：二分搜索为何正确</a>
+    <a class="lesson-nav-next" href="../index.html">返回课程目录 →</a>
   </nav>
 </main>
 </body>

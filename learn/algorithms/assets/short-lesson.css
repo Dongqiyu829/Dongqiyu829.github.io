@@ -1,0 +1,27 @@
+/* Shared presentation for short, single-thread lessons and reference cards. */
+section > .eyebrow + h2 { margin-top: 10px; }
+.count-picture { margin: 24px 0; padding: 18px; background: #fff; border: 1px solid var(--line); border-radius: 12px; }
+.count-picture svg { display: block; width: min(100%, 520px); height: auto; margin: auto; }
+.pair-cell { fill: #dceced; stroke: #0e6670; }
+.pair-label, .pair-text { fill: #18242f; font: 16px Consolas, monospace; }
+.pair-text { text-anchor: middle; }
+figcaption { margin-top: 10px; color: var(--muted); font-size: .9rem; }
+details { margin: 18px 0; padding: 14px 18px; border: 1px solid var(--line); border-radius: 10px; background: var(--paper-strong); }
+summary { cursor: pointer; color: var(--accent); font-weight: 700; min-height: 28px; }
+summary:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+details[open] > summary { margin-bottom: 16px; }
+details p:last-child { margin-bottom: 0; }
+details .formula, .formula { overflow-wrap: anywhere; }
+.formula-key { border: 2px solid var(--accent); line-height: 1.9; }
+.sources h2 { font-size: 1.25rem; }
+@media (max-width: 600px) {
+  .exercise, details { padding: 15px; }
+  .count-picture { padding: 10px; margin: 18px 0; }
+  .exercise > button { display: block; width: 100%; min-height: 46px; }
+  pre { padding: 16px; font-size: .86rem; }
+  .formula { font-size: 1rem; padding: 14px 10px; }
+}
+@media print {
+  details > :not(summary) { display: block; }
+  details { break-inside: auto; }
+}

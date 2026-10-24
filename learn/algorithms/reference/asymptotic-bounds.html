@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>渐进分析：一页参考卡</title>
+  <link rel="stylesheet" href="../assets/course.css?v=20261023e">
+  <link rel="stylesheet" href="../assets/short-lesson.css?v=20261024a">
+</head>
+<body>
+<nav class="course-nav"><a href="../lessons/0002-asymptotic-analysis.html">← 返回第二课</a><span class="crumb">参考卡 · 复习时用</span></nav>
+<main>
+  <header class="hero"><p class="eyebrow">Reference · Asymptotic bounds</p><h1>先数工作，再找两侧界</h1><p class="lede">这张卡用于查阅；初学请先走完第二课的具体例子。</p></header>
+  <section><h2>一条完整的分析链</h2>
+    <ol><li><strong>约定：</strong>n 表示什么？一次 work 做什么、花多少代价？</li><li><strong>计数：</strong>固定一轮，写出次数；对所有轮求和得到 W(n)。</li><li><strong>夹住：</strong>找与 n 无关的正常数 c₁、c₂ 和门槛 n₀，证明对所有 n≥n₀ 都有 c₁f(n)≤W(n)≤c₂f(n)。</li><li><strong>回到整段程序：</strong>计入循环控制等开销，再给运行时间 T(n) 的结论。</li></ol>
+  </section>
+  <section><h2>三个符号只是在说界</h2>
+    <p>以下都要求 W 最终非负、f 最终为正；常数必须固定，不随 n 改变。</p>
+    <p><strong>O(f(n))：</strong>存在 c&gt;0、n₀，对所有 n≥n₀，W(n)≤cf(n)。这是上界。</p>
+    <p><strong>Ω(f(n))：</strong>存在 c&gt;0、n₀，对所有 n≥n₀，W(n)≥cf(n)。这是下界。</p>
+    <p><strong>Θ(f(n))：</strong>上下两侧都成立，允许两侧使用不同正常数。这是同阶（tight bound）。</p>
+    <p>W(n)=Θ(f(n)) 是约定写法，并不是说 W 与 f 数值相等。O、Ω 本身也不等于“最坏／最好情况”；先选定要分析的工作量函数，再谈它的界。</p>
+  </section>
+  <section><h2>第二课的证明，压成三行</h2>
+    <div class="formula">W(n) = (n−1)+⋯+1+0 = n(n−1)/2<br>n≥2 时：¼n² ≤ W(n) ≤ ½n²<br>所以 W(n)=Θ(n²)</div>
+    <p>单位代价模型下，本例还有 aW(n)≤T(n)≤b(W(n)+n+1)，其中 a,b&gt;0 固定，因此 T(n)=Θ(n²)。</p>
+    <p>允许自身配对时：W(n)=n(n+1)/2；n≥1 时，½n²≤W(n)≤n²，仍为 Θ(n²)。</p>
+  </section>
+  <section><h2>复习时问自己</h2><p>“我给出的是上界，还是已经找到了匹配下界？”只知道 W(n)≤n² 不够推出 Θ(n²)：W(n)=1 就是反例。有限样例可以检查计数，但不能证明对所有充分大的 n 都成立。</p></section>
+  <section class="sources"><p>定义参考：<a href="https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2011/ce8348ec64dce3841ced6a9d0c9e48f2_MIT6_006F11_rec01.pdf#page=1">MIT 6.006 Recitation 1</a>。<a href="../lessons/0002-asymptotic-analysis.html">返回分步推导与迁移题</a>。</p></section>
+</main>
+</body>
+</html>
