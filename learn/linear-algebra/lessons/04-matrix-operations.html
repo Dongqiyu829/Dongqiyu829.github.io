@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="线性代数第04课：动手学习矩阵加法、数乘、转置、单位矩阵和矩阵乘法"><title>第 04 课 · 矩阵操作</title><link rel="stylesheet" href="../assets/course.css?v=20261024e"><script defer src="../assets/course.js?v=20261024e"></script><script defer src="../assets/vector-lab.js?v=20261024e"></script><script defer src="../assets/matrix-labs.js?v=20261024e"></script></head><body>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="线性代数第04课：动手学习矩阵加法、数乘、转置、单位矩阵和矩阵乘法"><title>第 04 课 · 矩阵操作</title><link rel="stylesheet" href="../assets/course.css?v=20261024f"><script defer src="../assets/course.js?v=20261024f"></script><script defer src="../assets/vector-lab.js?v=20261024f"></script><script defer src="../assets/matrix-labs.js?v=20261024f"></script></head><body>
 
 <nav class="course-nav"><a href="../index.html">← 线性代数主页</a><span class="crumb">第 04 课 · 矩阵操作</span>
 </nav><main>
@@ -38,7 +38,7 @@
 </h2>
 <p><strong>加法</strong>是同位置相加，<strong>数乘</strong>是每一格乘同一个数，<strong>转置</strong>（右上角记 T）是行与列互换。先预测：若只把 B 的右上格从 1 改为 2，A+B 的哪一格会变？Bᵀ 又是哪一格跟着变？然后在下面改数字检验。
 </p>
-<p class="term-note">操作板还提供后面要学的乘法 AB、BA；I 表示“不改变输入”的单位矩阵，tr 表示主对角线数字之和。先试 A+B、2B、Bᵀ，学到下一节再比较乘法。</p>
+<p class="term-note">操作板还提供后面要学的乘法 AB、BA；单位矩阵 I = <span class="matrix"><span>1</span><span>0</span><span>0</span><span>1</span></span>，表示“不改变输入”；tr 表示主对角线数字之和。先试 A+B、2B、Bᵀ，学到下一节再比较乘法。</p>
 <div class="lab" data-matrix-board>
 <div class="lab-head">
 <h3>矩阵操作板：A 固定，B 可以编辑
@@ -46,13 +46,19 @@
 <p>四格从左到右、从上到下填写 B。每格限 −3 到 3 的整数；点不同操作，即时显示结果和原因。
 </p>
 </div>
-<div class="board-controls"><label>编辑 B = <span class="matrix-input"><input data-bcell type="number" min="-3" max="3" step="1" value="1" aria-label="B 第一行第一列"><input data-bcell type="number" min="-3" max="3" step="1" value="1" aria-label="B 第一行第二列"><input data-bcell type="number" min="-3" max="3" step="1" value="0" aria-label="B 第二行第一列"><input data-bcell type="number" min="-3" max="3" step="1" value="1" aria-label="B 第二行第二列"></span></label>
+<div class="board-controls"><div class="board-matrices"><span class="mini-equation">固定 A = <span class="matrix"><span>2</span><span>1</span><span>1</span><span>2</span></span></span><span class="mini-equation">单位矩阵 I = <span class="matrix"><span>1</span><span>0</span><span>0</span><span>1</span></span></span></div><div>编辑 B = <span class="matrix-input"><input data-bcell type="number" min="-3" max="3" step="1" value="1" aria-label="B 第一行第一列"><input data-bcell type="number" min="-3" max="3" step="1" value="1" aria-label="B 第一行第二列"><input data-bcell type="number" min="-3" max="3" step="1" value="0" aria-label="B 第二行第一列"><input data-bcell type="number" min="-3" max="3" step="1" value="1" aria-label="B 第二行第二列"></span></div>
 <div class="board-ops"><button data-op="sum" type="button" aria-pressed="true">A+B</button><button data-op="double" type="button">2B</button><button data-op="transpose" type="button">Bᵀ</button><button data-op="AB" type="button">AB</button><button data-op="BA" type="button">BA</button><button data-op="identity" type="button">IB</button><button data-op="trace" type="button">tr(B)</button><button data-reset-board type="button">恢复默认 B</button>
 </div>
 <div class="board-result" data-board-result aria-live="polite">
 </div>
 <p class="board-explain" data-board-explain>
 </p>
+<div class="operation-guide" data-operation-guide>
+<h3>选结果的一格，追踪它从哪里来</h3>
+<p>同色高亮元素用箭头连到同一项，再汇入金色结果格。可点四个位置按钮，也可直接点图中结果矩阵的一格；改 B、换运算或换结果格，图和计算会一起更新。计算迹时只取两个主对角线元素。</p>
+<div class="cell-selectors" role="group" aria-label="操作板结果位置"><button type="button" data-output-cell="0">第1行第1列</button><button type="button" data-output-cell="1">第1行第2列</button><button type="button" data-output-cell="2">第2行第1列</button><button type="button" data-output-cell="3">第2行第2列</button></div>
+<div data-arrow-picture></div><p class="lab-readout" data-arrow-note aria-live="polite"></p>
+</div>
 </div>
 </div>
 <p class="term-note"><strong>从这里起，静态例题里的 B 都使用本课开头的默认值</strong> <span class="matrix"><span>1</span><span>1</span><span>0</span><span>1</span></span>，不跟随操作板编辑。可点“恢复默认 B”再对照。</p>
@@ -80,6 +86,13 @@
 <p>这也给出手算规则：<strong>结果第 i 行第 j 列 = 左矩阵第 i 行与右矩阵第 j 列对应相乘再相加。</strong>例如 AB 右上格是 <code>2×1+1×1=3</code>。BA 则是另一顺序：<span class="matrix"><span>3</span><span>3</span><span>1</span><span>2</span></span>，通常不等于 AB。只有“左矩阵的列数 = 右矩阵的行数”才能相乘；2×3 乘 3×4 得到 2×4。
 </p>
 <p class="term-note"><strong>乘法不是对应位置相乘。</strong>AB 的右上格取 A 的第一行和 B 的第二列，算出 3；若只算两个右上格相乘，会错误地得到 1。后者是另一种运算，不是这里的矩阵乘法。</p>
+<div class="operation-guide" data-matrix-demo data-operation-guide>
+<h3>箭头示范：先追踪 AB 的右上格</h3>
+<p>本图固定使用默认 A、B。青色标出第 1 项的两个因子，珊瑚色标出第 2 项的两个因子；先分别相乘，再相加。点别的结果格，观察对应的行和列怎样变化。</p>
+<div role="group" aria-label="乘法示意的运算顺序"><button type="button" data-demo-op="AB" aria-pressed="true">AB：先 B 后 A</button><button type="button" data-demo-op="BA">BA：先 A 后 B</button></div>
+<div class="cell-selectors" role="group" aria-label="乘法示意结果位置"><button type="button" data-output-cell="0">第1行第1列</button><button type="button" data-output-cell="1">第1行第2列</button><button type="button" data-output-cell="2">第2行第1列</button><button type="button" data-output-cell="3">第2行第2列</button></div>
+<div data-arrow-picture></div><p class="lab-readout" data-arrow-note aria-live="polite"></p>
+</div>
 <div class="exercise" data-number-check data-hint="每格取左矩阵对应的一行与右矩阵对应的一列，相乘再相加。" data-success="四格都对：CD 的两行分别是 (4,6)、(1,3)。左上是 1×2+2×1=4；右上是 1×0+2×3=6；下行分别为 0×2+1×1=1、0×0+1×3=3。">
 <h3>亲手填写：换一对矩阵还能算吗？</h3>
 <div class="formula"><span class="mini-equation">C = <span class="matrix"><span>1</span><span>2</span><span>0</span><span>1</span></span></span>， <span class="mini-equation">D = <span class="matrix"><span>2</span><span>0</span><span>1</span><span>3</span></span></span></div>

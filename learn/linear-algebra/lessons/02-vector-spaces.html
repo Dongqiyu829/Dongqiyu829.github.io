@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="线性代数第02课：线性变换与向量空间的直观解释"><title>第 02 课 · 线性变换与向量空间</title><link rel="stylesheet" href="../assets/course.css?v=20261024e"><script defer src="../assets/course.js?v=20261024e"></script><script defer src="../assets/vector-lab.js?v=20261024e"></script></head>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="线性代数第02课：线性变换与向量空间的直观解释"><title>第 02 课 · 线性变换与向量空间</title><link rel="stylesheet" href="../assets/course.css?v=20261024f"><script defer src="../assets/course.js?v=20261024f"></script><script defer src="../assets/vector-lab.js?v=20261024f"></script><script defer src="../assets/foundations-labs.js?v=20261024f"></script></head>
 <body><nav class="course-nav"><a href="../index.html">← 线性代数主页</a><span class="crumb">第 02 课 · 线性变换与向量空间</span></nav><main>
 <header class="hero"><p class="eyebrow">Lesson 02 · Linear Maps & Vector Spaces</p><h1>一个向量集合，怎样才算“自成世界”？</h1><p class="lede">向量空间不是神秘的新物体。它就是一群向量组成的集合，并且在做加法、缩放时不会跑到集合外面。</p><div class="meta"><span>约 30 分钟</span><span>动态变换网格</span><span>封闭性判断</span></div></header>
 <section class="win"><strong>本课胜利条件：</strong>你能解释线性变换为何保持加法和数乘，并能用“含零向量、对加法封闭、对数乘封闭”判断一个集合是否为向量空间（或子空间）。</section>
@@ -22,6 +22,22 @@
 <p><strong>集合</strong>就是指定哪些对象算“成员”。例如所有二维实数向量构成的集合记为 <code>ℝ²</code>：<code>ℝ</code> 是实数（包括正数、负数、零），右上角的 2 表示每个向量有两个分量。现在只挑出 ℝ² 的一部分向量，问它们能否独立地做加法和数乘。</p>
 <p>若结果总留在挑出的集合里，就叫对该运算<strong>封闭</strong>。这样的集合（连同普通的向量运算）是 ℝ² 的<strong>子空间</strong>，本身也叫向量空间。想象一条穿过原点的直线：沿线的箭头相加或任意缩放，仍沿着它。</p>
 <div class="checkpoint"><h3>在 ℝ² 里，逐项检查</h3><ol><li><strong>零向量 (0,0) 在里面吗？</strong>这个集合至少不应是空的。</li><li>任取集合中的 u、v，<strong>u+v 还在吗？</strong>这叫对加法封闭。</li><li>任取集合中的 u 和<strong>任意实数</strong> c（包括负数），<strong>cu 还在吗？</strong>这叫对数乘封闭。</li></ol><p>对 ℝ² 的子集，以上三项通过就够了，因为其他加法和数乘规则已由 ℝ² 提供。若换成每支向量有 n 个分量的 ℝⁿ，方法一样。</p></div>
+<p>现在亲手试：先从集合里选两支向量，再检查运算是否把结果送到集合外。下面“坐标轴的<strong>并集</strong>”指在横轴或竖轴上的点都算成员，两条轴之间的点不算；它与整个平面不同。</p>
+<div class="lab" data-closure-lab>
+  <div class="lab-head"><h3>封闭性实验：算完还留在集合里吗？</h3><p>青色粗线或浅色区域表示集合；青色 u、金色 v 是成员，珊瑚色箭头是运算结果。原点的圈表示零向量检查，打叉表示原点不属于集合。</p></div>
+  <div class="lab-plain"><div role="group" aria-label="选择要检验的集合"><button type="button" data-set-kind="line" aria-pressed="true">过原点直线</button><button type="button" data-set-kind="quadrant">第一象限</button><button type="button" data-set-kind="shifted">平移直线</button><button type="button" data-set-kind="cross">两坐标轴的并集</button></div><p class="set-description" data-set-recipe></p></div>
+  <div class="lab-grid"><canvas aria-label="集合封闭性互动图：比较集合中的向量与运算结果"></canvas><div class="lab-controls">
+    <div role="group" aria-label="选择要检验的运算"><button type="button" data-closure-op="sum" aria-pressed="true">加法 u+v</button><button type="button" data-closure-op="scale">数乘 c·u</button></div>
+    <label class="control">成员 u 的参数 s <span data-set-number="s">1</span><input type="range" data-set-value="s" min="-2" max="2" step=".5" value="1"></label>
+    <label class="control">成员 v 的参数 t <span data-set-number="t">0.5</span><input type="range" data-set-value="t" min="-2" max="2" step=".5" value=".5"></label>
+    <label class="control">数乘系数 c <span data-set-number="c">1</span><input type="range" data-set-value="c" min="-2" max="2" step=".5" value="1"></label>
+    <button type="button" data-counterexample>试一组相消的向量</button>
+    <p data-zero-check aria-live="polite"></p><p class="lab-status" data-closure-status aria-live="polite"></p>
+  </div></div>
+  <div class="lab-plain"><p class="callout"><strong>怎样从实验走到结论？</strong>一次反例足以否定封闭性；有限次成功不能证明“任意”情况都成立。图只展示有限视野，u、v 是选取的一族示例，集合本身并不受滑块范围限制。</p><p class="lab-readout" data-set-verdict aria-live="polite"></p></div>
+</div>
+<ol class="guided-task"><li>选“过原点直线”，分别切换加法、数乘并改变参数；用下面的通式解释结果为什么总在线上。</li><li>选“第一象限”，再选“数乘”，把 c 改成 −1：输入还在第一象限，结果却跑出去了。</li><li>选“两坐标轴的并集”，令 s=t=1，观察加法结果 (1,1)。它含零向量，也对数乘封闭，却仍然不是子空间。</li><li>选“平移直线”，先检查原点，再看加法。不要把“是一条直线”误当成“是子空间”。</li></ol>
+<div class="exercise" data-quiz><h3>操作后自测：零向量和数乘检查都通过，够了吗？</h3><p>两条坐标轴的并集包含 (0,0)，也对任意实数数乘封闭。它是 ℝ² 的子空间吗？</p><button type="button" data-answer="incorrect" data-message="还要检查加法。(1,0) 与 (0,1) 都在集合中，但它们的和 (1,1) 不在。">是，已经通过两项检查</button><button type="button" data-answer="correct" data-message="对。(1,0)+(0,1)=(1,1) 不在任一坐标轴上；一个加法反例就足以否定加法封闭。">不是，加法检查仍会失败</button><p class="feedback" data-feedback-output aria-live="polite"></p></div>
 <div class="example"><h3>例 1：穿过原点的直线</h3><p>取所有 <code>(t,2t)</code> 组成集合 L；<code>t∈ℝ</code> 表示 t 可以是任意实数。t=0 给出零向量。若 u 对应 a、v 对应 b，则 <code>u+v=(a+b,2(a+b))</code> 仍具有同样形状；<code>cu=(ca,2ca)</code> 也有同样形状。所以 L 是 ℝ² 的子空间。</p></div>
 <div class="example"><h3>例 2：第一象限</h3><p>取横、竖坐标都大于或等于 0 的所有向量，叫集合 Q。它含零向量，两个成员相加也不会跑出去；但 <code>(1,1)</code> 在 Q 中，<code>−1·(1,1)=(−1,−1)</code> 不在。因此 Q 对负数数乘不封闭，不是 ℝ² 的子空间。</p></div>
 <div class="exercise" data-quiz><h3>判断集合</h3><p><code>S={(x,y):x+y=1}</code> 是 ℝ² 的子空间吗？</p><button type="button" data-answer="incorrect" data-message="它是一条直线，但不是所有直线都是子空间；关键看是否经过原点。">是，因为它是直线</button><button type="button" data-answer="correct" data-message="对：(0,0) 不满足 x+y=1，所以第一关就失败。">不是，因为不含零向量</button><button type="button" data-answer="incorrect" data-message="集合里当然有无穷多个向量；数量不是判断标准。">不是，因为向量太少</button><p class="feedback" data-feedback-output></p></div>

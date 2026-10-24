@@ -18,7 +18,59 @@
     const moved = add(start, scale(direction, t));
     return { start, moved, direction, startOutput: apply(M, start), movedOutput: apply(M, moved) };
   };
-  const core = { add, scale, transpose, multiply, apply, rank, nullVector, collisionExample };
+  const factor = (n) => n < 0 ? `(${fmt(n)})` : fmt(n);
+  function operationTrace(A, B, operation, target = 0) {
+    const row = Math.floor(target / 2), col = target % 2;
+    const position = `第 ${row + 1} 行第 ${col + 1} 列`;
+    const source = (side, index) => ({ side, index });
+    const detail = { operation, target, position, left: A, right: B, leftName: "A", rightName: "B", operator: "+", label: "A+B", scalar: false };
+    if (["AB", "BA", "identity"].includes(operation)) {
+      detail.left = operation === "BA" ? B : operation === "identity" ? [1,0,0,1] : A;
+      detail.right = operation === "BA" ? A : B;
+      detail.leftName = operation === "BA" ? "B" : operation === "identity" ? "I" : "A";
+      detail.rightName = operation === "BA" ? "A" : "B";
+      detail.label = operation === "identity" ? "IB" : operation;
+      detail.operator = "×";
+      detail.values = multiply(detail.left, detail.right);
+      detail.parts = [0, 1].map((k) => {
+        const l = row*2+k, r = k*2+col, value = detail.left[l]*detail.right[r];
+        return { text: `${factor(detail.left[l])} × ${factor(detail.right[r])} = ${fmt(value)}`, value, sources: [source("left",l),source("right",r)] };
+      });
+      detail.calculation = [0,1].map((k) => `${factor(detail.left[row*2+k])}×${factor(detail.right[k*2+col])}`).join(" + ") + ` = ${fmt(detail.values[target])}`;
+      detail.note = `求 ${detail.label} 的${position}：取 ${detail.leftName} 的第 ${row+1} 行、${detail.rightName} 的第 ${col+1} 列，对应相乘，再将两项相加。${detail.calculation}。`;
+      detail.meaning = operation === "identity" ? "I 的 1 保留 B 对应元素，0 消去另一项，所以 IB=B。" : `对列向量先用右边的 ${detail.rightName}，再用左边的 ${detail.leftName}。`;
+    } else if (operation === "double") {
+      detail.left = null; detail.scalar = true; detail.leftName = "系数 2"; detail.operator = "×"; detail.label = "2B";
+      detail.values = scale(B,2);
+      detail.parts = [{ text: `2 × ${factor(B[target])} = ${fmt(detail.values[target])}`, value: detail.values[target], sources: [source("scalar",0),source("right",target)] }];
+      detail.calculation = detail.parts[0].text;
+      detail.note = `求 2B 的${position}：把 B 同位置的 ${fmt(B[target])} 乘 2。${detail.calculation}。`;
+      detail.meaning = "同样的乘 2 要用于四个位置。";
+    } else if (operation === "transpose") {
+      const index = col*2+row;
+      detail.left = B; detail.right = null; detail.leftName = "原矩阵 B"; detail.label = "Bᵀ"; detail.operator = "";
+      detail.values = transpose(B);
+      detail.parts = [{ text: `${fmt(B[index])}：原第 ${col+1} 行第 ${row+1} 列`, value: B[index], sources: [source("left",index)] }];
+      detail.calculation = "行、列编号互换，数值保持不变";
+      detail.note = `Bᵀ 的${position}来自 B 的第 ${col+1} 行第 ${row+1} 列，值为 ${fmt(B[index])}。转置是搬位置，不是对数字取倒数。`;
+      detail.meaning = "点四个结果位置，看每个元素从哪里搬过来。";
+    } else if (operation === "trace") {
+      detail.left = B; detail.right = null; detail.leftName = "B 的主对角线"; detail.label = "tr(B)"; detail.operator = "";
+      detail.values = null; detail.value = B[0]+B[3];
+      detail.parts = [0,3].map((index) => ({text: fmt(B[index]), value: B[index], sources:[source("left",index)]}));
+      detail.calculation = `${factor(B[0])} + ${factor(B[3])} = ${fmt(detail.value)}`;
+      detail.note = `只取左上和右下两个主对角线元素：${detail.calculation}。迹是一个数，不是一个矩阵。`;
+      detail.meaning = "本课只学习迹的计算；特征值的联系放到 Lesson 10。";
+    } else {
+      detail.values = add(A,B);
+      detail.parts = [{text: fmt(A[target]),value:A[target],sources:[source("left",target)]},{text:fmt(B[target]),value:B[target],sources:[source("right",target)]}];
+      detail.calculation = `${factor(A[target])} + ${factor(B[target])} = ${fmt(detail.values[target])}`;
+      detail.note = `求 A+B 的${position}：分别取 A、B 同位置的元素相加。${detail.calculation}。`;
+      detail.meaning = "加法要求两个矩阵的行数、列数分别相同。";
+    }
+    return detail;
+  }
+  const core = { add, scale, transpose, multiply, apply, rank, nullVector, collisionExample, operationTrace };
   if (typeof module !== "undefined") module.exports = core;
   if (typeof document === "undefined") return;
 
@@ -31,6 +83,76 @@
       node.append(cell);
     });
     return node;
+  }
+
+  let diagramId = 0;
+  function drawOperationGuide(guide, detail) {
+    if (!guide) return;
+    const colors = ["#086c72", "#bd4b2b"];
+    const id = `element-map-${++diagramId}`;
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("viewBox", "0 0 520 450"); svg.setAttribute("role","img");
+    svg.setAttribute("aria-labelledby",`${id}-title ${id}-desc`);
+    svg.classList.add("element-map");
+    const ns = "http://www.w3.org/2000/svg";
+    const node = (tag, attrs = {}, text) => {
+      const el = document.createElementNS(ns,tag);
+      Object.entries(attrs).forEach(([key,value]) => el.setAttribute(key,String(value)));
+      if (text !== undefined) el.textContent = text;
+      return el;
+    };
+    svg.append(node("title",{id:`${id}-title`},`${detail.label} 的元素计算箭头图`),node("desc",{id:`${id}-desc`},detail.note));
+    const defs=node("defs");
+    colors.concat("#956514").forEach((color,k) => { const marker=node("marker",{id:`${id}-arrow-${k}`,viewBox:"0 0 10 10",refX:9,refY:5,markerWidth:7,markerHeight:7,orient:"auto-start-reverse"});marker.append(node("path",{d:"M0 0L10 5L0 10Z",fill:color}));defs.append(marker); });
+    svg.append(defs);
+    const single = !detail.right;
+    const centers = {left:single?260:130,right:390,scalar:130};
+    const cell = (side,index) => ({x:centers[side]+(index%2?28:-28),y:Math.floor(index/2)?139:85});
+    const selected = new Map();
+    detail.parts.forEach((part,k) => part.sources.forEach((s) => selected.set(`${s.side}-${s.index}`,k)));
+    const drawMatrix = (values,cx,top,side,label,result=false) => {
+      svg.append(node("text",{x:cx,y:top-(result?34:50),"text-anchor":"middle",class:"map-label"},label));
+      svg.append(node("path",{d:`M${cx-56} ${top-24}h-8v104h8 M${cx+56} ${top-24}h8v104h-8`,stroke:"#233337","stroke-width":2.5,fill:"none"}));
+      values.forEach((value,index) => {
+        const x=cx+(index%2?28:-28),y=top+Math.floor(index/2)*54;
+        const k=selected.get(`${side}-${index}`),active=result?index===detail.target:k!==undefined;
+        const color=result?"#956514":colors[k??0];
+        svg.append(node("rect",{x:x-24,y:y-22,width:48,height:44,rx:7,fill:active?(result?"#fff0c8":k===0?"#dcefee":"#fae6dc"):"#f4f1e8",stroke:active?color:"#e1ded4","stroke-width":active?2.5:1,...(result?{"data-svg-target":index}:{})}));
+        svg.append(node("text",{x,y:y+9,"text-anchor":"middle",class:"map-value",fill:"#17242a",...(result?{"data-svg-target":index}:{})},fmt(value)));
+      });
+    };
+    // Arrows connect each highlighted source cell to its own product/summand.
+    detail.parts.forEach((part,k) => {
+      const tx=detail.parts.length===1?260:(k===0?145:375);
+      part.sources.forEach((s) => {
+        const p=s.side==="scalar"?{x:130,y:112}:cell(s.side,s.index);
+        const direction=s.index%2?1:-1;
+        const path=s.side==="scalar"?`M${p.x} ${p.y+33} C${p.x} 178 ${tx} 175 ${tx} 198`:`M${p.x+direction*25} ${p.y} C${p.x+direction*75} ${p.y} ${p.x+direction*75} 178 ${tx} 198`;
+        svg.append(node("path",{d:path,fill:"none",stroke:colors[k],"stroke-width":2.5,"marker-end":`url(#${id}-arrow-${k})`}));
+      });
+      svg.append(node("rect",{x:tx-(detail.parts.length===1?180:100),y:202,width:detail.parts.length===1?360:200,height:45,rx:9,fill:k===0?"#dcefee":"#fae6dc",stroke:colors[k]}));
+      svg.append(node("text",{x:tx,y:231,"text-anchor":"middle",class:detail.operation==="transpose"?"map-label":"map-term",fill:colors[k]},part.text));
+      svg.append(node("path",{d:`M${tx} 249 Q${tx} 265 260 270`,fill:"none",stroke:colors[k],"stroke-width":2.5,"marker-end":`url(#${id}-arrow-${k})`}));
+    });
+    if (detail.left) drawMatrix(detail.left,centers.left,85,"left",detail.leftName);
+    else { svg.append(node("circle",{cx:130,cy:110,r:32,fill:"#dcefee",stroke:colors[0],"stroke-width":2}));svg.append(node("text",{x:130,y:120,"text-anchor":"middle",class:"map-value"},"2"),node("text",{x:130,y:36,"text-anchor":"middle",class:"map-label"},"数乘系数")); }
+    if (detail.right) { drawMatrix(detail.right,390,85,"right",detail.rightName);svg.append(node("text",{x:260,y:117,"text-anchor":"middle",class:"map-value"},detail.operator)); }
+    const equation=detail.parts.length>1?`${detail.parts.map((part)=>factor(part.value)).join(" + ")} = ${fmt(detail.values?detail.values[detail.target]:detail.value)}`:detail.operation==="transpose"?"交换行、列编号":detail.calculation;
+    svg.append(node("text",{x:260,y:289,"text-anchor":"middle",class:"map-equation"},equation));
+    if (detail.values) {
+      const tx=260+(detail.target%2?28:-28),ty=354+Math.floor(detail.target/2)*54;
+      const side=detail.target%2?1:-1;
+      svg.append(node("path",{d:`M260 298 C${260+side*120} 307 ${260+side*120} ${ty} ${tx+side*27} ${ty}`,fill:"none",stroke:"#956514","stroke-width":2.5,"marker-end":`url(#${id}-arrow-2)`}));
+      drawMatrix(detail.values,260,354,"result",`${detail.label} 的结果`,true);
+    } else {
+      svg.append(node("path",{d:"M260 300V333",stroke:"#956514","stroke-width":2.5,"marker-end":`url(#${id}-arrow-2)`}));
+      svg.append(node("rect",{x:190,y:343,width:140,height:65,rx:10,fill:"#fff0c8",stroke:"#956514"}));
+      svg.append(node("text",{x:260,y:386,"text-anchor":"middle",class:"map-value"},fmt(detail.value)));
+    }
+    guide.querySelector("[data-arrow-picture]").replaceChildren(svg);
+    svg.addEventListener("click",(event)=>{const cell=event.target.closest("[data-svg-target]");if(cell)guide.querySelector(`[data-output-cell="${cell.dataset.svgTarget}"]`)?.click();});
+    guide.querySelector("[data-arrow-note]").textContent=detail.note;
+    guide.querySelectorAll("[data-output-cell]").forEach((button) => {button.disabled=!detail.values;button.setAttribute("aria-pressed",String(Boolean(detail.values)&&Number(button.dataset.outputCell)===detail.target));});
   }
 
   function drawArrow(ctx, point, vector, color, width = 3) {
@@ -50,26 +172,21 @@
       const fields = [...board.querySelectorAll("[data-bcell]")];
       const result = board.querySelector("[data-board-result]");
       const explain = board.querySelector("[data-board-explain]");
-      let operation = "sum";
+      const guide = board.querySelector("[data-operation-guide]");
+      let operation = "sum", target = 0;
       function render() {
         const B = fields.map((field) => Number(field.value));
         if (fields.some((field) => field.value.trim() === "" || !Number.isInteger(Number(field.value)) || Number(field.value) < -3 || Number(field.value) > 3)) {
           result.textContent = "请在四格都输入 −3 到 3 的整数。";
           explain.textContent = "修改数字后会立刻重算；空格不会被悄悄当作 0。";
+          if (guide) guide.hidden = true;
           return;
         }
-        let values, label, note;
-        switch (operation) {
-          case "sum": values = add(A, B); label = "A + B = "; note = "只有同样大小的矩阵才能相加；四个位置分别相加。"; break;
-          case "double": values = scale(B, 2); label = "2B = "; note = "数乘让 B 的每一格都乘 2，不只乘某一行。"; break;
-          case "transpose": values = transpose(B); label = "Bᵀ = "; note = "转置把行变成列：左上与右下不动，右上与左下交换。"; break;
-          case "BA": values = multiply(B, A); label = "BA = "; note = `先 A 后 B。左上格 = ${B[0]}×2 + ${B[1]}×1 = ${fmt(values[0])}。右边的 A 先作用。`; break;
-          case "identity": values = multiply([1, 0, 0, 1], B); label = "IB = "; note = "I 是单位矩阵；乘它不改变 B，就像数字乘 1。"; break;
-          case "trace": result.textContent = `tr(B) = ${fmt(B[0])} + ${fmt(B[3])} = ${fmt(B[0] + B[3])}`; explain.textContent = "迹只对方阵定义：主对角线从左上到右下。本课只学怎样计算它，不谈特征值。"; return;
-          default: values = multiply(A, B); label = "AB = "; note = `先 B 后 A。左上格 = 2×${B[0]} + 1×${B[2]} = ${fmt(values[0])}。每一列也是 A 作用于 B 对应的列。`;
-        }
-        result.replaceChildren(document.createTextNode(label), matrixNode(values));
-        explain.textContent = note;
+        const detail=operationTrace(A,B,operation,target);
+        if (detail.values) result.replaceChildren(document.createTextNode(`${detail.label} = `), matrixNode(detail.values));
+        else result.textContent=`tr(B) = ${detail.calculation}`;
+        explain.textContent=detail.meaning;
+        if (guide) { guide.hidden=false;drawOperationGuide(guide,detail); }
       }
       board.querySelectorAll("[data-op]").forEach((button) => button.addEventListener("click", () => {
         operation = button.dataset.op;
@@ -77,10 +194,23 @@
         render();
       }));
       fields.forEach((field) => field.addEventListener("input", render));
+      board.querySelectorAll("[data-output-cell]").forEach((button)=>button.addEventListener("click",()=>{target=Number(button.dataset.outputCell);render();}));
       board.querySelector("[data-reset-board]")?.addEventListener("click", () => {
         fields.forEach((field, i) => { field.value = [1, 1, 0, 1][i]; });
         render();
       });
+      render();
+    });
+
+    document.querySelectorAll("[data-matrix-demo]").forEach((demo)=>{
+      let operation="AB",target=1;
+      const render=()=>drawOperationGuide(demo,operationTrace(A,[1,1,0,1],operation,target));
+      demo.querySelectorAll("[data-demo-op]").forEach((button)=>button.addEventListener("click",()=>{
+        operation=button.dataset.demoOp;
+        demo.querySelectorAll("[data-demo-op]").forEach((peer)=>peer.setAttribute("aria-pressed",String(peer===button)));
+        render();
+      }));
+      demo.querySelectorAll("[data-output-cell]").forEach((button)=>button.addEventListener("click",()=>{target=Number(button.dataset.outputCell);render();}));
       render();
     });
 

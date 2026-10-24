@@ -184,6 +184,25 @@ button:disabled { opacity: .4; cursor: not-allowed; }
 input[aria-invalid="true"] { border: 2px solid var(--danger); background: #fbe6e2; }
 .guided-task { margin: 18px 0; padding: 15px 20px; border-left: 4px solid var(--teal); background: var(--teal-soft); }
 .guided-task li + li { margin-top: 8px; }
+.board-matrices { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; margin-bottom: 20px; }
+.operation-guide { margin: 24px 0; padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
+.operation-guide h3 { margin-top: 0; }
+.element-map { display: block; width: 100%; height: auto; max-width: 640px; margin: 8px auto; background: #fff; }
+.map-label { font: 700 19px "Microsoft YaHei", sans-serif; fill: #233337; }
+.map-value { font: 700 28px Georgia, serif; }
+.map-term { font: 700 24px Georgia, serif; }
+.map-equation { font: 700 25px Georgia, serif; fill: #17242a; }
+.element-map [data-svg-target] { cursor: pointer; }
+.cell-selectors { display: flex; flex-wrap: wrap; gap: 6px; }
+.cell-selectors button { margin: 0; padding: 9px 10px; font-size: .84rem; }
+.lab-status { padding: 12px; border-radius: 9px; border: 1px solid var(--teal); background: var(--teal-soft); }
+.lab-status[data-outcome="no-solution"], .lab-status[data-outcome="outside"] { border-color: var(--danger); background: #fbe6e2; }
+.lab-equations { padding: 12px 18px; background: #fff; border-bottom: 1px solid var(--line); }
+.lab-equations p { margin: 5px 0; }
+.line-key { display: inline-block; width: 22px; height: 4px; margin-right: 6px; vertical-align: middle; }
+.line-key.first { background: var(--teal); } .line-key.second { background: var(--coral); }
+.set-description { padding: 8px 12px; border-left: 3px solid var(--teal); background: var(--teal-soft); }
+.lab-plain { padding: 0 18px 18px; }
 
 @media (max-width: 760px) {
   main { width: min(100% - 22px, 980px); padding-top: 18px; }
@@ -195,6 +214,9 @@ input[aria-invalid="true"] { border: 2px solid var(--danger); background: #fbe6e
   .lab canvas { height: 340px; }
   .lab-views canvas { height: 270px; }
   .lab-controls { border-left: 0; border-top: 1px solid var(--line); }
+  .board-controls { padding: 16px 12px; }
+  .operation-guide { padding: 14px 6px; }
+  .cell-selectors button { flex: 1 1 calc(50% - 6px); }
   .course-nav .crumb { display: none; }
   .lesson-nav a { width: 100%; }
 }

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="线性代数第00课：用消元法和几何直觉理解线性方程组"><title>第 00 课 · 线性方程组</title><link rel="stylesheet" href="../assets/course.css?v=20261024e"><script defer src="../assets/course.js?v=20261024e"></script></head>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="线性代数第00课：用消元法和几何直觉理解线性方程组"><title>第 00 课 · 线性方程组</title><link rel="stylesheet" href="../assets/course.css?v=20261024f"><script defer src="../assets/course.js?v=20261024f"></script><script defer src="../assets/foundations-labs.js?v=20261024f"></script></head>
 <body><nav class="course-nav" aria-label="课程导航"><a href="../index.html">← 线性代数主页</a><span class="crumb">第 00 课 · 方程组</span></nav>
 <main>
 <header class="hero"><p class="eyebrow">Lesson 00 · Systems of Linear Equations</p><h1>答案是交点，还是根本不存在？</h1><p class="lede">线性代数的第一件事，不是背矩阵乘法，而是回答一个朴素问题：几条限制能不能同时满足？</p><div class="meta"><span>约 25 分钟</span><span>只需会一元一次方程</span><span>消元 + 几何</span></div></header>
@@ -24,12 +24,27 @@
 
 <section aria-labelledby="geometry"><p class="eyebrow">03 · Geometry</p><h2 id="geometry">这两条方程各是一条直线，解是交点</h2>
 <p><code>2x+y=5</code> 可以写成 <code>y=5−2x</code>；<code>x+2y=4</code> 可以写成 <code>y=2−x/2</code>。它们相交在 (2,1)。</p>
-<svg viewBox="0 0 640 360" role="img" aria-labelledby="graph-title graph-desc" style="width:100%;height:auto;border:1px solid var(--line);border-radius:14px;background:#fff">
+<noscript><p>互动图需要启用 JavaScript。以下静态图展示默认方程组的交点。</p><svg viewBox="0 0 640 360" role="img" aria-labelledby="graph-title graph-desc" style="width:100%;height:auto;border:1px solid var(--line);border-radius:14px;background:#fff">
 <title id="graph-title">两条直线在二点一相交</title><desc id="graph-desc">坐标平面上，2x+y=5 与 x+2y=4 的交点是二点一。</desc>
 <defs><pattern id="grid00" width="60" height="60" patternUnits="userSpaceOnUse"><path d="M60 0H0V60" fill="none" stroke="#e2ded4" stroke-width="1"/></pattern></defs>
 <rect width="640" height="360" fill="url(#grid00)"/><path d="M40 300H600M120 330V20" stroke="#7a8588" stroke-width="2"/><text x="585" y="290" font-size="17" fill="#5b696d">x</text><text x="130" y="30" font-size="17" fill="#5b696d">y</text><text x="103" y="323" font-size="15" fill="#5b696d">0</text><path d="M120 0L300 360" stroke="#086c72" stroke-width="5"/><path d="M40 140L520 380" stroke="#c35c3a" stroke-width="5"/><circle cx="240" cy="240" r="8" fill="#b7861b"/><text x="252" y="230" font-size="18" fill="#17242a">(2,1)</text><text x="320" y="72" fill="#086c72" font-size="17">2x+y=5</text><text x="430" y="340" fill="#c35c3a" font-size="17">x+2y=4</text>
-</svg>
-<p>图中从原点向右 2 格、向上 1 格，确实落在两条直线上。横轴是 x，竖轴是 y；一个数对对应平面上的一个点。两条线共同经过的点，就是同时满足两条方程的解。若有三个未知数，每条线性方程通常画成一个平面；“同时满足所有限制”的想法不变。</p>
+</svg></noscript>
+<p>这个实验选择能写成 <code>y=mx+h</code> 的非竖直直线。<strong>斜率 m</strong>表示沿线向右走 1 格时，y 改变多少；<strong>截距 h</strong>表示直线经过点 (0,h)。改 m 会转动直线，改 h 会使直线上下平移。默认第二式 <code>0.5x+y=2</code> 是原来的 <code>x+2y=4</code> 整式除以 2，解集不变。竖直直线 <code>x=某个固定数</code> 也属于线性方程，只是不在本实验的调节范围内。</p>
+<div class="lab" data-system-lab>
+  <div class="lab-head"><h3>实验：拖动直线，看看解怎样改变</h3><p>拖动 y 轴附近的圆形把手，可以上下平移对应直线；也可用滑块调整斜率和截距。两个把手重合时，用滑块分别调整。</p></div>
+  <div class="lab-equations"><p><i class="line-key first"></i>L₁：<strong data-equation-one>2x+y=5</strong></p><p><i class="line-key second"></i>L₂：<strong data-equation-two>0.5x+y=2</strong></p></div>
+  <div class="lab-grid"><canvas aria-label="可拖动两条直线，观察方程组的公共点"></canvas><div class="lab-controls">
+    <div role="group" aria-label="方程组例子"><button type="button" data-system-preset="unique" aria-pressed="true">默认方程组</button><button type="button" data-system-preset="parallel">平行例子</button><button type="button" data-system-preset="same">重合例子</button></div>
+    <label class="control">L₁ 斜率 m₁ <span data-line-number="m1">−2</span><input type="range" data-line-value="m1" min="-3" max="3" step=".5" value="-2"></label>
+    <label class="control">L₁ 截距 h₁ <span data-line-number="h1">5</span><input type="range" data-line-value="h1" min="-6" max="6" step=".5" value="5"></label>
+    <label class="control">L₂ 斜率 m₂ <span data-line-number="m2">−0.5</span><input type="range" data-line-value="m2" min="-3" max="3" step=".5" value="-.5"></label>
+    <label class="control">L₂ 截距 h₂ <span data-line-number="h2">2</span><input type="range" data-line-value="h2" min="-6" max="6" step=".5" value="2"></label>
+    <button type="button" data-fit-intersection>显示交点</button><p class="lab-status" data-system-status aria-live="polite"></p>
+  </div></div>
+  <div class="lab-plain"><h3>图像和消元说的是同一件事</h3><p>上面两式的 y 系数都是 1，第一式减第二式就能消去 y：</p><p class="lab-readout" data-elimination aria-live="polite"></p></div>
+</div>
+<ol class="guided-task"><li>先保持默认斜率，把 L₂ 的截距从 2 调到 3：交点如何移动？两条斜率不同的直线仍有唯一解。</li><li>点“平行例子”，再点“重合例子”：解释为什么同样的斜率，有时无解，有时无穷多解；同时观察消元结果。</li><li>把 m₁=−3、h₁=−6、m₂=−2.5、h₂=6：交点是 (−24,66)，在初始画面外。点“显示交点”查看。<strong>画面里看不到交点，不等于数学上无解。</strong></li></ol>
+<p>在默认画面中，从原点向右 2 格、向上 1 格，确实落在两条直线上。横轴是 x，竖轴是 y；一个数对对应平面上的一个点。两条线共同经过的点，就是同时满足两条方程的解。若有三个未知数，每条线性方程通常画成一个平面；“同时满足所有限制”的想法不变。</p>
 </section>
 
 <section aria-labelledby="three-cases"><p class="eyebrow">04 · Three Outcomes</p><h2 id="three-cases">最后一行会告诉你是哪一种结局</h2>
