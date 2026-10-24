@@ -188,6 +188,8 @@ input[aria-invalid="true"] { border: 2px solid var(--danger); background: #fbe6e
 .operation-guide { margin: 24px 0; padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
 .operation-guide h3 { margin-top: 0; }
 .element-map { display: block; width: 100%; height: auto; max-width: 640px; margin: 8px auto; background: #fff; }
+.det-area { margin: 24px 0; }
+.det-area svg { max-width: 360px; }
 .map-label { font: 700 19px "Microsoft YaHei", sans-serif; fill: #233337; }
 .map-value { font: 700 28px Georgia, serif; }
 .map-term { font: 700 24px Georgia, serif; }
