@@ -1,14 +1,17 @@
 <!doctype html>
-<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="线性代数第01课：向量、线性组合与Ax=b"><title>第 01 课 · 向量与变换</title><link rel="stylesheet" href="../assets/course.css?v=20261024a"><script defer src="../assets/course.js?v=20261024a"></script><script defer src="../assets/vector-lab.js?v=20261024a"></script></head>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="线性代数第01课：向量、线性组合与Ax=b"><title>第 01 课 · 向量与变换</title><link rel="stylesheet" href="../assets/course.css?v=20261024b"><script defer src="../assets/course.js?v=20261024b"></script><script defer src="../assets/vector-lab.js?v=20261024b"></script></head>
 <body><nav class="course-nav"><a href="../index.html">← 线性代数主页</a><span class="crumb">第 01 课 · 向量与变换</span></nav><main>
-<header class="hero"><p class="eyebrow">Lesson 01 · Vectors & Transformations</p><h1>把一长串方程，压缩成 Ax=b</h1><p class="lede">向量不只是“一列数字”。它可以是箭头、状态，也可以是一份配方。矩阵则把这份配方变成新的向量。</p><div class="meta"><span>约 30 分钟</span><span>互动向量加法</span><span>计算训练</span></div></header>
-<section class="win"><strong>本课胜利条件：</strong>你能把二维向量画出来并做加法与数乘；能把 Lesson 00 的方程组读成列向量的线性组合，再写成 <code>Ax=b</code>。</section>
+<header class="hero"><p class="eyebrow">Lesson 01 · Vectors & Transformations</p><h1>把两条方程，写成一个矩阵等式</h1><p class="lede">先弄清向量怎样写、怎样相加，再把上一课的两个未知数装成列向量。最后逐项算出矩阵乘法到底做了什么。</p><div class="meta"><span>约 30 分钟</span><span>互动向量加法</span><span>计算训练</span></div></header>
+<section class="win"><strong>本课胜利条件：</strong>你能把二维向量画出来并做加法与数乘；能把 Lesson 00 的方程组逐项写成 A<span class="vector-name">x</span> = <span class="vector-name">b</span>，说清每个符号和矩阵乘法的结果。</section>
 
 <section><p class="eyebrow">01 · An Arrow and a List</p><h2>向量是“带方向的量”，也是“有顺序的数据”</h2>
-<p><code>(2,1)</code> 可以表示从原点向右 2、向上 1 的箭头。它也可以表示“2 杯茶、1 块蛋糕”。语境不同，但加法和数乘的规则一样：</p>
-<div class="formula">(2,1)+(−1,3)=(1,4)<br>2(2,1)=(4,2)</div>
-<p>加法是分量分别相加；数乘是每个分量都乘同一个数。几何上，加法等价于把第二支箭头的尾巴接到第一支箭头的头上。</p>
-<div class="lab" data-vector-lab="sum"><div class="lab-head"><h3>互动：拖动 u 和 v，看 u+v</h3><p>青色是 u，金色从 u 的头部画出 v，珊瑚色是结果 u+v。</p></div><div class="lab-grid"><canvas aria-label="二维向量加法互动坐标图"></canvas><div class="lab-controls">
+<p>平面上的 <strong>向量</strong>可以画成一支箭头。它有两个<strong>分量</strong>：水平方向走几格、竖直方向走几格。为了准备矩阵乘法，本课把从原点向右 2、向上 1 的箭头写成列向量（数字上下排列）：</p>
+<div class="formula"><span class="column-vector" aria-label="列向量，第一分量 2，第二分量 1"><span>2</span><span>1</span></span></div>
+<p>文字和互动读数里，我们也把它的两个坐标简写为 <code>(2,1)</code>。<strong>这个横排括号只是坐标速记；一旦写矩阵乘法，输入向量会竖排。</strong>同一对数字也可以记录“2 杯茶、1 块蛋糕”，但在本课先把它想成箭头。</p>
+<p><strong>向量加法</strong>是对应分量相加；<strong>数乘</strong>是用一个数同时乘每个分量。例如：</p>
+<div class="formula"><span class="math-line"><span class="column-vector"><span>2</span><span>1</span></span> + <span class="column-vector"><span>−1</span><span>3</span></span> = <span class="column-vector"><span>1</span><span>4</span></span></span><span class="math-line">2<span class="column-vector"><span>2</span><span>1</span></span> = <span class="column-vector"><span>4</span><span>2</span></span></span></div>
+<p>几何上，加法等价于把第二支箭头的尾巴接到第一支箭头的头上。数乘 2 会让箭头同向、长度加倍；乘 −1 会让方向反过来。</p>
+<div class="lab" data-vector-lab="sum"><div class="lab-head"><h3>互动：调节 u 和 v，看 u+v</h3><p>青色是 u，金色从 u 的头部画出 v，珊瑚色是结果 u+v。读数中的横排括号仍是坐标速记。</p></div><div class="lab-grid"><canvas aria-label="二维向量加法互动坐标图"></canvas><div class="lab-controls">
 <label class="control">u₁ <span data-number="x">2</span><input data-value="x" type="range" min="-3" max="3" step="1" value="2"></label>
 <label class="control">u₂ <span data-number="y">1</span><input data-value="y" type="range" min="-3" max="3" step="1" value="1"></label>
 <label class="control">v₁ <span data-number="vx">-1</span><input data-value="vx" type="range" min="-3" max="3" step="1" value="-1"></label>
@@ -18,26 +21,30 @@
 </section>
 
 <section><p class="eyebrow">02 · Linear Combination</p><h2>线性组合：拿几支箭头当“原料”</h2>
-<p>表达式 <code>a u + b v</code> 叫 u、v 的一个<strong>线性组合</strong>：先分别缩放，再相加。a、b 是你可以调的配方系数。</p>
-<div class="example"><h3>把方程组按“列”读</h3><p>Lesson 00 的方程组</p><div class="formula">2x+y=5<br>x+2y=4</div><p>可以重新排成</p><div class="formula">x(2,1)+y(1,2)=(5,4)</div><p>意思是：要用多少份列向量 <code>(2,1)</code> 与多少份 <code>(1,2)</code>，才能配出目标 <code>(5,4)</code>？答案就是 <code>x=2,y=1</code>。</p></div>
-<div class="callout"><strong>关键转变：</strong>原来我们把每一行看成一条方程；现在把每一列看成一个输出方向。两种读法讲的是同一个问题。</div>
+<p>表达式 <code>a u + b v</code> 叫 u、v 的一个<strong>线性组合</strong>：先分别用数字 a、b 缩放两支向量，再把结果相加。a、b 称为<strong>系数</strong>，就是配方里每种原料取多少份。</p>
+<div class="example"><h3>把方程组按“列”读</h3><p>Lesson 00 的方程组是</p><div class="formula">2x+y=5<br>x+2y=4</div><p>第一列系数 2、1 排成一支列向量；第二列系数 1、2 排成另一支。这样上下两条方程可以同时写为：</p><div class="formula">x<span class="column-vector"><span>2</span><span>1</span></span> + y<span class="column-vector"><span>1</span><span>2</span></span> = <span class="column-vector"><span>5</span><span>4</span></span></div><p>上面一格就是 <code>2x+y=5</code>，下面一格就是 <code>x+2y=4</code>。要用多少份这两支列向量，才能配出右边的目标？答案是 <code>x=2,y=1</code>。</p></div>
+<div class="callout"><strong>关键转变：</strong>按行读，是两条方程；按列读，是两支向量的配方。它们的上、下分量分别对应原来的第一、第二条方程。</div>
 </section>
 
 <section><p class="eyebrow">03 · Matrix Notation</p><h2>矩阵把列向量装进一个盒子</h2>
-<p>把两支列向量并排放好，得到矩阵 A：</p>
-<div class="formula">A=<span class="matrix"><span>2</span><span>1</span><span>1</span><span>2</span></span>，x=(x,y)，b=(5,4)<br>Ax=b</div>
-<p>矩阵乘向量不是神秘公式：它就是“用输入分量当配方系数，对矩阵的列做线性组合”。</p>
-<div class="formula">A(2,1)=2(2,1)+1(1,2)=(5,4)</div>
-<div class="exercise" data-quiz><h3>读列，而不是死背行乘列</h3><p>同一个 A 把 <code>(1,0)</code> 送到哪里？</p><button type="button" data-answer="correct" data-message="对：1×第一列 + 0×第二列，就是第一列 (2,1)。">(2, 1)</button><button type="button" data-answer="incorrect" data-message="(1,2) 是第二列，对应输入 (0,1)。">(1, 2)</button><button type="button" data-answer="incorrect" data-message="A 不会把 (1,0) 保持不变；看第一列即可。">(1, 0)</button><p class="feedback" data-feedback-output></p></div>
+<p><strong>矩阵</strong>是按行、列排好的数字表。把刚才的两支列向量并排，就得到一个两行两列的矩阵 A；它的第一列是 <code>(2,1)</code>，第二列是 <code>(1,2)</code>。把未知数上下排成列向量 <span class="vector-name">x</span>，把两条等式右边的数上下排成列向量 <span class="vector-name">b</span>：</p>
+<div class="formula"><span class="math-line">A = <span class="matrix"><span>2</span><span>1</span><span>1</span><span>2</span></span>，<span class="vector-name">x</span> = <span class="column-vector"><span>x</span><span>y</span></span>，<span class="vector-name">b</span> = <span class="column-vector"><span>5</span><span>4</span></span></span><span class="math-line">A<span class="vector-name">x</span> = <span class="vector-name">b</span></span></div>
+<p>这里的粗体 <span class="vector-name">x</span> 是整支输入列向量；普通字母 <code>x</code>、<code>y</code> 是它的两个数字分量。<strong>A<span class="vector-name">x</span> 表示矩阵乘列向量，顺序是 A 在左、列向量在右。</strong>它不是把 A 与横排的 <code>(x,y)</code> 直接相乘。</p>
+<p>实际计算时，用 <span class="vector-name">x</span> 的第一个分量乘 A 的第一列，用第二个分量乘第二列，再把两支结果相加：</p>
+<div class="formula"><span class="math-line"><span class="matrix"><span>2</span><span>1</span><span>1</span><span>2</span></span><span class="column-vector"><span>x</span><span>y</span></span> = x<span class="column-vector"><span>2</span><span>1</span></span> + y<span class="column-vector"><span>1</span><span>2</span></span></span><span class="math-line">= <span class="column-vector"><span>2x+y</span><span>x+2y</span></span></span></div>
+<p>也可以<strong>按行核对</strong>：矩阵第一行的 <code>2,1</code> 分别乘输入列向量上、下两格，再相加，得到输出上格 <code>2x+y</code>；第二行的 <code>1,2</code> 同样计算，得到下格 <code>x+2y</code>。因此“两行两列”的 A 乘“上下两格”的列向量，结果仍是“上下两格”的列向量。按列组合与按行计算是同一件事的两种读法。</p>
+<p>现在代入 <code>x=2,y=1</code>，两条分量都能核对：</p>
+<div class="formula"><span class="math-line">A<span class="column-vector"><span>2</span><span>1</span></span> = 2<span class="column-vector"><span>2</span><span>1</span></span> + 1<span class="column-vector"><span>1</span><span>2</span></span> = <span class="column-vector"><span>5</span><span>4</span></span></span></div>
+<div class="exercise" data-quiz><h3>先读列，再核对分量</h3><p>同一个 A 乘输入列向量 <span class="column-vector"><span>1</span><span>0</span></span> 后，输出的两个坐标是什么？</p><button type="button" data-answer="correct" data-message="对：1×第一列 + 0×第二列，得到列向量 [2;1]。选项 (2,1) 只是在横排写出它的两个坐标。">(2, 1)</button><button type="button" data-answer="incorrect" data-message="(1,2) 是 A 的第二列，对应输入列向量 [0;1]。">(1, 2)</button><button type="button" data-answer="incorrect" data-message="乘法结果是 A 的第一列 [2;1]，输入不会保持不变。">(1, 0)</button><p class="feedback" data-feedback-output></p></div>
 </section>
 
 <section><p class="eyebrow">04 · Transformation</p><h2>A 也是一台“输入向量 → 输出向量”的机器</h2>
-<p>定义 <code>T(x)=Ax</code>。对于贯穿矩阵，若输入是 <code>(x,y)</code>，输出就是：</p><div class="formula">T(x,y)=(2x+y, x+2y)</div>
-<p>所以 <code>T(1,0)=(2,1)</code>，<code>T(0,1)=(1,2)</code>。知道两支标准方向去了哪里，就知道任意向量去了哪里，因为 <code>(x,y)=x(1,0)+y(0,1)</code>。</p>
-<div class="checkpoint"><h3>计算训练</h3><p>求 <code>A(−1,2)</code>。先按“列的配方”算一次，再按分量公式检查。</p><button type="button" data-reveal-target="#answer01" aria-expanded="false">查看解析</button><div class="answer" id="answer01"><p>列的配方：<code>−1(2,1)+2(1,2)=(0,3)</code>。</p><p>分量检查：<code>(2×(−1)+2, (−1)+2×2)=(0,3)</code>。两条路线必须一致。</p></div></div>
+<p><strong>变换</strong>就是给每个输入向量指定一个输出向量的规则。把“用 A 乘输入列向量”这个规则命名为 <code>T</code>，即 <code>T(输入)=A×输入</code>。令输入列向量为 <span class="vector-name">x</span>，则 <code>T(</code><span class="vector-name">x</span><code>)=A</code><span class="vector-name">x</span>；输出已经算出是</p><div class="formula">T(<span class="column-vector"><span>x</span><span>y</span></span>) = <span class="column-vector"><span>2x+y</span><span>x+2y</span></span></div>
+<p>特别地，输入 <span class="column-vector"><span>1</span><span>0</span></span> 得到第一列 <span class="column-vector"><span>2</span><span>1</span></span>；输入 <span class="column-vector"><span>0</span><span>1</span></span> 得到第二列 <span class="column-vector"><span>1</span><span>2</span></span>。前两支输入分别是水平和竖直的<strong>标准单位向量</strong>：长度为 1，方向分别沿两条坐标轴。任意输入都能由它们按坐标数目拼出来。Lesson 03 会解释“基”这个名字。</p>
+<div class="checkpoint"><h3>计算训练</h3><p>把输入列向量 <span class="column-vector"><span>−1</span><span>2</span></span> 送进 A，输出是什么？先按“列的配方”算一次，再按上面的分量公式检查。</p><button type="button" data-reveal-target="#answer01" aria-expanded="false">查看解析</button><div class="answer" id="answer01"><p>第一种算法：用 −1 倍第一列加 2 倍第二列，<code>−1·(2,1)+2·(1,2)=(0,3)</code>；这里括号只简写坐标。</p><p>第二种算法：上分量 <code>2×(−1)+2=0</code>，下分量 <code>−1+2×2=3</code>。因此输出列向量是 <span class="column-vector"><span>0</span><span>3</span></span>。</p></div></div>
 </section>
 
-<details class="beyond"><summary>Beyond the Course · 折叠的进阶视角</summary><h3>向量不必是箭头</h3><p>多项式、函数、声音信号、图片像素都可以成为向量，只要定义了合理的加法和数乘。箭头是最好的起点，但不是终点。</p><h3>矩阵乘法为什么不能交换？</h3><p>AB 表示先做 B，再做 A。旋转后再投影，通常不同于投影后再旋转，所以一般 <code>AB≠BA</code>。Lesson 04 会把“矩阵乘法 = 变换复合”画出来。</p></details>
+<details class="beyond"><summary>Beyond the Course · 折叠的进阶视角</summary><h3>向量不必是箭头</h3><p>若把多项式、函数或图片像素看成对象，也能定义“相加”和“乘一个数”。例如两张同尺寸图片逐像素相加，仍得到同尺寸图片。箭头只是我们最容易画出的模型；Lesson 02 会说明这些运算何时组成向量空间。</p><h3>两个矩阵相乘会怎样？</h3><p>本课只用“矩阵乘列向量”。若以后连续使用两个矩阵 B、A，先算 B<span class="vector-name">x</span>、再算 A(B<span class="vector-name">x</span>)，可把连续动作记为 <code>AB</code>。改变动作先后，输出可能改变，因而一般 <code>AB≠BA</code>。Lesson 04 才会正式定义两个矩阵相乘。</p></details>
 <section class="complete-row"><button type="button" data-complete-lesson="linear-01" aria-pressed="false">标记本课已完成</button><p data-completion-status>可选：只记录本设备，不影响其他课程。</p></section>
 <nav class="lesson-nav"><a href="00-systems-of-linear-equations.html">← 第 00 课</a><a href="../index.html">课程目录</a><a class="button-link primary" href="02-vector-spaces.html">下一课：向量空间 →</a></nav>
 </main></body></html>

@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="面向初学者的中文线性代数互动课程：从方程组、向量与变换走向特征分解。">
   <title>Introduction to Linear Algebra · 互动线性代数</title>
-  <link rel="stylesheet" href="assets/course.css?v=20261024a">
-  <script defer src="assets/course.js?v=20261024a"></script>
+  <link rel="stylesheet" href="assets/course.css?v=20261024b">
+  <script defer src="assets/course.js?v=20261024b"></script>
 </head>
 <body>
 <nav class="course-nav" aria-label="课程导航">
@@ -32,13 +32,13 @@
       <article class="lesson-card" data-lesson-id="linear-00">
         <span class="status-tag" data-lesson-status>可直接开始</span>
         <h3>00 · 方程组：答案是交点，还是根本不存在？</h3>
-        <p>从两条直线出发，用消元法看唯一解、无解与无穷多解；第一次遇见贯穿矩阵 A。</p>
+        <p>从两条直线出发，用消元法看唯一解、无解与无穷多解；先认识贯穿全课的方程组。</p>
         <a href="lessons/00-systems-of-linear-equations.html">开始第 00 课 →</a>
       </article>
       <article class="lesson-card" data-lesson-id="linear-01">
         <span class="status-tag" data-lesson-status>可直接开始</span>
-        <h3>01 · 向量与变换：把方程改写成 Ax=b</h3>
-        <p>把列向量看成箭头与配方，用互动平行四边形理解线性组合，再把方程组压缩成一行。</p>
+        <h3>01 · 向量与变换：把方程写成矩阵乘列向量</h3>
+        <p>把列向量看成箭头与配方，用互动箭头理解线性组合，再逐项算出矩阵乘法。</p>
         <a href="lessons/01-vectors-and-transformations.html">开始第 01 课 →</a>
       </article>
       <article class="lesson-card" data-lesson-id="linear-02">
@@ -62,7 +62,7 @@
     <div class="example">
       <p>我们反复使用</p>
       <div class="formula">A = <span class="matrix"><span>2</span><span>1</span><span>1</span><span>2</span></span></div>
-      <p>它一开始只是方程组的系数表；随后变成“把向量 <strong>x</strong> 送到 <strong>Ax</strong>”的机器。以后我们会发现：它可逆，行列式为 3，迹为 4；方向 (1,1) 被放大 3 倍，方向 (1,−1) 保持原长度。这一个例子会把计算、几何和抽象概念串在一起。</p>
+      <p>它一开始是方程组的系数表；Lesson 01 会把它变成“矩阵 A 乘输入列向量”的规则。以后我们会发现：它<strong>可逆</strong>（知道输出能倒推输入）；它的<strong>行列式</strong>（有向面积的缩放倍数）是 3，<strong>迹</strong>（主对角线数字之和）是 4；输入方向 (1,1) 会被放大 3 倍，方向 (1,−1) 则保持原样。每个术语都将在对应课程里从例子讲起。</p>
     </div>
   </section>
 
@@ -72,16 +72,16 @@
     <p>前四课已经可学；后八课的学习目标和衔接点已经定好，会沿着同一套例子与视觉语言继续开发。</p>
     <div class="route">
       <div class="route-item"><div><strong>线性方程组</strong><p>解、消元、三种可能性；几何上是直线或平面的交集。</p></div><span class="status-tag">已开放</span></div>
-      <div class="route-item"><div><strong>向量与变换</strong><p>向量、线性组合、矩阵记号 Ax=b；列向量如何参与方程。</p></div><span class="status-tag">已开放</span></div>
+      <div class="route-item"><div><strong>向量与变换</strong><p>先学向量与线性组合，再把方程组改写成矩阵乘列向量。</p></div><span class="status-tag">已开放</span></div>
       <div class="route-item"><div><strong>线性变换与向量空间</strong><p>保持加法与数乘的变换；向量空间是对这些运算封闭的向量集合。</p></div><span class="status-tag">已开放</span></div>
       <div class="route-item"><div><strong>向量空间的基</strong><p>生成、线性无关、基、坐标与维数。</p></div><span class="status-tag">已开放</span></div>
       <div class="route-item"><div><strong>矩阵与线性变换：一般观点</strong><p>矩阵的列就是基向量的去向；复合变换对应矩阵乘法。</p></div><span class="status-tag planned">计划中</span></div>
       <div class="route-item"><div><strong>可逆矩阵、秩与零空间</strong><p>什么信息会丢失；一一对应、满秩、零空间与方程解之间的关系。</p></div><span class="status-tag planned">计划中</span></div>
       <div class="route-item"><div><strong>行列式</strong><p>有向面积／体积的缩放倍数；可逆性的一个数值检测器。</p></div><span class="status-tag planned">计划中</span></div>
-      <div class="route-item"><div><strong>迹</strong><p>对角线之和、基变换下的不变量，以及它为何等于特征值之和。</p></div><span class="status-tag planned">计划中</span></div>
+      <div class="route-item"><div><strong>迹</strong><p>主对角线数字之和；换一套坐标后为什么仍得到同一个数。</p></div><span class="status-tag planned">计划中</span></div>
       <div class="route-item"><div><strong>内积：欧几里得空间</strong><p>长度、角度、正交、投影与最小二乘。</p></div><span class="status-tag planned">计划中</span></div>
       <div class="route-item"><div><strong>内积：推广</strong><p>从点积推广到带权几何；函数空间中的“长度”和“垂直”。</p></div><span class="status-tag planned">计划中</span></div>
-      <div class="route-item"><div><strong>特征分解</strong><p>寻找变换不改变方向的轴；对角化与反复作用。</p></div><span class="status-tag planned">计划中</span></div>
+      <div class="route-item"><div><strong>特征分解</strong><p>寻找变换不改变方向的轴；换到这些方向后，复杂变换会变成几次简单缩放。</p></div><span class="status-tag planned">计划中</span></div>
       <div class="route-item"><div><strong>正定、半正定、负定与半负定</strong><p>二次型的地形：碗、平谷、倒碗；与优化和稳定性的连接。</p></div><span class="status-tag planned">计划中</span></div>
     </div>
     <p><a class="button-link primary" href="reference/course-route.html">查看每课详细目标与先修关系</a></p>

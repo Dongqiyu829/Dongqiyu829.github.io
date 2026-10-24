@@ -98,6 +98,13 @@ section { margin: 40px 0; }
 .matrix::before, .matrix::after { content: ""; position: absolute; inset-block: 0; width: 5px; border-block: 2px solid currentColor; }
 .matrix::before { left: 0; border-left: 2px solid currentColor; }
 .matrix::after { right: 0; border-right: 2px solid currentColor; }
+.column-vector { display: inline-grid; grid-template-columns: minmax(20px, auto); gap: 0; position: relative; margin: 0 5px; padding: 1px 11px; vertical-align: middle; text-align: center; line-height: 1.32; }
+.column-vector::before, .column-vector::after { content: ""; position: absolute; inset-block: 0; width: 5px; border-block: 2px solid currentColor; }
+.column-vector::before { left: 0; border-left: 2px solid currentColor; }
+.column-vector::after { right: 0; border-right: 2px solid currentColor; }
+.vector-name { font-weight: 800; font-style: italic; }
+.math-line { display: block; margin: 5px 0; white-space: nowrap; }
+.term-note { padding: 14px 17px; border-left: 4px solid var(--gold); background: #fffaf0; }
 
 .course-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
 .lesson-card { display: flex; flex-direction: column; min-height: 205px; padding: 23px; border: 1px solid var(--line); border-radius: 15px; background: var(--surface); box-shadow: 0 8px 24px rgba(23,36,42,.05); }
