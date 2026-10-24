@@ -35,7 +35,7 @@
 <p>也可以<strong>按行核对</strong>：矩阵第一行的 <code>2,1</code> 分别乘输入列向量上、下两格，再相加，得到输出上格 <code>2x+y</code>；第二行的 <code>1,2</code> 同样计算，得到下格 <code>x+2y</code>。因此“两行两列”的 A 乘“上下两格”的列向量，结果仍是“上下两格”的列向量。按列组合与按行计算是同一件事的两种读法。</p>
 <p>现在代入 <code>x=2,y=1</code>，两条分量都能核对：</p>
 <div class="formula"><span class="math-line">A<span class="column-vector"><span>2</span><span>1</span></span> = 2<span class="column-vector"><span>2</span><span>1</span></span> + 1<span class="column-vector"><span>1</span><span>2</span></span> = <span class="column-vector"><span>5</span><span>4</span></span></span></div>
-<div class="exercise" data-quiz><h3>先读列，再核对分量</h3><p>同一个 A 乘输入列向量 <span class="column-vector"><span>1</span><span>0</span></span> 后，输出的两个坐标是什么？</p><button type="button" data-answer="correct" data-message="对：1×第一列 + 0×第二列，得到列向量 [2;1]。选项 (2,1) 只是在横排写出它的两个坐标。">(2, 1)</button><button type="button" data-answer="incorrect" data-message="(1,2) 是 A 的第二列，对应输入列向量 [0;1]。">(1, 2)</button><button type="button" data-answer="incorrect" data-message="乘法结果是 A 的第一列 [2;1]，输入不会保持不变。">(1, 0)</button><p class="feedback" data-feedback-output></p></div>
+<div class="exercise" data-quiz><h3>先读列，再核对分量</h3><p>同一个 A 乘输入列向量 <span class="column-vector"><span>1</span><span>0</span></span> 后，输出的两个坐标是什么？</p><button type="button" data-answer="correct" data-message="对：1×第一列 + 0×第二列，得到上分量 2、下分量 1。选项 (2,1) 只是在横排写出它的两个坐标。">(2, 1)</button><button type="button" data-answer="incorrect" data-message="(1,2) 是 A 的第二列，它对应上分量 0、下分量 1 的输入。">(1, 2)</button><button type="button" data-answer="incorrect" data-message="乘法结果是 A 的第一列：上分量 2、下分量 1。输入不会保持不变。">(1, 0)</button><p class="feedback" data-feedback-output></p></div>
 </section>
 
 <section><p class="eyebrow">04 · Transformation</p><h2>A 也是一台“输入向量 → 输出向量”的机器</h2>
