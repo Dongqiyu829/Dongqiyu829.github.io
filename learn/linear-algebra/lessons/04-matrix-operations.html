@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="线性代数第04课：动手学习矩阵加法、数乘、转置、单位矩阵和矩阵乘法"><title>第 04 课 · 矩阵操作</title><link rel="stylesheet" href="../assets/course.css?v=20261025a"><script defer src="../assets/course.js?v=20261025a"></script><script defer src="../assets/vector-lab.js?v=20261025a"></script><script defer src="../assets/matrix-labs.js?v=20261024f"></script></head><body>
+<html lang="zh-CN"><head><script defer src="../assets/learning-modes.js?v=20261025b"></script><script defer src="../assets/transfer-practice.js?v=20261025b"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="线性代数第04课：动手学习矩阵加法、数乘、转置、单位矩阵和矩阵乘法"><title>第 04 课 · 矩阵操作</title><link rel="stylesheet" href="../assets/course.css?v=20261025b"><script defer src="../assets/course.js?v=20261025b"></script><script defer src="../assets/vector-lab.js?v=20261025b"></script><script defer src="../assets/matrix-labs.js?v=20261025b"></script></head><body>
 
 <nav class="course-nav"><a href="../index.html">← 线性代数主页</a><span class="crumb">第 04 课 · 矩阵操作</span>
 </nav><main>
@@ -155,6 +155,7 @@
 </div>
 </section>
 
+<section><h2>不必是方阵：三格输入，两格输出</h2><p>N = <span class="matrix" style="grid-template-columns:repeat(3,minmax(28px,auto))"><span>1</span><span>0</span><span>2</span><span>0</span><span>1</span><span>−1</span></span> 是 2×3 矩阵。它把 ℝ³ 中的输入送到 ℝ² 中的输出：(x,y,z) ↦ (x+2z,y−z)。例如输入 (2,3,1)，输出是 (4,2)。<strong>三列对应三格输入，两行对应两格输出。</strong>每列仍是一支输出向量；按输入用量组合三列就得到输出，并不要求列数等于行数。</p><p>复合也要检查接口：若右边机器输出三格，才可接到 N 的三格输入。方阵的双侧逆不能直接套到这种形状。二维图只是便于观察的例子，不是矩阵概念的限制。</p></section>
 <details class="beyond">
 <summary>Beyond the Course · 进阶视角（不参与自测）
 </summary>
@@ -182,4 +183,4 @@
 <nav class="lesson-nav"><a href="03-basis-of-vector-space.html">← 第 03 课</a><a href="../index.html">课程目录</a><a href="04t-trace.html">04T · Trace 短课 →</a>
 </nav>
 <section class="win"><h2>把这一课放回整条学习路线</h2><p>矩阵加法叠加输出，矩阵乘法复合机器，右边先作用。先完成 04T 的 Trace 短课，再在 05 区分真正移动箭头与只改它的坐标表示。</p></section>
-<script defer src="../assets/beginner-labs.js?v=20261025a"></script></main></body></html>
+<script defer src="../assets/beginner-labs.js?v=20261025b"></script></main></body></html>

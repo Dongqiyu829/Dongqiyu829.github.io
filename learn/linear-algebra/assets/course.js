@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
     catch { return []; }
   };
   const saveProgress = (items) => {try {localStorage.setItem(progressKey, JSON.stringify(items));return true;}catch{return false;}};
-  const number=raw=>window.LABeginner?window.LABeginner.parseNumber(raw):Number(raw);
+  const number=raw=>window.LAStudy?window.LAStudy.parseNumber(raw):window.LABeginner?window.LABeginner.parseNumber(raw):Number(raw);
 
   function renderProgress() {
     const completed = loadProgress();

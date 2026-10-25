@@ -130,7 +130,7 @@ section { margin: 40px 0; }
 .lab-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(220px, 290px); }
 .focus-first { color: var(--teal-dark); background: var(--teal-soft); padding: 2px 4px; }
 .focus-second { color: #745409; background: #fff0c2; padding: 2px 4px; }
-[data-basis-explorer] .lab-controls > label:not(.control) { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 8px 0; font: 700 .85rem/1.4 "Segoe UI",sans-serif; }
+[data-basis-explorer] .lab-controls label:not(.control) { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 8px 0; font: 700 .85rem/1.4 "Segoe UI",sans-serif; }
 [data-basis-cell] { width: 78px; min-height: 40px; }
 [data-basis-explorer] .number-fields { margin: 14px 0; }
 [data-basis-explorer] .lab-status { margin: 0; }
@@ -237,6 +237,15 @@ input[aria-invalid="true"] { border: 2px solid var(--danger); background: #fbe6e
   .course-nav .crumb { display: none; }
   .lesson-nav a { width: 100%; }
 }
+
+[hidden] { display: none !important; }
+.study-mode { margin-top: 16px; padding: 14px; border: 1px solid var(--line); border-radius: 10px; background: #f8f6ef; }
+.study-mode p { margin: 10px 0; }
+.study-mode .control { max-width: 30rem; }
+.lab-controls details { margin: 14px 0; padding: 10px; border: 1px solid var(--line); border-radius: 8px; }
+.lab-controls h4 { margin: 8px 0; }
+.optional-study, .stage-review { margin: 24px 0; padding: 16px; border: 1px solid var(--line); border-radius: 12px; }
+.route-item.trace-route::before { content: "04T"; counter-increment: none; }
 
 @media print {
   body { background: #fff; font-size: 10.5pt; }

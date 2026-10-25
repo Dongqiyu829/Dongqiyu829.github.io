@@ -1,7 +1,7 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Introduction to Linear Algebra Lesson 00–13 互动课程路线"><title>课程路线 · Introduction to Linear Algebra</title><link rel="stylesheet" href="../assets/course.css?v=20261025a"></head><body>
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Introduction to Linear Algebra Lesson 00–13 互动课程路线"><title>课程路线 · Introduction to Linear Algebra</title><link rel="stylesheet" href="../assets/course.css?v=20261025b"></head><body>
 <nav class="course-nav" aria-label="课程导航"><a href="../index.html">← 线性代数主页</a><span class="crumb">Lesson 00–13 · 互动路线</span></nav>
 <main>
-<header class="hero"><p class="eyebrow">Interactive Course Route</p><h1>先把核心概念学稳，再走向工程矩阵</h1><p class="lede">原 00–13 编号保留，04 与 05 之间恢复独立 Trace 短课 04T，不破坏旧链接。00–09 与 04T 已开放；10–11 为后续核心计划，12–13 是自愿学习的工程进阶。本轮重点改进 00–07。</p></header>
+<header class="hero"><p class="eyebrow">Interactive Course Route</p><h1>先把核心概念学稳，再走向工程矩阵</h1><p class="lede">原 00–13 编号保留，04 与 05 之间恢复独立 Trace 短课 04T，不破坏旧链接。00–09 与 04T 已开放；10–11 为后续核心计划，12–13 是自愿学习的工程进阶。本轮巩固已开放课程的独立计算与迁移。</p></header>
 <section class="win"><h2>与原定核心大纲的对应</h2><p>原来的“Matrix: general”对应现 05，“Invertible Matrices, Rank and Null Space”对应 06，“Determinant”对应 07；前移的 04 是补充矩阵操作，独立 Trace 为 04T。原来的内积 08、09、特征分解 10、正定性 11 保持不变。12、13 不是入门必修，也不作为前面课程的先修条件。</p><p>零基础推荐顺序：00→01→02→03→04→04T→05→06→07，再学 08、09。若一个术语不清楚，回到具体例子重做一次，不必以完成标记解锁。</p></section>
 <section class="win"><strong>每课的互动闭环：</strong>先预测结果 → 操作图像或数值 → 解释变化 → 做一次小计算 → 收到即时反馈。计算机负责重复运算，学习者负责判断“算出来的东西是什么意思”。</section>
 <section><h2>阶段一 · 从方程到空间（00–03，已开放）</h2>
@@ -11,13 +11,14 @@
 <div class="route-item"><div><strong>线性变换与向量空间</strong><p>用加法、数乘与零向量的检查，判断集合能否“自成世界”。</p><p class="route-action">现有互动：矩阵 A 的变换网格，以及直线、第一象限、平移直线、两坐标轴并集的封闭性实验；包含反例和一般性解释。</p></div><span class="status-tag">已开放</span></div>
 <div class="route-item"><div><strong>基与坐标</strong><p>判断方向是否够用且不重复，并求同一箭头在不同基下的坐标。</p><p class="route-action">现有互动：直接拖动或输入两支候选方向，固定目标，比较唯一配方、无解与无穷多配方；相关与全零情形可调自由用量。</p></div><span class="status-tag">已开放</span></div>
 </div></section>
-<section><h2>阶段二 · 矩阵的操作与几何（04–07，已开放）</h2><div class="route" style="counter-reset:route 3">
+<section><h2>阶段二 · 矩阵的操作与几何（04、04T、05–07，已开放）</h2><div class="route" style="counter-reset:route 3">
 <div class="route-item"><div><strong>矩阵操作</strong><p>理解矩阵加法、数乘、转置、单位矩阵与矩阵乘法；手算小例子，解释运算顺序。迹仅定义为方阵主对角线数字之和，不谈特征值。</p><p class="route-action">现有互动：<a href="../lessons/04-matrix-operations.html">编辑矩阵、选择结果格，用元素箭头追踪七种运算，再比较 AB 与 BA 的几何效果 →</a></p></div><span class="status-tag">已开放</span></div>
+<div class="route-item trace-route"><div><strong>迹 · Trace 独立短课</strong><p>计算主对角线之和，理解加法、数乘性质与矩阵摘要；不以特征值作为先修。</p><p class="route-action"><a href="../lessons/04t-trace.html">04T：计算、实验、迁移题与自愿完成记录 →</a>。第 10 课学完特征值再回访其联系。</p></div><span class="status-tag">已开放</span></div>
 <div class="route-item"><div><strong>矩阵与线性变换</strong><p>从两支基本方向的去向重建整张网格；区分箭头、它的坐标，以及变换的复合。</p><p class="route-action">现有互动：<a href="../lessons/05-matrices-and-linear-transformations.html">拖动矩阵两列，看网格与测试箭头同时变化 →</a>；配有单位矩阵、A 与压扁矩阵预设及填写练习。</p></div><span class="status-tag">已开放</span></div>
 <div class="route-item"><div><strong>可逆矩阵、秩与零空间</strong><p>把“能否倒回去”“输出能到达几个方向”“哪些输入被压成零”连接起来，再做逐步行消元。</p><p class="route-action">现有互动：<a href="../lessons/06-inverse-rank-nullspace.html">分开观察输入与输出，移动输入比较相同输出，再逐步查看行变换 →</a>。</p></div><span class="status-tag">已开放</span></div>
 <div class="route-item"><div><strong>行列式</strong><p>从有向面积进入计算：面积变零意味着二维信息被压扁，符号翻转意味着方向颠倒。</p><p class="route-action">现有互动：<a href="../lessons/07-determinants.html">拖动矩阵两列、交换两列，比较剪切、反射和压扁；实时显示有向面积与可逆性 →</a>。附元素箭头公式、自测和逐步解析。</p></div><span class="status-tag">已开放</span></div>
 </div></section>
-<section class="callout"><h2>核心短课 04T · Trace</h2><p><a href="../lessons/04t-trace.html">独立学习主对角线、迹的计算和性质 →</a>。放在 04 与 05 之间，先不依赖特征值；第 10 课才回访二者联系。保持 00–13 原编号，04T 另有自愿完成记录。</p></section>
+
 <section><h2>阶段三 · 长度、主方向与二次型（08–09 已开放，10–11 计划中）</h2><div class="route" style="counter-reset:route 7">
 <div class="route-item"><div><strong>欧几里得内积</strong><p>从投影理解点积，再算长度、角度与“最近的点”。</p><p class="route-action">现有互动：<a href="../lessons/08-euclidean-inner-product.html">拖动两向量查看投影，沿误差平方曲线寻找最佳系数 →</a>；包含零向量边界情况和完整计算训练。</p></div><span class="status-tag">已开放</span></div>
 <div class="route-item"><div><strong>推广内积</strong><p>改变权重，理解不同的长度、正交与最近点，再体验函数的内积。</p><p class="route-action">现有互动：<a href="../lessons/09-general-inner-products.html">调权重看椭圆和投影、切换缩放坐标，以及连续函数正负抵消实验 →</a>。</p></div><span class="status-tag">已开放</span></div>

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="线性代数第06课：可逆矩阵、秩、零空间与逐步行消元"><title>第 06 课 · 可逆矩阵、秩与零空间</title><link rel="stylesheet" href="../assets/course.css?v=20261025a"><script defer src="../assets/course.js?v=20261025a"></script><script defer src="../assets/matrix-labs.js?v=20261024f"></script></head><body>
+<html lang="zh-CN"><head><script defer src="../assets/learning-modes.js?v=20261025b"></script><script defer src="../assets/transfer-practice.js?v=20261025b"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="线性代数第06课：可逆矩阵、秩、零空间与逐步行消元"><title>第 06 课 · 可逆矩阵、秩与零空间</title><link rel="stylesheet" href="../assets/course.css?v=20261025b"><script defer src="../assets/course.js?v=20261025b"></script><script defer src="../assets/matrix-labs.js?v=20261025b"></script></head><body>
 
 <nav class="course-nav"><a href="../index.html">← 线性代数主页</a><span class="crumb">第 06 课 · 可逆矩阵、秩与零空间</span>
 </nav><main>
@@ -90,7 +90,7 @@
 </h2>
 <p>想倒推 A 的输出 (5,4)，就是解 <code>2x+y=5</code>、<code>x+2y=4</code>。<strong>增广矩阵</strong>把每条方程的系数和等号右边数字排在同一行，竖线只是分隔符。合法的三种<strong>初等行变换</strong>是：交换两行；某行乘非零数；某行加上另一行的倍数。它们保持<strong>方程组的解集</strong>，但通常会改变矩阵作为几何变换的样子，这两个意思不要混淆。
 </p>
-<div class="lab" data-row-workbench><div class="lab-head"><h3>轮到你选择行操作：不只有“下一步”</h3><p>初始仍是 A 的方程组。建议先交换两行，再 R₂ 加 −2 倍 R₁，再把 R₂ 乘 −1/3，最后 R₁ 加 −2 倍 R₂。也可走别的合法路径。R₁、R₂ 表示第一、第二条方程；每次操作图里的两条限制同步更新，公共解保持。允许撤销和重置。</p></div><div class="lab-grid"><canvas aria-label="主动行消元：每次操作后的两条限制及其共同解"></canvas><div class="lab-controls"><div class="aug-matrix" data-row-matrix aria-live="polite"></div><div class="number-fields"><label>操作<select data-row-operation aria-label="行操作"><option value="swap">交换 R₁ 与 R₂</option><option value="scale">目标整行乘倍数</option><option value="add">目标加来源行的倍数</option></select></label><label>目标行<select data-row-target aria-label="目标行"><option value="0">R₁</option><option value="1">R₂</option></select></label><label>来源行<select data-row-source aria-label="来源行"><option value="0">R₁</option><option value="1" selected>R₂</option></select></label><label>倍数（支持分数）<input type="text" data-row-factor value="1" aria-label="行操作倍数"></label></div><button type="button" data-row-apply>执行我选择的操作</button><button type="button" data-row-undo>撤销</button><button type="button" data-row-invalid>试错：只改左边</button><button type="button" data-row-preset="[[2,1,5],[1,2,4]]">重置 A 方程组</button><button type="button" data-row-preset="[[1,1,3],[2,2,6]]">相关 · 相容</button><button type="button" data-row-preset="[[1,1,3],[2,2,5]]">相关 · 矛盾</button><p class="feedback" data-row-feedback aria-live="polite"></p></div></div><p class="lab-readout" data-row-verdict aria-live="polite"></p></div>
+<div class="lab" data-row-workbench><div class="lab-head"><h3>轮到你选择行操作：不只有“下一步”</h3><p>输入是当前增广矩阵和你选择的操作，输出是改写后的两条限制。R₁、R₂ 表示第一、第二条方程。先想清楚要消掉哪一格，再选操作；观察哪些系数改变、共同解是否保持。可以从常用操作开始，再展开完整控制。需要时才点提示；参考完整路径单独折叠。挑战模式还会要求你先预测新右端，再执行一步。允许撤销、重置和随时自由探索。</p></div><div class="lab-grid"><canvas aria-label="主动行消元：每次操作后的两条限制及其共同解"></canvas><div class="lab-controls"><div class="aug-matrix" data-row-matrix aria-live="polite"></div><div class="number-fields"><label>操作<select data-row-operation aria-label="行操作"><option value="swap">交换 R₁ 与 R₂</option><option value="scale">目标整行乘倍数</option><option value="add">目标加来源行的倍数</option></select></label><label>目标行<select data-row-target aria-label="目标行"><option value="0">R₁</option><option value="1">R₂</option></select></label><label>来源行<select data-row-source aria-label="来源行"><option value="0">R₁</option><option value="1" selected>R₂</option></select></label><label>倍数（支持分数）<input type="text" data-row-factor value="1" aria-label="行操作倍数"></label></div><button type="button" data-row-apply>执行我选择的操作</button><button type="button" data-row-undo>撤销</button><button type="button" data-row-invalid>试错：只改左边</button><button type="button" data-row-preset="[[2,1,5],[1,2,4]]">重置 A 方程组</button><button type="button" data-row-preset="[[1,1,3],[2,2,6]]">相关 · 相容</button><button type="button" data-row-preset="[[1,1,3],[2,2,5]]">相关 · 矛盾</button><p class="feedback" data-row-feedback aria-live="polite"></p></div></div><p class="lab-readout" data-row-verdict aria-live="polite"></p></div>
 <p class="term-note">工作台支持小数及 −1/3 这样的分数输入，但不是符号代数系统：内部用浮点数，表格约显示三位小数。它会拒绝超出数值精度范围、或无法可靠保持解集类型的步骤，并保留原状态；这是演示限制，不表示精确数学中的该操作不合法。纸上计算时可保留分数。</p>
 <details><summary>需要提示？展开参考消元路径，可逐步核对</summary><div class="stepper" data-row-stepper>
 <p class="eyebrow" data-step-index>
@@ -104,8 +104,8 @@
 <div class="step-controls"><button type="button" data-prev>← 上一步</button><button type="button" data-next>下一步 →</button>
 </div>
 </div>
-</details><p>参考路径最后左边变成 I，右边是列向量 <span class="column-vector"><span>2</span><span>1</span></span>：所以输入是 (2,1)。代回原方程：<code>2·2+1=5</code>、<code>2+2·1=4</code>。这次消元求的是目标输出 <span class="column-vector"><span>5</span><span>4</span></span> 对应的输入；下一节才求能用于所有目标的 A⁻¹。
-</p>
+<p>参考路径最后左边变成 I，右边是列向量 <span class="column-vector"><span>2</span><span>1</span></span>：所以输入是 (2,1)。代回原方程：<code>2·2+1=5</code>、<code>2+2·1=4</code>。这次消元求的是目标输出 <span class="column-vector"><span>5</span><span>4</span></span> 对应的输入；下一节才求能用于所有目标的 A⁻¹。
+</p></details>
 <div class="exercise" data-quiz>
 <h3>即时自测：行变换
 </h3>
@@ -116,6 +116,7 @@
 </div>
 </section>
 
+<section><h2>同一套方法也能解三元方程</h2><p>未知数增加时，每行多一格系数，规则仍是整行一起操作。试解 x+y+z=6、2x+y−z=1、x−y+2z=5。你可以先在纸上尝试，下面只在展开后显示一条路径。</p><details><summary>展开三元消元与回代（不需要三维图）</summary><ol><li>R₂←R₂−2R₁，得到 −y−3z=−11。</li><li>R₃←R₃−R₁，得到 −2y+z=−1。</li><li>用新第二行：R₃←R₃−2R₂，得到 7z=21，因此 z=3。</li><li>回到 −y−3z=−11，得 y=2；再回第一式得 x=1。</li><li>验原式：1+2+3=6；2+2−3=1；1−2+6=5。三个非零主元表示三条独立限制，三个未知数恰有唯一解。</li></ol><p>每步可逆的行操作保持解集，这是一般理由；图中观察到交点不动只是二维佐证。工作台目前只画两元情形，三元示例在纸上计算。</p></details></section>
 <section>
 <p class="eyebrow">04 · Inverse in Practice
 </p>
@@ -167,4 +168,4 @@
 <nav class="lesson-nav"><a href="05-matrices-and-linear-transformations.html">← 第 05 课</a><a href="../index.html">课程目录</a><a href="07-determinants.html">第 07 课 · 行列式 →</a>
 </nav>
 <section class="win"><h2>把这一课放回整条学习路线</h2><p>秩数输出方向，零空间收集消失的输入，可逆要求每个输出唯一倒推。下一课用单位方块的有向面积给二维压扁一个数值信号。</p></section>
-<script defer src="../assets/beginner-labs.js?v=20261025a"></script></main></body></html>
+<script defer src="../assets/beginner-labs.js?v=20261025b"></script></main></body></html>
