@@ -85,7 +85,10 @@ Fifth-lesson design is prepared in [docs/LESSON05_PLAN.md](docs/LESSON05_PLAN.md
 ## Split/Merge follow-up (20261025c)
 
 - Scope: fourth-lesson visualization and optional supplements, reference card, next-lesson planning, and matching tests. Shared Compiler Lab, storage, free access, lesson count and the first three lesson bodies are preserved; old pages only receive mechanical release metadata/asset updates.
-- Detailed current acceptance: [docs/LESSON04_SPLIT_MERGE_ACCEPTANCE.md](docs/LESSON04_SPLIT_MERGE_ACCEPTANCE.md). Local and public verification results will be finalized there after deployment; do not substitute earlier release results for this run.
+- Current acceptance: [docs/LESSON04_SPLIT_MERGE_ACCEPTANCE.md](docs/LESSON04_SPLIT_MERGE_ACCEPTANCE.md). Code commit 7a4628fb3479df1eacd1be8a45e8cc7eae5c7de4, Pages run 40193662382 successful.
+- This run: static 11 pages / 85 internal references / 40 versioned references / 4 JSON / 8 production JS, zero errors; 15 browser scenarios passed, local application console/page errors zero. Split/Merge states tested in real Edge at 1280/390/320px for n=0,1,5,6,8,16 (114 states), plus reset, direct phase access, navigation, fault fallbacks and no-JavaScript reading.
+- Model: n=0..1025 plus 1,050,626 unordered/duplicate/negative-input node-return snapshots verified. C++ and Python Merge Sort each passed 5345 actual arrays and 8/8 samples; prior binary/pair/doubling regression re-executed successfully. Space claim is a proof under a stated live-storage/reclamation model, not a measured RSS claim.
+- Public: release 20261025c verified across all 11 pages and 11 direct assets; three widths checked; 38 actual UI phase states for all six sizes at 320px passed, with 1 / 4 legacy and 2 / 4 optional completion. Public Lesson 04 C++/Python each ran 8/8 against real OneCompiler with reset/reload/refresh; zero JavaScript page errors, one known favicon 404 console network error. Do not substitute simulated iframe checks for these actual runs.
 
 ## Follow-up improvements (not Lesson 04 release blockers)
 

@@ -34,7 +34,12 @@
 
 ## 公开部署复核
 
-待发布后记录公开版本、两阶段显示、进度/导航、资源和第四课真实在线执行。不能把本地父页面的在线运行当作已部署验收。
+代码提交：[7a4628fb](https://github.com/Dongqiyu829/Dongqiyu829.github.io/commit/7a4628fb3479df1eacd1be8a45e8cc7eae5c7de4)；[Pages 部署成功](https://github.com/Dongqiyu829/Dongqiyu829.github.io/actions/runs/40193662382)。[公开第四课](https://dongqiyu829.github.io/learn/algorithms/lessons/0004-merge-sort-recursion-tree.html)。
+
+- 11 个公开页面、11 个去重后的直接 CSS/JS 资源及站点根链接均 HTTP 200；页面元数据和资产引用均为 `20261025c`。
+- 公开 11 页分别检查 1280/390/320px，无页面横向溢出、JavaScript 页面异常 0。另在 320px 公开页面实际操作六种输入的两个阶段，共 38 状态；原始子数组、有序子返回、本节点写入、累计量、重置和阶段切换全部通过。图示数据使用已发布的真实课程脚本，没有 mock 节点数据；第三方 iframe 在此布局/图示检查中被阻断，在线执行另列。
+- 旧重复/未知 ID 记录正确显示 1 / 4；自愿标记第四课后为 2 / 4；第三课→第四课→路线导航通过，所有课程仍可直接访问。测试使用隔离浏览器，不更改用户的实际进度。
+- **公开父页面 + 真实 OneCompiler**：第四课 C++、Python 均确认起始代码可见及匹配回传，补 TODO 后实际运行各 **8/8**；恢复起始代码、iframe 重载、刷新默认 C++ 全通过，页面 JavaScript 异常 0。浏览器控制台另有 1 条站点根 favicon 404，保持为已知非阻塞项，没有宣称公共控制台全零。
 
 ## 未执行与后续
 
