@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN"><head><script defer src="../assets/learning-modes.js?v=20261025f"></script><script defer src="../assets/transfer-practice.js?v=20261025f"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="线性代数第03课：基、线性无关、生成与坐标"><title>第 03 课 · 向量空间的基</title><link rel="stylesheet" href="../assets/course.css?v=20261025g"><script defer src="../assets/course.js?v=20261025f"></script><script defer src="../assets/vector-lab.js?v=20261025f"></script></head>
+<html lang="zh-CN"><head><script defer src="../assets/learning-modes.js?v=20261025i"></script><script defer src="../assets/transfer-practice.js?v=20261025i"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="线性代数第03课：基、线性无关、生成与坐标"><title>第 03 课 · 向量空间的基</title><link rel="stylesheet" href="../assets/course.css?v=20261025i"><script defer src="../assets/course.js?v=20261025i"></script><script defer src="../assets/vector-lab.js?v=20261025i"></script></head>
 <body><nav class="course-nav"><a href="../index.html">← 线性代数主页</a><span class="crumb">第 03 课 · 基与坐标</span></nav><main>
 <header class="hero"><p class="eyebrow">Lesson 03 · Basis of a Vector Space</p><h1>给整个空间选一套“尺子”</h1><p class="lede">一组好的方向，既不能缺，也不能重复。它们能拼出空间中的每个向量，并且每个向量只有一种拼法。</p><div class="meta"><span>约 30 分钟</span><span>互动坐标配方</span><span>生成 + 无关</span></div></header>
 <section class="win"><strong>本课胜利条件：</strong>你能用“生成整个空间”和“线性无关”判断一组向量是否为基，并能求一个向量在给定基下的坐标。</section>
@@ -33,7 +33,8 @@
 </section>
 
 <details class="beyond"><summary>Beyond the Course · 折叠的进阶视角</summary><h3>基不唯一，但维数唯一</h3><p>平面有无穷多种不平行的方向配对，所以基不唯一。换基不改变箭头，只改变表示它所需的数字。Lesson 05 会用一个矩阵把一组坐标换算成另一组。</p><h3>多项式也能有基</h3><p><strong>多项式</strong>是像 <code>2+3t−t²</code> 这样的表达式。它可写成 <code>2·1+3·t−1·t²</code>。若容许任意次数，就没有固定的有限方向数；<code>1,t,t²,…</code> 是一套无限的基本方向，但每个具体多项式只用其中有限项。后来研究声音的 Fourier 分析也会把信号拆成基本波形。</p><h3>贯穿矩阵的特殊方向</h3><p>A 把方向 <code>(1,1)</code> 送到同方向的 <code>(3,3)</code>，把 <code>(1,−1)</code> 送到 <code>(1,−1)</code>。这种在变换后仍沿原方向、只改变倍数的非零向量叫<strong>特征向量</strong>；对应倍数 3 和 1 叫<strong>特征值</strong>。Lesson 10 会系统学习它们。</p></details>
+<section class="win"><h3>把本课放进完整主线</h3><p><a href="../reference/core-review.html#review-03">到 Core Linear Algebra Review 做本课迁移题 →</a>。可反复作答，不要求先完成本课，也不改变进度数量。</p></section>
 <section class="complete-row"><button type="button" data-complete-lesson="linear-03" aria-pressed="false">标记本课已完成</button><p data-completion-status>可选：只记录本设备，不影响其他课程。</p></section>
 <nav class="lesson-nav"><a href="02-vector-spaces.html">← 第 02 课</a><a href="../index.html">课程目录</a><a class="button-link" href="04-matrix-operations.html">第 04 课 →</a></nav>
 <section class="win"><h2>把这一课放回整条学习路线</h2><p>生成保证至少一个配方，无关保证至多一个配方；基把两者合在一起，维数数的是基的大小。下一课学习如何把方向与操作记成矩阵。</p></section>
-<script defer src="../assets/beginner-labs.js?v=20261025f"></script></main></body></html>
+<script defer src="../assets/beginner-labs.js?v=20261025i"></script></main></body></html>

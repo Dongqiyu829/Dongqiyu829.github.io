@@ -22,6 +22,7 @@
     return segments;
   }
   const presets={A:{M:[2,1,1,2],name:'A：向上碗'},ND:{M:[-2,-1,-1,-2],name:'向下碗'},PSD:{M:[1,1,1,1],name:'有平坦方向的谷'},NSD:{M:[-1,-1,-1,-1],name:'有平坦方向的倒谷'},IND:{M:[1,2,2,1],name:'鞍面'},ZERO:{M:[0,0,0,0],name:'整个平面为零'}};
-  const api={apply,quadratic,symmetricPart,classifyValues,rotation,fromSpectrum,analyze,coordinates,mesh,contours,presets};
+  function axisSection(Q,values,index,t){return {input:[t*Q[index],t*Q[2+index]],height:values[index]*t*t};}
+  const api={apply,quadratic,symmetricPart,classifyValues,rotation,fromSpectrum,analyze,coordinates,mesh,contours,presets,axisSection};
   if(typeof module!=='undefined')module.exports=api;if(typeof window!=='undefined')window.LAQuadratic=api;
 })();

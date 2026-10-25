@@ -1,6 +1,6 @@
 (function(){
   'use strict';
-  const tasks={A:{values:[3,1,1,-1],hint:'先分解 λ²−4λ+3；再分别解 y=x 与 y=−x。',solution:'(λ−3)(λ−1)=0。λ=3 时取 (1,1)；λ=1 时取 (1,−1)。代回 A 验算两格都满足相同倍数。'},C:{values:[5,2,1,-2],hint:'先分解 λ²−7λ+10；再分别解 y=x 与 y=−2x。',solution:'(λ−5)(λ−2)=0。λ=5 时取 (1,1)；λ=2 时取 (1,−2)。两方向不平行但不垂直；每支都需代回 C 验证。'}};
+  const tasks={A:{values:[3,1,1,-1],hint:'把候选根代回特征多项式；向量分量则代回对应 (A−λI)v，检查哪一行不为零。',solution:'(λ−3)(λ−1)=0。λ=3 时取 (1,1)；λ=1 时取 (1,−1)。代回 A 验算两格都满足相同倍数。'},C:{values:[5,2,1,-2],hint:'把候选根代回特征多项式；再检查 (C−λI)v 的两格是否都为零。完整解法仍在折叠解析中。',solution:'(λ−5)(λ−2)=0。λ=5 时取 (1,1)；λ=2 时取 (1,−2)。两方向不平行但不垂直；每支都需代回 C 验证。'}};
   if(typeof module!=='undefined')module.exports={tasks};
   if(typeof document==='undefined')return;
   document.querySelectorAll('[data-eigen-calculator]').forEach(lab=>{

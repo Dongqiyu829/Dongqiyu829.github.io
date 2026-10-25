@@ -5,6 +5,7 @@
     if(event.type==='mode')return {mode:event.mode,revealed:false,selected:null};
     if(event.type==='change'||event.type==='retry')return {...state,revealed:false,selected:null};
     if(event.type==='select')return {...state,selected:event.value};
+    if(event.type==='edit')return {...state,revealed:false};
     if(event.type==='reveal')return {...state,revealed:true};
     return state;
   }
@@ -30,7 +31,7 @@
       sync();config.render();
     });
     sync();
-    return {hidden:()=>hidden(state),active:()=>state.mode==='challenge',changed(){state=transition(state,{type:'change'});clear();sync();},sync};
+    return {edited(){state=transition(state,{type:'edit'});clear();sync();},hidden:()=>hidden(state),active:()=>state.mode==='challenge',changed(){state=transition(state,{type:'change'});clear();sync();},sync};
   }
   function basisControls(controls){
     const first=document.createElement('div'),basic=document.createElement('details'),full=document.createElement('details');

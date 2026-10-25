@@ -1,0 +1,114 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="00–11 与 04T 的自愿综合复习：陌生矩阵、独立计算、跨课反例和逐步解析。"><title>Core Linear Algebra Review · 核心综合复习</title><link rel="stylesheet" href="../assets/course.css?v=20261025i"><script defer src="../assets/learning-modes.js?v=20261025i"></script><script defer src="../assets/course.js?v=20261025i"></script></head><body class="eigen-lesson"><nav class="course-nav"><a href="../index.html">← 线性代数主页</a><span class="crumb">Core Linear Algebra Review</span></nav><main>
+<header class="hero"><p class="eyebrow">Core Linear Algebra Review · 00–11 + 04T</p><h1>离开演示，独立解释、计算和迁移</h1><p class="lede">用不同数字与表示方式，把方程、空间、矩阵、投影、特征方向和地形连成一条主线。这里是可直接访问的复习页，不是解锁下一课的考试。</p><div class="meta"><span>13 道独立计算</span><span>6 道解释与反例</span><span>可分五次，每次约 15–20 分钟</span></div></header>
+<section class="win"><h2>怎样检验自己学会了？</h2><p>先不看解析，写出计算与理由，再核对。数值正确之后，还要能回答“为什么适用、哪个条件不可缺、如何给出反例”。卡住时用每题的回课链接；可以任意跳转、反复作答。复习不增加 13 个核心课程单元的完成数量，也不设置分数或闯关门槛。</p><p>坐标 (x,y) 是横排速记，矩阵输入按列使用；文字输入框支持 1/2 等分数。每题固定，不随别处的演示改变。</p></section><nav class="review-map" aria-label="复习分区">
+<a href="#systems">一 · 方程、向量与空间（00–03）</a>
+<a href="#matrices">二 · 矩阵、迹与坐标（04、04T、05）</a>
+<a href="#information">三 · 信息、可逆与面积（06–07）</a>
+<a href="#rulers">四 · 尺子与最近点（08–09）</a>
+<a href="#spectral">五 · 主方向、地形与内积（10–11）</a>
+</nav>
+<section id="systems"><h2>一 · 方程、向量与空间（00–03）</h2></section>
+<section class="review-task" id="review-00" data-review-task="00"><p class="eyebrow">Lesson 00 · 独立迁移</p><h2>方程组：先求共同解</h2><p><a href="../lessons/00-systems-of-linear-equations.html">回到本课重建直觉 →</a></p><div class="exercise" data-number-check data-hint="第一式给 x=y+1；代入第二式。" data-success="计算正确。请再用自己的话说出适用条件与核对方法。"><p>解 x−y=1、2x+y=8。不要只代回其中一条。</p><div class="number-fields">
+<label>x<input type="text" inputmode="decimal" data-expected="3" aria-label="复习00 x"></label>
+<label>y<input type="text" inputmode="decimal" data-expected="2" aria-label="复习00 y"></label>
+</div><button type="button" data-check-values>核对独立作答</button><p class="feedback" data-check-output aria-live="polite"></p><details><summary>按需展开逐步解析与条件检查</summary><p>① 2(y+1)+y=8，得 y=2。② x=3。③ 验算 3−2=1、6+2=8。解对应两条限制的共同交点。</p></details></div>
+</section>
+<section class="review-task" id="review-01" data-review-task="01"><p class="eyebrow">Lesson 01 · 独立迁移</p><h2>列组合：换一张系数表</h2><p><a href="../lessons/01-vectors-and-transformations.html">回到本课重建直觉 →</a></p><div class="exercise" data-number-check data-hint="取负一倍第一列，再加两倍第二列。" data-success="计算正确。请再用自己的话说出适用条件与核对方法。"><p>M=<span class="matrix" style="grid-template-columns:repeat(2,minmax(28px,auto))"><span>1</span><span>2</span><span>-1</span><span>1</span></span>，输入 (−1,2)。把它看成列组合，求输出。</p><div class="number-fields">
+<label>输出第一格<input type="text" inputmode="decimal" data-expected="3" aria-label="复习01 输出第一格"></label>
+<label>输出第二格<input type="text" inputmode="decimal" data-expected="3" aria-label="复习01 输出第二格"></label>
+</div><button type="button" data-check-values>核对独立作答</button><p class="feedback" data-check-output aria-live="polite"></p><details><summary>按需展开逐步解析与条件检查</summary><p>−(1,−1)+2(2,1)=(3,3)。按行核对：−1+4=3，1+2=3。横排是坐标速记，矩阵乘法输入为列向量。</p></details></div>
+</section>
+<section class="review-task" id="review-02" data-review-task="02"><p class="eyebrow">Lesson 02 · 独立迁移</p><h2>子空间：亲手构造失败</h2><p><a href="../lessons/02-vector-spaces.html">回到本课重建直觉 →</a></p><div class="exercise" data-number-check data-hint="先算向量和 (3,0)，再检查集合的限制。" data-success="计算正确。请再用自己的话说出适用条件与核对方法。"><p>S={(x,y):2x−y=3}。u=(2,1)、v=(1,−1) 都在 S；计算 u+v 的 2x−y，检查是否仍为 3。</p><div class="number-fields">
+<label>相加后的2x减y<input type="text" inputmode="decimal" data-expected="6" aria-label="复习02 相加后的2x减y"></label>
+</div><button type="button" data-check-values>核对独立作答</button><p class="feedback" data-check-output aria-live="polite"></p><details><summary>按需展开逐步解析与条件检查</summary><p>u+v=(3,0)，2x−y=6，不是 3。这一个反例已足以否定加法封闭性；而且 S 不含零向量，因此不是 ℝ² 的子空间。</p></details></div>
+<div class="checkpoint" data-quiz><h3>解释与反例</h3><p>一次失败和多次成功哪个能处理一般断言？</p>
+<button type="button" data-answer="correct" data-message="对。一般断言要求每一次都成立，找到一次失败就足以否定；有限成功不能覆盖所有输入。">一个合法反例可以否定“总成立”</button>
+<button type="button" data-answer="incorrect" data-message="还可能存在未试到的反例。一般证明需要通式或适用判据。">几个点都成功，就证明对所有输入成立</button>
+<p class="feedback" data-feedback-output aria-live="polite"></p><details><summary>查看推理</summary><p>对。一般断言要求每一次都成立，找到一次失败就足以否定；有限成功不能覆盖所有输入。</p></details></div>
+</section>
+<section class="review-task" id="review-03" data-review-task="03"><p class="eyebrow">Lesson 03 · 独立迁移</p><h2>换基：同一箭头的新配方</h2><p><a href="../lessons/03-basis-of-vector-space.html">回到本课重建直觉 →</a></p><div class="exercise" data-number-check data-hint="比较分量：2a−b=1、a+b=5。" data-success="计算正确。请再用自己的话说出适用条件与核对方法。"><p>有序基 b₁=(2,1)、b₂=(−1,1)，目标 v=(1,5)。求两个用量。</p><div class="number-fields">
+<label>第一用量<input type="text" inputmode="decimal" data-expected="2" aria-label="复习03 第一用量"></label>
+<label>第二用量<input type="text" inputmode="decimal" data-expected="3" aria-label="复习03 第二用量"></label>
+</div><button type="button" data-check-values>核对独立作答</button><p class="feedback" data-check-output aria-live="polite"></p><details><summary>按需展开逐步解析与条件检查</summary><p>两式相加得 3a=6，a=2；再得 b=3。检查 2(2,1)+3(−1,1)=(1,5)。两列行列式 3≠0，故配方唯一；箭头仍是原来的 (1,5)，不要求两支基垂直。</p></details></div>
+<div class="checkpoint" data-quiz><h3>解释与反例</h3><p>一组基是否必须互相垂直？</p>
+<button type="button" data-answer="correct" data-message="对。正交是额外性质，不是基的定义。">不必，生成且线性无关即可</button>
+<button type="button" data-answer="incorrect" data-message="斜基也能给唯一配方；这里两个方向点积为 −1，却仍是基。">必须垂直，否则不能唯一表示</button>
+<p class="feedback" data-feedback-output aria-live="polite"></p><details><summary>查看推理</summary><p>对。正交是额外性质，不是基的定义。</p></details></div>
+</section>
+<section id="matrices"><h2>二 · 矩阵、迹与坐标（04、04T、05）</h2></section>
+<section class="review-task" id="review-04" data-review-task="04"><p class="eyebrow">Lesson 04 · 独立迁移</p><h2>矩阵复合：右边先做</h2><p><a href="../lessons/04-matrix-operations.html">回到本课重建直觉 →</a></p><div class="exercise" data-number-check data-hint="把 D 的两列分别送入 C；不要逐格相乘。" data-success="计算正确。请再用自己的话说出适用条件与核对方法。"><p>C=<span class="matrix" style="grid-template-columns:repeat(2,minmax(28px,auto))"><span>1</span><span>1</span><span>0</span><span>1</span></span>，D=<span class="matrix" style="grid-template-columns:repeat(2,minmax(28px,auto))"><span>2</span><span>0</span><span>0</span><span>-1</span></span>。按从左到右、从上到下填写 CD 四格。</p><div class="number-fields">
+<label>CD 左上<input type="text" inputmode="decimal" data-expected="2" aria-label="复习04 CD 左上"></label>
+<label>CD 右上<input type="text" inputmode="decimal" data-expected="-1" aria-label="复习04 CD 右上"></label>
+<label>CD 左下<input type="text" inputmode="decimal" data-expected="0" aria-label="复习04 CD 左下"></label>
+<label>CD 右下<input type="text" inputmode="decimal" data-expected="-1" aria-label="复习04 CD 右下"></label>
+</div><button type="button" data-check-values>核对独立作答</button><p class="feedback" data-check-output aria-live="polite"></p><details><summary>按需展开逐步解析与条件检查</summary><p>D 的两列 (2,0)、(0,−1) 经过 C 后成为 (2,0)、(−1,−1)，因此 CD 的四格是 2、−1、0、−1。DC 的右上格则为 2，通常不同。</p></details></div>
+</section>
+<section class="review-task" id="review-04t" data-review-task="04t"><p class="eyebrow">Lesson 04T · 独立迁移</p><h2>迹：一个摘要不能包办全部信息</h2><p><a href="../lessons/04t-trace.html">回到本课重建直觉 →</a></p><div class="exercise" data-number-check data-hint="单位矩阵有两个对角格 1。只加主对角线。" data-success="计算正确。请再用自己的话说出适用条件与核对方法。"><p>M=<span class="matrix" style="grid-template-columns:repeat(2,minmax(28px,auto))"><span>2</span><span>3</span><span>-1</span><span>4</span></span>。求 tr(M)、tr(M+2I)，这里 I 为二维单位矩阵。</p><div class="number-fields">
+<label>tr M<input type="text" inputmode="decimal" data-expected="6" aria-label="复习04t tr M"></label>
+<label>tr M加2I<input type="text" inputmode="decimal" data-expected="10" aria-label="复习04t tr M加2I"></label>
+</div><button type="button" data-check-values>核对独立作答</button><p class="feedback" data-check-output aria-live="polite"></p><details><summary>按需展开逐步解析与条件检查</summary><p>tr(M)=2+4=6。M+2I 的对角线是 4、6，迹为 10；也可算 6+2tr(I)=6+4。右上、左下不参与迹；迹不是面积倍数。</p></details></div>
+<div class="checkpoint" data-quiz><h3>解释与反例</h3><p>tr(M)=0 是否说明 M=0？</p>
+<button type="button" data-answer="correct" data-message="对。两个对角数字可以抵消，迹只是摘要。">不能，例如 diag(1,−1)</button>
+<button type="button" data-answer="incorrect" data-message="和为零不等于每格都零；非对角格更没有被迹检查。">能，因为对角线之和为零</button>
+<p class="feedback" data-feedback-output aria-live="polite"></p><details><summary>查看推理</summary><p>对。两个对角数字可以抵消，迹只是摘要。</p></details></div>
+</section>
+<section class="review-task" id="review-05" data-review-task="05"><p class="eyebrow">Lesson 05 · 独立迁移</p><h2>非方阵：输入和输出是几格？</h2><p><a href="../lessons/05-matrices-and-linear-transformations.html">回到本课重建直觉 →</a></p><div class="exercise" data-number-check data-hint="列数对应输入格数，行数对应输出格数；行数不是秩的定义。" data-success="计算正确。请再用自己的话说出适用条件与核对方法。"><p>N=<span class="matrix" style="grid-template-columns:repeat(3,minmax(28px,auto))"><span>1</span><span>2</span><span>-1</span><span>0</span><span>1</span><span>1</span></span>，输入 (2,−1,3)。先判断输入/输出空间维数，再算输出。</p><div class="number-fields">
+<label>输入格数<input type="text" inputmode="decimal" data-expected="3" aria-label="复习05 输入格数"></label>
+<label>输出格数<input type="text" inputmode="decimal" data-expected="2" aria-label="复习05 输出格数"></label>
+<label>输出第一格<input type="text" inputmode="decimal" data-expected="-3" aria-label="复习05 输出第一格"></label>
+<label>输出第二格<input type="text" inputmode="decimal" data-expected="2" aria-label="复习05 输出第二格"></label>
+</div><button type="button" data-check-values>核对独立作答</button><p class="feedback" data-check-output aria-live="polite"></p><details><summary>按需展开逐步解析与条件检查</summary><p>N 有三列两行，表示 ℝ³→ℝ²。输出为 (2−2−3,−1+3)=(−3,2)。输出所在空间有两格；是否能到达整个输出空间，另用列空间和秩检查。</p></details></div>
+</section>
+<section id="information"><h2>三 · 信息、可逆与面积（06–07）</h2></section>
+<section class="review-task" id="review-06" data-review-task="06"><p class="eyebrow">Lesson 06 · 独立迁移</p><h2>秩与零空间：找消失的输入</h2><p><a href="../lessons/06-inverse-rank-nullspace.html">回到本课重建直觉 →</a></p><div class="exercise" data-number-check data-hint="第二列是第一列两倍；K(x,1)=0 要求 x+2=0。" data-success="计算正确。请再用自己的话说出适用条件与核对方法。"><p>K=<span class="matrix" style="grid-template-columns:repeat(2,minmax(28px,auto))"><span>1</span><span>2</span><span>2</span><span>4</span></span>。求秩；对非零零空间向量，固定第二分量为 1，求第一分量。</p><div class="number-fields">
+<label>rank K<input type="text" inputmode="decimal" data-expected="1" aria-label="复习06 rank K"></label>
+<label>零空间向量第一格<input type="text" inputmode="decimal" data-expected="-2" aria-label="复习06 零空间向量第一格"></label>
+</div><button type="button" data-check-values>核对独立作答</button><p class="feedback" data-check-output aria-live="polite"></p><details><summary>按需展开逐步解析与条件检查</summary><p>两列相关但不全零，秩为 1。输入 (−2,1) 送到 (0,0)，所有 t(−2,1) 都在零空间。目标 (3,6) 可达且不唯一；(3,7) 不在列空间中，无解。不可逆不等于每个目标都无解。</p></details></div>
+<div class="checkpoint" data-quiz><h3>解释与反例</h3><p>Kx=(3,7) 的解有多少？</p>
+<button type="button" data-answer="correct" data-message="对。K 的第二输出总是第一输出两倍，第一格为 3 时第二格只能为 6。">没有，目标不在列空间中</button>
+<button type="button" data-answer="incorrect" data-message="det=0 只说明不可逆；目标在列空间外时无解，在列空间内才有不唯一输入。">无穷多，因为 det(K)=0</button>
+<p class="feedback" data-feedback-output aria-live="polite"></p><details><summary>查看推理</summary><p>对。K 的第二输出总是第一输出两倍，第一格为 3 时第二格只能为 6。</p></details></div>
+</section>
+<section class="review-task" id="review-07" data-review-task="07"><p class="eyebrow">Lesson 07 · 独立迁移</p><h2>行列式：方向、普通面积与整台缩放</h2><p><a href="../lessons/07-determinants.html">回到本课重建直觉 →</a></p><div class="exercise" data-number-check data-hint="二维整台乘 2，意味着两列各乘 2。" data-success="计算正确。请再用自己的话说出适用条件与核对方法。"><p>J=<span class="matrix" style="grid-template-columns:repeat(2,minmax(28px,auto))"><span>1</span><span>3</span><span>2</span><span>1</span></span>。求 det(J)、普通面积倍数以及 det(2J)。</p><div class="number-fields">
+<label>det J<input type="text" inputmode="decimal" data-expected="-5" aria-label="复习07 det J"></label>
+<label>普通面积倍数<input type="text" inputmode="decimal" data-expected="5" aria-label="复习07 普通面积倍数"></label>
+<label>det 2J<input type="text" inputmode="decimal" data-expected="-20" aria-label="复习07 det 2J"></label>
+</div><button type="button" data-check-values>核对独立作答</button><p class="feedback" data-check-output aria-live="polite"></p><details><summary>按需展开逐步解析与条件检查</summary><p>det(J)=1−6=−5。普通面积取绝对值 5，负号记录翻向；det(2J)=2²det(J)=−20，不是 −10。非零行列式说明该二维方阵可逆。</p></details></div>
+</section>
+<section id="rulers"><h2>四 · 尺子与最近点（08–09）</h2></section>
+<section class="review-task" id="review-08" data-review-task="08"><p class="eyebrow">Lesson 08 · 独立迁移</p><h2>普通投影：允许负配方</h2><p><a href="../lessons/08-euclidean-inner-product.html">回到本课重建直觉 →</a></p><div class="exercise" data-number-check data-hint="u·v=−1，v·v=2；投影到整条直线，不限于正射线。" data-success="计算正确。请再用自己的话说出适用条件与核对方法。"><p>u=(2,3)、v=(1,−1)。求投影系数 α、投影第二格、最小误差平方。可填分数。</p><div class="number-fields">
+<label>普通投影 alpha<input type="text" inputmode="decimal" data-expected="-0.5" aria-label="复习08 普通投影 alpha"></label>
+<label>投影第二格<input type="text" inputmode="decimal" data-expected="0.5" aria-label="复习08 投影第二格"></label>
+<label>最小误差平方<input type="text" inputmode="decimal" data-expected="12.5" aria-label="复习08 最小误差平方"></label>
+</div><button type="button" data-check-values>核对独立作答</button><p class="feedback" data-check-output aria-live="polite"></p><details><summary>按需展开逐步解析与条件检查</summary><p>α=−1/2，p=(−1/2,1/2)。残差 r=(5/2,5/2)，r·v=0；误差平方为 25/4+25/4=25/2。负系数不妨碍投影存在。</p></details></div>
+</section>
+<section class="review-task" id="review-09" data-review-task="09"><p class="eyebrow">Lesson 09 · 独立迁移</p><h2>带权投影：别偷换回旧尺子</h2><p><a href="../lessons/09-general-inner-products.html">回到本课重建直觉 →</a></p><div class="exercise" data-number-check data-hint="分子、分母和残差平方都使用同一组权重。" data-success="计算正确。请再用自己的话说出适用条件与核对方法。"><p>u=(2,0)、v=(1,1)，权重 (3,1)。求带权 α 和最小带权误差平方。</p><div class="number-fields">
+<label>带权 alpha<input type="text" inputmode="decimal" data-expected="1.5" aria-label="复习09 带权 alpha"></label>
+<label>带权误差平方<input type="text" inputmode="decimal" data-expected="3" aria-label="复习09 带权误差平方"></label>
+</div><button type="button" data-check-values>核对独立作答</button><p class="feedback" data-check-output aria-live="polite"></p><details><summary>按需展开逐步解析与条件检查</summary><p>α=6/4=3/2，p=(3/2,3/2)，r=(1/2,−3/2)。带权内积 ⟨r,v⟩=3/2−3/2=0；误差平方为 3/4+9/4=3。只用普通平方和会得到错误的 5/2。</p></details></div>
+</section>
+<section id="spectral"><h2>五 · 主方向、地形与内积（10–11）</h2></section>
+<section class="review-task" id="review-10" data-review-task="10"><p class="eyebrow">Lesson 10 · 独立迁移</p><h2>特征向量：根和方向都要算</h2><p><a href="../lessons/10-eigenvalues-and-eigendecomposition.html">回到本课重建直觉 →</a></p><div class="exercise" data-number-check data-hint="特征多项式是 (2−λ)(−1−λ)；求根后仍要解零空间。" data-success="计算正确。请再用自己的话说出适用条件与核对方法。"><p>M=<span class="matrix" style="grid-template-columns:repeat(2,minmax(28px,auto))"><span>2</span><span>1</span><span>0</span><span>-1</span></span>。求两个特征值；对较小根，固定特征向量第二分量为 3，求第一分量。</p><div class="number-fields">
+<label>较大 lambda<input type="text" inputmode="decimal" data-expected="2" aria-label="复习10 较大 lambda"></label>
+<label>较小 lambda<input type="text" inputmode="decimal" data-expected="-1" aria-label="复习10 较小 lambda"></label>
+<label>特征向量第一格<input type="text" inputmode="decimal" data-expected="-1" aria-label="复习10 特征向量第一格"></label>
+</div><button type="button" data-check-values>核对独立作答</button><p class="feedback" data-check-output aria-live="polite"></p><details><summary>按需展开逐步解析与条件检查</summary><p>根为 2、−1。λ=−1 时 3x+y=0，固定 y=3 得 x=−1；M(−1,3)=(1,−3)=−1(−1,3)。负值表示反向。与 λ=2 的方向 (1,0) 独立，所以可对角化，但两方向不垂直。</p></details></div>
+<div class="checkpoint" data-quiz><h3>解释与反例</h3><p>剪切 [[1,1],[0,1]] 有两个重根 1，因此能对角化吗？</p>
+<button type="button" data-answer="correct" data-message="对。解 (M−I)v=0 得 y=0，凑不齐平面的一组特征基。">不能，只剩一条独立特征方向</button>
+<button type="button" data-answer="incorrect" data-message="还需要可逆的 P；同一方向抄两遍仍相关。">能，把两个根写入 D 就行</button>
+<p class="feedback" data-feedback-output aria-live="polite"></p><details><summary>查看推理</summary><p>对。解 (M−I)v=0 得 y=0，凑不齐平面的一组特征基。</p></details></div>
+</section>
+<section class="review-task" id="review-11" data-review-task="11"><p class="eyebrow">Lesson 11 · 独立迁移</p><h2>正定迁移：使用陌生矩阵作一般判断</h2><p><a href="../lessons/11-definiteness.html">回到本课重建直觉 →</a></p><div class="exercise" data-number-check data-hint="注意交叉项是 −2xy；单个正值不足以证明正定。" data-success="计算正确。请再用自己的话说出适用条件与核对方法。"><p>H=<span class="matrix" style="grid-template-columns:repeat(2,minmax(28px,auto))"><span>4</span><span>-1</span><span>-1</span><span>3</span></span>。算 det(H) 与 q(1,2)，再完成下面的分类理由题。</p><div class="number-fields">
+<label>det H<input type="text" inputmode="decimal" data-expected="11" aria-label="复习11 det H"></label>
+<label>q 1 2<input type="text" inputmode="decimal" data-expected="12" aria-label="复习11 q 1 2"></label>
+</div><button type="button" data-check-values>核对独立作答</button><p class="feedback" data-check-output aria-live="polite"></p><details><summary>按需展开逐步解析与条件检查</summary><p>det(H)=12−1=11；q(1,2)=4−4+12=12。H 实对称，首格 4>0 且 det=11>0，因此对所有非零输入正定。也可配方 4(x−y/4)²+(11/4)y²。G=H 因而可定义整个 ℝ² 上的内积。</p></details></div>
+<div class="checkpoint" data-quiz><h3>解释与反例</h3><p>哪一个理由足以支持 H 正定？</p>
+<button type="button" data-answer="correct" data-message="对。两个适用条件一起覆盖所有非零输入。">实对称，首格为正且行列式为正</button>
+<button type="button" data-answer="incorrect" data-message="一个正值只是局部证据，不能推出所有非零输入都正。">q(1,2)>0，因此所有输入都正</button>
+<button type="button" data-answer="incorrect" data-message="正定检查二次型，不是逐格符号。">有负元素，所以不是正定</button>
+<p class="feedback" data-feedback-output aria-live="polite"></p><details><summary>查看推理</summary><p>对。两个适用条件一起覆盖所有非零输入。</p></details></div>
+</section>
+<section class="win"><h2>把整条线重新讲给自己听</h2><p>Ax=b 是输出配方；基保证指定空间的配方存在且唯一；矩阵列记录标准方向的像；秩与零空间解释信息是否丢失；行列式给二维面积信号，迹是另一种摘要；内积提供尺子，投影处理最近点；足够多独立特征向量使变换可对角化；实对称矩阵的正交特征值符号控制二次型地形。</p><p>最容易混淆的条件：无关不等于正交，不可逆不等于每个方程都无解，可对角化不等于可逆，正定不等于矩阵逐格为正。检查任一断言时，先说清“在哪个空间、对哪些输入、需要什么前提”。</p></section>
+<details class="beyond"><summary>Beyond the Course · 复习后再选工程进阶</summary><p>12、13 仍为计划中的可选内容。已有核心概念将用于 SVD、最小二乘、伪逆、Jordan 形与动力系统；不必先学这些才能完成本页。回到 <a href="course-route.html#lesson-12">工程进阶路线</a>了解未来方向。</p></details>
+<section><h2>自评，不替你判定掌握</h2><p>以下勾选只帮助本次反思，不上传、不作为完成条件，也不自动保存：</p><p><label><input type="checkbox">我能不用演示解释每个对象是什么。</label></p><p><label><input type="checkbox">我能对新数字独立计算，并代回核对。</label></p><p><label><input type="checkbox">我能指出条件失效时的反例，修正错误说法。</label></p><p>如果只能对照着填数，先回到相应小节重算一题；如果会算却解释不出条件，优先做本页的解释与反例题。通过数值核对不等于已经证明理解。</p></section>
+<nav class="lesson-nav"><a href="../lessons/11-definiteness.html">← 正定性与二次型</a><a href="../index.html">课程目录</a><a href="course-route.html">详细路线 →</a></nav></main></body></html>

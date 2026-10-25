@@ -269,6 +269,14 @@ input[aria-invalid="true"] { border: 2px solid var(--danger); background: #fbe6e
 [data-q-current] { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 12px; }
 [data-active-calculation] { margin-top: 18px; }
 .lab canvas[data-q-surface] { touch-action: pan-y; }
+.lab .q-section-views canvas { height: 220px; aspect-ratio: auto; touch-action: pan-y; }
+.q-view-tools { padding: 10px 20px; background: #f8f6ef; font-size: .9rem; }
+[data-q-controls], [data-q-views] { scroll-margin-top: 70px; }
+[data-def-evidence-panel] select { display: block; width: 100%; margin: 8px 0 16px; min-height: 43px; }
+[data-def-evidence-panel] .control { grid-template-columns: 1fr; }
+[data-def-evidence-panel] input { width: 130px; min-height: 42px; }
+.review-map { display: flex; flex-wrap: wrap; gap: 12px; }
+.review-task { scroll-margin-top: 70px; }
 @media (max-width:600px) { .eigen-views { grid-template-columns: 1fr; } }
 
 @media print {
