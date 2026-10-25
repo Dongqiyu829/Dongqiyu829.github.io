@@ -1,0 +1,32 @@
+.svd-lesson .svd-controls { padding: 18px; display: flex; flex-wrap: wrap; align-items: start; gap: 12px 20px; }
+.svd-lesson label { max-width: 100%; }
+.svd-lesson select { max-width: 100%; min-height: 42px; }
+.svd-lesson input[type="text"] { width: 110px; max-width: 100%; min-height: 42px; }
+.svd-lesson .control { flex: 1 1 220px; }
+.svd-lesson .plot-wrap { position: relative; min-width: 0; }
+.svd-lesson .lab canvas { width: 100%; height: 340px; aspect-ratio: auto; touch-action: pan-y; }
+.svd-lesson .drag-handle { position: absolute; width: 34px; height: 34px; min-width: 0; min-height: 0; margin: 0; padding: 0; border: 2px solid transparent; border-radius: 50%; background: transparent; transform: translate(-50%,-50%); touch-action: none; cursor: grab; z-index: 1; }
+.svd-lesson .drag-handle:focus-visible { outline: 3px solid var(--teal); background: rgba(8,108,114,.12); }
+.svd-lesson .drag-handle:active { cursor: grabbing; }
+.svd-lesson .svd-math { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; padding: 14px; overflow-wrap: anywhere; }
+.svd-lesson .svd-math > div { max-width: 100%; }
+.svd-lesson .matrix { font-size: 1rem; gap: 4px 10px; vertical-align: middle; }
+.svd-lesson .svd-readout { margin: 14px 18px; overflow-wrap: anywhere; }
+.svd-lesson .svd-phases { margin: 12px 18px; padding-left: 26px; }
+.svd-lesson .svd-phases li { padding: 10px; border-left: 4px solid transparent; overflow-wrap: anywhere; }
+.svd-lesson .svd-phases .active { border-color: var(--teal); background: var(--teal-soft); font-weight: 800; }
+.svd-lesson .svd-editor { display: grid; grid-template-columns: repeat(2,minmax(0,110px)); gap: 8px; }
+.svd-lesson .svd-editor label { display: block; }
+.svd-lesson .svd-editor input { width: 100%; }
+.svd-lesson [data-svd-error], .svd-lesson [data-fit-error] { flex-basis: 100%; }
+.svd-lesson .svd-bars { list-style: none; padding: 0; }
+.svd-lesson .svd-bars li { display: grid; grid-template-columns: 35px 1fr 90px; gap: 8px; align-items: center; font-size: .85rem; }
+.svd-lesson .svd-bars i { display: block; height: 9px; background: var(--teal); }
+.svd-lesson .svd-bars .discarded i { background: #b4ada2; }
+.svd-lesson .svd-optional { padding: 18px; }
+.svd-lesson .svd-note { border-left: 3px solid var(--gold); padding: 12px; background: #fffaf0; }
+.svd-lesson .stage-goals { border-left: 4px solid var(--teal); padding: 10px 18px; background: #fff; }
+.svd-lesson section[id] { scroll-margin-top: 65px; }
+@media(max-width:600px){ .svd-lesson .svd-controls { padding: 14px; gap: 10px; } .svd-lesson .svd-math { padding: 10px; gap: 12px; } .svd-lesson .lab canvas { height: 280px; } .svd-lesson .svd-readout { margin: 12px; } }
+
+.svd-lesson .lab canvas[data-image-original], .svd-lesson .lab canvas[data-image-reconstruction] { height: auto; aspect-ratio: 1; }

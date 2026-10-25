@@ -1,0 +1,97 @@
+(function(){
+  'use strict';
+  const M=window.LASVD,{plane,colors}=window.LAPlane,parse=window.LAStudy.parseNumber;
+  const fmt=n=>n!==0&&(Math.abs(n)<1e-4||Math.abs(n)>=1e6)?n.toExponential(3):String(Number(n.toFixed(5))),pair=v=>'('+v.map(fmt).join(', ')+')';
+  const matrix=A=>'<span class="matrix" style="grid-template-columns:repeat('+A[0].length+',minmax(22px,auto))">'+A.flat().map(x=>'<span>'+fmt(x)+'</span>').join('')+'</span>';
+  const column=(A,j)=>A.map(r=>r[j]),clone=A=>A.map(r=>r.slice()),row=n=>'<div>'+n+'</div>';
+  const setError=(el,text)=>{el.textContent=text;el.className='feedback '+(text?'incorrect':'');};
+  function outline(v,points,color,width=2){for(let i=1;i<points.length;i++)v.line(points[i-1],points[i],color,width);}
+  function circle(v,A,color){const points=[];for(let k=0;k<=96;k++){const t=k*Math.PI/48,u=[Math.cos(t),Math.sin(t)];points.push(A?M.apply(A,u):u);}outline(v,points,color);}
+  // Only the 34px endpoint captures touch. The rest of each canvas remains vertically scrollable.
+  function handle(canvas,label,getPoint,setPoint,getView,step=.25){
+    const button=document.createElement('button');button.type='button';button.className='drag-handle';button.setAttribute('aria-label',label);canvas.parentElement.append(button);let active=false;
+    button.addEventListener('pointerdown',e=>{active=true;button.setPointerCapture(e.pointerId);});
+    button.addEventListener('pointermove',e=>{if(!active)return;const v=getView(),r=canvas.getBoundingClientRect();if(!v)return;setPoint([(e.clientX-r.left-v.origin[0])/v.unit,(v.origin[1]-e.clientY+r.top)/v.unit],true);});
+    ['pointerup','pointercancel','lostpointercapture'].forEach(name=>button.addEventListener(name,()=>active=false));
+    button.addEventListener('keydown',e=>{const delta={ArrowLeft:[-step,0],ArrowRight:[step,0],ArrowUp:[0,step],ArrowDown:[0,-step]}[e.key];if(!delta)return;e.preventDefault();const p=getPoint();setPoint(p.map((x,i)=>x+delta[i]),false);});
+    return {button,sync(){const v=getView();if(!v)return;const p=v.point(getPoint());button.style.left=p[0]+'px';button.style.top=p[1]+'px';button.setAttribute('aria-label',label+'，当前坐标 '+pair(getPoint()));}};
+  }
+  function observe(lab,render){lab.querySelectorAll('canvas').forEach(c=>new ResizeObserver(render).observe(c));}
+  const presetOptions=Object.entries(M.presets).map(([id,p])=>'<option value="'+id+'">'+p.name+'</option>').join('');
+  document.querySelectorAll('[data-svd-explorer]').forEach(lab=>{
+    let A=clone(M.presets.shear.A),x=[1,0],phase=0,timer=null,view,gate;
+    const input=lab.querySelector('[data-svd-input]'),output=lab.querySelector('[data-svd-output]'),select=lab.querySelector('[data-svd-preset]'),error=lab.querySelector('[data-svd-error]');select.innerHTML='<option value="" disabled>自定义矩阵</option>'+presetOptions;select.value='shear';
+    const info=()=>M.svd(A),stop=()=>{if(timer!==null){clearInterval(timer);timer=null;}lab.querySelector('[data-svd-play]').textContent='播放坐标步骤';};
+    function move(p){const length=M.norm(p);if(length<1e-8){setError(error,'单位圆上的输入不能是零向量；这次没有改变输入。');return;}x=p.map(v=>v/length);setError(error,'');gate?.changed();render();}
+    const drag=handle(input,'单位圆输入端点，可拖动或用方向键旋转',()=>x,move,()=>view,.12);
+    function render(){
+      const s=info(),c=M.apply(M.transpose(s.V),x),d=s.values.map((v,i)=>v*c[i]),y=M.apply(A,x),hidden=gate?.hidden();
+      view=plane(input,2);if(view){circle(view,null,'#a9b8b5');if(!hidden)for(let j=0;j<2;j++)view.arrow(column(s.V,j),j?colors.output:colors.basis,'v'+(j+1),{offset:j?24:-22});view.arrow(x,colors.input,'x',{width:4});drag.sync();}
+      const out=plane(output,Math.max(2,Math.ceil(s.values[0])+1));if(out&&!hidden){circle(out,A,'#8b9994');for(let j=0;j<2;j++)if(s.values[j]>0)out.arrow(column(s.U,j).map(v=>v*s.values[j]),j?colors.output:colors.basis,'σ'+(j+1)+'u'+(j+1),{offset:j?24:-22});out.arrow(y,colors.secondary,'Ax',{width:4});}
+      lab.querySelector('[data-svd-vector-values]').textContent='实际输入 x='+pair(x)+(hidden?'；实际输出提交后揭示。':'；实际输出 Ax='+pair(y))+'。';lab.querySelector('[data-svd-current]').innerHTML='A='+matrix(A);lab.querySelector('[data-svd-results]').hidden=!!hidden;
+      lab.querySelector('[data-svd-results]').innerHTML=row('AᵀA='+matrix(M.multiply(M.transpose(A),A)))+row('σ='+pair(s.values)+'；数值秩='+s.rank+'；阈值 τ='+fmt(s.threshold)) + row('U='+matrix(s.U))+row('Σ='+matrix(s.Sigma))+row('Vᵀ='+matrix(M.transpose(s.V)));
+      const texts=['实际输入 x='+pair(x)+'。上方左图是输入空间；右图是实际输出空间。','Vᵀx='+pair(c)+'：同一输入箭头在右奇异基中的坐标。没有移动原输入。','Σc='+pair(d)+'：得到输出左奇异基中的分量。现在进行了实际线性映射，零奇异值会消去相应输入信息。','U(Σc)='+pair(M.apply(s.U,d))+'=Ax：将输出分量写回实际输出空间；没有再额外施加一台变换。'];
+      lab.querySelectorAll('[data-svd-phase]').forEach((li,i)=>{li.classList.toggle('active',i===phase);li.textContent=hidden?['原输入','输入换坐标','非负缩放','输出写回'][i]+'（提交后显示读数，或切回自由探索）':texts[i];});
+      lab.querySelector('[data-svd-coordinates]').textContent=hidden?'输出、分解和方向暂未揭示。可先看 A 的两列判断维数。':texts[phase]+' 上方两图始终画实际的 x 与 Ax，不把中间坐标误画成原空间的新箭头。'+(s.truncated?' 小奇异值仍为正；这里只是按阈值报告数值秩。':'');
+      lab.querySelector('[data-svd-angle-value]').textContent=String(Number(((Math.atan2(x[1],x[0])*180/Math.PI+360)%360).toFixed(1)))+'°';lab.querySelector('[data-svd-angle]').value=(Math.atan2(x[1],x[0])*180/Math.PI+360)%360;
+      lab.querySelectorAll('[data-svd-cell]').forEach((field,i)=>{if(document.activeElement!==field)field.value=A[Math.floor(i/2)][i%2];});gate?.sync();
+    }
+    gate=window.LAStudy.challenge(lab,{question:()=> '按当前数值阈值，单位圆的输出是二维椭圆（圆也算）、线段，还是一个点？',choices:[['2','二维椭圆 / 圆'],['1','线段'],['0','一个点']],assess:choice=>({correct:Number(choice)===info().rank,explanation:'当前 σ='+pair(info().values)+'，阈值 τ='+fmt(info().threshold)+'；超过阈值的方向数为 '+info().rank+'。严格的非零微小奇异值仍对应二维细椭圆，数值秩可能不同。'}),render});
+    select.addEventListener('change',()=>{stop();A=clone(M.presets[select.value].A);phase=0;setError(error,'');gate.changed();render();});
+    lab.querySelectorAll('[data-svd-cell]').forEach(field=>field.addEventListener('input',()=>{const n=parse(field.value);if(!Number.isFinite(n)||Math.abs(n)>3){setError(error,'每格需为绝对值不大于 3 的有限数；支持分数和科学记数。空白未改变矩阵。');return;}const i=Number(field.dataset.svdCell);A[Math.floor(i/2)][i%2]=n;select.value='';setError(error,'');stop();gate.changed();render();}));
+    lab.querySelector('[data-svd-angle]').addEventListener('input',e=>{const t=Number(e.target.value)*Math.PI/180;move([Math.cos(t),Math.sin(t)]);});
+    lab.querySelectorAll('[data-svd-go]').forEach(b=>b.addEventListener('click',()=>{stop();phase=Number(b.dataset.svdGo);render();}));
+    lab.querySelector('[data-svd-play]').addEventListener('click',()=>{if(timer!==null){stop();return;}phase=0;render();lab.querySelector('[data-svd-play]').textContent='暂停';timer=setInterval(()=>{phase++;if(phase>=3){phase=3;stop();}render();},1100);});
+    lab.querySelector('[data-svd-reset]').addEventListener('click',()=>{stop();A=clone(M.presets.shear.A);select.value='shear';x=[1,0];phase=0;setError(error,'');gate.changed();render();});document.addEventListener('visibilitychange',()=>{if(document.hidden)stop();});observe(lab,render);render();
+  });
+  document.querySelectorAll('[data-fit-explorer]').forEach(lab=>{
+    let points=[[0,1],[1,2],[2,2]],selected=0,a=1,b=0,view,handles=[],gate,predictionBase=null;
+    const canvas=lab.querySelector('[data-fit-plane]'),choose=lab.querySelector('[data-fit-point]'),error=lab.querySelector('[data-fit-error]');
+    const fit=()=>M.fitLine(points),candidate=()=>points.reduce((sum,[x,y])=>sum+(y-a-b*x)**2,0);
+    function move(i,p,snap){points[i]=p.map(n=>Math.max(-3,Math.min(3,snap?Math.round(n*4)/4:n)));selected=i;choose.value=i;predictionBase=null;gate?.changed();render();}
+    function setup(){handles.forEach(h=>h.button.remove());handles=points.map((_,i)=>handle(canvas,'观测点 '+(i+1)+'，可拖动或用方向键',()=>points[i],(p,snap)=>move(i,p,snap),()=>view));choose.innerHTML=points.map((_,i)=>'<option value="'+i+'">观测 '+(i+1)+'</option>').join('');selected=0;}
+    function render(){const result=fit(),hidden=gate?.hidden();view=plane(canvas,4);if(view){view.line([-4,a-4*b],[4,a+4*b],colors.output,2,[6,4]);if(!hidden)view.line([-4,result.x[0]-4*result.x[1]],[4,result.x[0]+4*result.x[1]],colors.input,3);points.forEach(([x,y],i)=>{const predicted=hidden?a+b*x:result.fitted[i];view.line([x,y],[x,predicted],colors.basis,2);const p=view.point([x,y]);view.ctx.fillStyle=colors.secondary;view.ctx.beginPath();view.ctx.arc(...p,5,0,2*Math.PI);view.ctx.fill();view.ctx.font='12px sans-serif';view.ctx.fillText(String(i+1),p[0]+9,p[1]-9);});handles.forEach(h=>h.sync());}
+      lab.querySelector('[data-fit-candidate]').textContent='候选直线 y='+fmt(a)+' + ('+fmt(b)+')x；残差平方和='+fmt(candidate())+'。金线在挑战揭示前对应候选线，揭示后对应最佳拟合。';
+      lab.querySelector('[data-fit-results]').hidden=!!hidden;lab.querySelector('[data-fit-results]').innerHTML=row('θ̂=(a,b)='+pair(result.x)+(result.info.truncated?'；截断模型 SSE=':'；最小 SSE=')+fmt(result.sse)+'；设计矩阵数值秩='+result.info.rank)+row('X='+matrix(result.X))+row('XᵀX='+matrix(result.normal))+row('Xᵀy='+matrix(result.rhs.map(x=>[x])))+row('残差 r='+pair(result.residual)+'；Xᵀr='+pair(result.normalResidual)+(result.info.truncated?'（截断后不保证严格为零）':'（浮点误差范围内为零）'));
+      lab.querySelector('[data-fit-meaning]').textContent=hidden?'先比较候选线与观测。提交后揭示最佳拟合，或直接返回自由探索。':result.info.truncated?'X 的小奇异值仍非零，但被阈值丢弃：当前解是截断近似，不保证原问题的精确最小误差。':result.info.rank<2?'设计矩阵秩不足：观测只约束一部分参数。这条线是最小范数参数代表，其他直线也可在全部观测横坐标处给同样预测。':'设计矩阵两列独立，最佳参数唯一。拟合线按竖向残差平方和最小，不是让二维点到线的垂直距离最小。';
+      lab.querySelector('[data-fit-use-best]').hidden=!!hidden;for(const [key,value] of [['x',points[selected][0]],['y',points[selected][1]],['a',a],['b',b]]){const field=lab.querySelector('[data-fit-'+key+']');if(document.activeElement!==field)field.value=fmt(value);}gate?.sync();
+    }
+    function proposal(){const next=clone(points);next[selected][1]=Math.min(3,next[selected][1]+.5);return next;}
+    setup();gate=window.LAStudy.challenge(lab,{question:()=> '先不改图：若观测 '+(selected+1)+' 从 '+pair(points[selected])+' 上移到 '+pair(proposal()[selected])+'，最佳斜率将怎样变化？提交后才实际移动。',choices:[['up','斜率增大'],['down','斜率减小'],['same','斜率不变'],['ambiguous','观测不能唯一确定斜率']],assess:choice=>{const before=fit(),after=M.fitLine(proposal());if(before.info.truncated||after.info.truncated)return {incomplete:true,explanation:'当前有正的小奇异值被数值截断，不能据此判断原问题的精确最佳斜率。请回到常规预设，或切回自由探索。'};const change=after.x[1]-before.x[1],answer=before.info.rank<2||after.info.rank<2?'ambiguous':Math.abs(change)<1e-9?'same':change>0?'up':'down';return {correct:choice===answer,explanation:answer==='ambiguous'?'设计矩阵秩不足，数据只约束参数组合，不能说唯一最佳斜率增减。图中仅画最小范数代表。':'移动前斜率='+fmt(before.x[1])+'，移动后='+fmt(after.x[1])+'。被移动点位于整体横坐标分布的哪边很重要，不是“任一点上移都让斜率增大”。'};},commit(){predictionBase=clone(points);points=proposal();},render});
+    lab.querySelectorAll('[data-study-mode]').forEach(button=>button.addEventListener('click',()=>{predictionBase=null;}));
+    lab.querySelector('[data-study-retry]').addEventListener('click',()=>{if(predictionBase){points=clone(predictionBase);predictionBase=null;}render();});
+    choose.addEventListener('change',()=>{selected=Number(choose.value);predictionBase=null;gate.changed();render();});
+    for(const key of ['x','y','a','b'])lab.querySelector('[data-fit-'+key+']').addEventListener('input',e=>{const n=parse(e.target.value),limit=key==='x'||key==='y'?3:1e12;if(!Number.isFinite(n)||Math.abs(n)>limit){setError(error,'观测分量须在 −3 到 3 内；候选参数绝对值不大于 10¹²，可填分数。无效输入尚未改变实验。');return;}setError(error,'');predictionBase=null;if(key==='a')a=n;else if(key==='b')b=n;else points[selected][key==='x'?0:1]=n;gate.changed();render();});
+    lab.querySelectorAll('[data-fit-preset]').forEach(button=>button.addEventListener('click',()=>{points=button.dataset.fitPreset==='same'?[[1,0],[1,1],[1,2]]:button.dataset.fitPreset==='five'?[[-1,0],[0,1],[1,1.5],[2,2],[3,2.5]]:[[0,1],[1,2],[2,2]];a=1;b=0;predictionBase=null;setup();setError(error,'');gate.changed();render();}));
+    lab.querySelector('[data-fit-use-best]').addEventListener('click',()=>{[a,b]=fit().x;gate.changed();render();});observe(lab,render);render();
+  });
+  document.querySelectorAll('[data-pinv-explorer]').forEach(lab=>{
+    let A=[[1,1],[2,2]],target=[1,0],t=[0,0],rcond=1e-10,inputView,outputView,gate;
+    const input=lab.querySelector('[data-pinv-input]'),output=lab.querySelector('[data-pinv-output]'),select=lab.querySelector('[data-pinv-preset]'),error=lab.querySelector('[data-pinv-error]');
+    const solve=()=>M.leastSquares(A,target,{rcond});
+    function move(p,snap){target=p.map(x=>Math.max(-3,Math.min(3,snap?Math.round(x*4)/4:x)));setError(error,'');gate?.changed();render();}
+    const drag=handle(output,'目标 b 端点，可拖动或用方向键',()=>target,move,()=>outputView);
+    function render(){const result=solve(),s=result.info,hidden=gate?.hidden(),nulls=Array.from({length:2-s.rank},(_,i)=>column(s.V,s.rank+i));let x=result.x.slice();nulls.forEach((v,j)=>x=x.map((a,i)=>a+t[j]*v[i]));const y=M.apply(A,x),scale=Math.max(1,10**Math.floor(Math.log10(Math.max(1,...x.map(Math.abs)))));
+      inputView=plane(input,4);if(inputView&&!hidden){inputView.arrow(result.x.map(v=>v/scale),colors.basis,'x⁺',{width:5,offset:24});inputView.arrow(x.map(v=>v/scale),colors.input,'x(t)',{width:2,offset:-24});}
+      outputView=plane(output,4);if(outputView){if(s.rank===2)outputView.ctx.fillStyle='rgba(8,108,114,.035)',outputView.ctx.fillRect(0,0,output.clientWidth,output.clientHeight);else if(s.rank===1){const u=column(s.U,0);outputView.line(u.map(v=>-5*v),u.map(v=>5*v),'#8d9c92',4);}if(!hidden){outputView.arrow(result.fitted,colors.input,'投影 p',{width:5,offset:24});outputView.line(result.fitted,target,colors.output,3,[4,3]);}outputView.arrow(target,colors.secondary,'目标 b',{width:3});drag.sync();}
+      lab.querySelector('[data-pinv-model]').textContent=s.truncated?'图示为截断模型的近似列空间；原 A 可逆，精确列空间仍是整个平面。下述最优性只针对截断模型。':'图示为当前矩阵的列空间；最佳输出是在这里寻找的。';lab.querySelector('[data-pinv-current]').innerHTML='A='+matrix(A)+'；b='+matrix(target.map(v=>[v]));lab.querySelector('[data-pinv-results]').hidden=!!hidden;
+      lab.querySelector('[data-pinv-results]').innerHTML=row('A⁺='+matrix(result.pseudoinverse))+row('σ='+pair(s.values)+'；数值秩='+s.rank+'，τ='+fmt(s.threshold))+row((s.truncated?'截断模型的最小范数代表 x⁺=':'最小范数代表 x⁺=')+pair(result.x)+'，||x⁺||='+fmt(result.norm))+row('当前 x(t)='+pair(x)+'，||x(t)||='+fmt(M.norm(x))+'；输入图 1 单位代表 '+fmt(scale)+' 个实际单位')+row('p=Ax⁺='+pair(result.fitted)+'；Ax(t)='+pair(y)+'；残差='+pair(result.residual)+(s.truncated?'；截断模型 SSE=':'；最小 SSE=')+fmt(result.sse))+row('Xᵀr（此处 X=A）='+pair(result.normalResidual));
+      lab.querySelector('[data-pinv-meaning]').textContent=hidden?'提交后看投影、解族与范数；自由探索随时可用。':s.truncated?'这里丢弃了仍为正的小奇异值：显示的是截断近似解，不是原矩阵的精确伪逆。数值零方向在原 A 下不严格消失；沿它改变输入，Ax(t) 只近似不变。':s.rank===2?'没有非零零空间方向；当前 A⁺ 等于通常逆矩阵，目标可达，精确解唯一。':s.rank===1?'x⁺ 与零空间垂直。沿单位零方向改变输入，输出保持不变，||x(t)||²=||x⁺||²+t²。最小残差的输出唯一，输入却不唯一。':'A=0：所有输入输出都为零。最小残差平方和是 ||b||²；所有输入都是最小二乘解，只有零输入的范数最小。';
+      lab.querySelectorAll('[data-null-t]').forEach((el,i)=>{el.disabled=i>=nulls.length;el.value=t[i];lab.querySelector('[data-null-label="'+i+'"]').hidden=i>=nulls.length;lab.querySelector('[data-null-value="'+i+'"]').textContent=t[i];});
+      lab.querySelector('[data-pinv-scale]').textContent='只对输入图缩放；输出图仍使用原单位。缩放因子='+fmt(scale)+'。';
+      for(let i=0;i<2;i++){const field=lab.querySelector('[data-target="'+i+'"]');if(document.activeElement!==field)field.value=fmt(target[i]);}gate?.sync();
+    }
+    gate=window.LAStudy.challenge(lab,{question:()=> '按当前阈值的数值模型，目标 b 是否可达，即最小残差平方和为零？',choices:[['yes','可达，残差为零'],['no','不可达，仍有残差']],assess:choice=>{const r=solve(),yes=r.sse<1e-16;return {correct:choice===(yes?'yes':'no'),explanation:'最小 SSE='+fmt(r.sse)+'；最小二乘不承诺零误差。若丢弃了正的小奇异值，这是截断模型的判断，不是精确秩断言。'};},render});
+    select.addEventListener('change',()=>{A=clone(select.value==='full'?[[2,0],[0,1]]:select.value==='zero'?[[0,0],[0,0]]:select.value==='near'?[[1,0],[0,1e-11]]:[[1,1],[2,2]]);target=[1,0];t=[0,0];setError(error,'');gate.changed();render();});
+    lab.querySelectorAll('[data-target]').forEach(field=>field.addEventListener('input',()=>{const n=parse(field.value);if(!Number.isFinite(n)||Math.abs(n)>3){setError(error,'目标分量需为 −3 到 3 内有限数，支持分数。');return;}target[Number(field.dataset.target)]=n;setError(error,'');gate.changed();render();}));
+    lab.querySelectorAll('[data-null-t]').forEach(el=>el.addEventListener('input',()=>{t[Number(el.dataset.nullT)]=Number(el.value);render();}));
+    lab.querySelector('[data-pinv-tolerance]').addEventListener('change',e=>{rcond=Number(e.target.value);t=[0,0];gate.changed();render();});
+    lab.querySelector('[data-pinv-reset]').addEventListener('click',()=>{A=[[1,1],[2,2]];select.value='rank1';target=[1,0];t=[0,0];rcond=1e-10;lab.querySelector('[data-pinv-tolerance]').value='1e-10';lab.querySelectorAll('[data-null-t]').forEach(e=>e.value=0);setError(error,'');gate.changed();render();});observe(lab,render);render();
+  });
+  document.querySelectorAll('[data-image-explorer]').forEach(lab=>{
+    let A=M.toyImage(),s=M.svd(A),k=2;const canvases=[lab.querySelector('[data-image-original]'),lab.querySelector('[data-image-reconstruction]')];
+    function paint(canvas,A){const r=canvas.getBoundingClientRect();if(!r.width||!r.height)return;const dpr=Math.min(devicePixelRatio||1,2),ctx=canvas.getContext('2d');canvas.width=r.width*dpr;canvas.height=r.height*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);for(let i=0;i<A.length;i++)for(let j=0;j<A[0].length;j++){const gray=Math.round(255*Math.max(0,Math.min(1,A[i][j])));ctx.fillStyle='rgb('+gray+','+gray+','+gray+')';ctx.fillRect(j*r.width/A[0].length,i*r.height/A.length,Math.ceil(r.width/A[0].length),Math.ceil(r.height/A.length));}}
+    function render(){const B=M.reconstruct(s,k),error=M.frobenius(M.subtract(A,B)),tail=Math.hypot(...s.values.slice(k)),stored=k*(s.rows+s.cols+1),raw=s.rows*s.cols;paint(canvases[0],A);paint(canvases[1],B);lab.querySelector('[data-image-k-value]').textContent=k;lab.querySelector('[data-image-result]').textContent='保留 k='+k+'，重建的秩至多为 '+k+'；原图数值秩='+s.rank+'。Frobenius 数值误差='+fmt(error)+'；奇异值尾部平方和开根='+fmt(tail)+'（应在浮点误差内一致）。因子表示需 '+stored+' 个数，原像素 '+raw+' 个数，'+(stored<raw?'当前更省。':'此 k 不省存储，低秩并非总能压缩。');lab.querySelector('[data-image-kept]').textContent='保留的奇异值：'+(k?s.values.slice(0,k).map(fmt).join('、'):'无，重建为零图。');lab.querySelector('[data-image-spectrum]').innerHTML=s.values.map((v,i)=>'<li class="'+(i>=k?'discarded':'')+'"><span>σ'+(i+1)+'</span><i style="width:'+((s.values[0]?v/s.values[0]:0)*100)+'%"></i><span>'+fmt(v)+'</span></li>').join('');}
+    lab.querySelector('[data-image-k]').addEventListener('input',e=>{k=Number(e.target.value);render();});lab.querySelector('[data-image-preset]').addEventListener('change',e=>{A=M.toyImage(e.target.value);s=M.svd(A);k=2;lab.querySelector('[data-image-k]').value=k;render();});lab.querySelector('[data-image-reset]').addEventListener('click',()=>{A=M.toyImage();s=M.svd(A);k=2;lab.querySelector('[data-image-k]').value=2;lab.querySelector('[data-image-preset]').value='toy';render();});lab.closest('details').addEventListener('toggle',render);observe(lab,render);render();
+  });
+})();

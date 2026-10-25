@@ -22,11 +22,11 @@ const expected={
  '09':[inner.measure([2,0],[1,1],[3,1]).coefficient,inner.errorSquared([2,0],[1,1],1.5,[3,1])],
  '10':[...eigen.eigenInfo([2,1,0,-1]).values,-1],'11':[math.analyze([4,-1,-1,3]).det,math.quadratic([4,-1,-1,3],[1,2])]
 };for(const id of Object.keys(expected)){assert.equal(tasks[id].length,expected[id].length);tasks[id].forEach((n,i)=>near(n,expected[id][i]));}assert.deepEqual(apply([2,1,0,-1],[-1,3]),[1,-3]);assert.equal(math.analyze([4,-1,-1,3]).kind,'PD');assert.ok(!bank.some(x=>x.M.join(',')===[4,-1,-1,3].join(',')));
-const lessonFiles=fs.readdirSync(path.join(root,'lessons')).filter(f=>f.endsWith('.html'));assert.equal(lessonFiles.length,13);
+const allLessonFiles=fs.readdirSync(path.join(root,'lessons')).filter(f=>f.endsWith('.html')),lessonFiles=allLessonFiles.filter(f=>parseInt(f,10)<12);assert.equal(lessonFiles.length,13);
 for(const f of lessonFiles){const html=fs.readFileSync(path.join(root,'lessons',f),'utf8'),id=f.split('-')[0];assert.ok(html.includes(`../reference/core-review.html#review-${id}`));assert.ok(tasks[id]);assert.ok(html.includes('class="beyond"'));}
 assert.ok(fs.readFileSync(path.join(root,'index.html'),'utf8').includes('href="reference/core-review.html"'));assert.ok(fs.readFileSync(path.join(root,'reference/course-route.html'),'utf8').includes('href="core-review.html"'));assert.equal((review.match(/data-complete-lesson/g)||[]).length,0);
-const files=['index.html',...lessonFiles.map(f=>'lessons/'+f),'reference/course-route.html','reference/core-review.html'];
+const files=['index.html',...allLessonFiles.map(f=>'lessons/'+f),'reference/course-route.html','reference/core-review.html'];
 const voids=new Set('area base br col embed hr img input link meta param source track wbr'.split(' '));
 for(const file of files){const html=fs.readFileSync(path.join(root,file),'utf8'),stack=[];for(const t of html.matchAll(/<!--[\s\S]*?-->|<![^>]*>|<\/?([a-z][\w:-]*)\b[^>]*>/gi)){if(!t[1]||voids.has(t[1])||t[0].endsWith('/>'))continue;if(t[0].startsWith('</'))assert.equal(stack.pop(),t[1],file);else stack.push(t[1]);}assert.deepEqual(stack,[],file);
  for(const [,url] of html.matchAll(/(?:href|src)="([^"]+)"/g)){if(/^(https?:|mailto:)/.test(url))continue;const [relative,hash]=url.split('#'),target=relative?path.resolve(path.dirname(path.join(root,file)),relative.split('?')[0]):path.join(root,file);assert.ok(fs.existsSync(target),`${file}: ${url}`);if(hash)assert.ok(fs.readFileSync(target,'utf8').includes(`id="${hash}"`),`${file}: #${hash}`);}}
-console.log(`PASS: independent bank, ${predictions} class/reason pairs, evidence and partial-answer grading, principal-axis sections, 13 review problems/32 answers/6 concept checks, 16 page structures and anchors.`);
+console.log(`PASS: independent bank, ${predictions} class/reason pairs, evidence and partial-answer grading, principal-axis sections, 13 review problems/32 answers/6 concept checks, ${files.length} page structures and anchors.`);
