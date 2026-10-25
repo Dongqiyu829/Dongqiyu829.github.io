@@ -64,10 +64,20 @@ Student answers, completion marks and mastery are not synchronized with a teache
 - Full scope, file changes, actual vs simulated checks, boundary counts and remaining limitations: [docs/QUALITY_REPORT.md](docs/QUALITY_REPORT.md). Do not count local mock tests as online execution.
 - Physical phones, OS software keyboards, Safari/iOS and a long-duration third-party outage are not verified by the headless viewport tests.
 
+## Lesson 04 release acceptance (20261025b)
+
+- Code commit 4266a3091d8f6cbf63c14a1677f00395251ea49b; Pages run 40174248413 completed successfully. See [docs/LESSON04_ACCEPTANCE.md](docs/LESSON04_ACCEPTANCE.md) for scope, changes, actual vs simulated checks and limitations.
+- Static: 11 HTML pages, 85 internal link/resource references, 40 versioned asset references, 4 JSON and 8 production JS; zero errors. Existing browser acceptance expanded to 15 passed scenarios, zero application console/page errors, with 1280/390/320px and reference print checks.
+- New C++ and Python Merge Sort implementations each passed 5345 arrays: sorted permutation, original input unchanged, exact merge writes, depth and two-sided bounds. Tree generator passed all 1026 sizes n=0..1025. Existing binary/pair/doubling algorithm regression also passed this run.
+- Local-page + real service: Lessons 01/03/04 x C++/Python all six ran 8/8, with initial code, matching echoes, reset, iframe reload and refresh. Lesson 04 touch viewport 390x844 x both languages also ran 8/8 with Ace focus and page Run controls; not a physical-phone test.
+- Public deployment: 11 pages and 11 distinct directly linked CSS/JS resources returned HTTP 200 with release 20261025b. Public 1280/390/320px layouts, exact tree totals, prev/route navigation, legacy 1 / 4 progress and optional completion 2 / 4 passed. Public Lesson 04 x C++/Python each ran 8/8 against real OneCompiler, including reset/reload/default-C++ refresh.
+- Public editor page errors: zero JavaScript exceptions; one browser console network error for the personal-site root /favicon.ico (404), a cosmetic follow-up outside this course's asset scope. Do not claim the public browser console was entirely empty.
+- Test harness corrections and initial failed attempts are disclosed in the report. No changes to shared Compiler Lab or progress runtime were needed for Lesson 04.
+
 ## Reusable standards and next teaching phase
 
 See docs/TEACHING_STANDARD.md for lesson structure, misconception checklist, progress semantics, editor failure handling and the minimum acceptance matrix.
-Lesson 04 is now authored; release acceptance and public deployment verification are recorded in docs/LESSON04_ACCEPTANCE.md once completed. No student mastery is inferred from publication or automated tests.
+Lesson 04 is published and verified; no student mastery is inferred from publication or automated tests.
 Next teaching decision: read the student's unbalanced-split derivation, then either reinforce recursion-tree accounting or introduce Master Theorem in its own short lesson; do not jump over missing prerequisites.
 
 ## Follow-up improvements (not Lesson 04 release blockers)
