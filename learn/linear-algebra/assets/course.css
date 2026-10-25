@@ -28,6 +28,7 @@ body {
   background-size: 28px 28px, 28px 28px, auto, auto;
   font-family: "Noto Serif SC", "Source Han Serif SC", "Microsoft YaHei", Georgia, serif;
   line-height: 1.76;
+  overflow-wrap: anywhere;
 }
 
 a { color: var(--teal-dark); text-underline-offset: 3px; }
@@ -127,6 +128,17 @@ section { margin: 40px 0; }
 .lab-head { padding: 18px 22px 0; }
 .lab-head h3 { margin: 0; }
 .lab-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(220px, 290px); }
+.focus-first { color: var(--teal-dark); background: var(--teal-soft); padding: 2px 4px; }
+.focus-second { color: #745409; background: #fff0c2; padding: 2px 4px; }
+[data-basis-explorer] .lab-controls > label:not(.control) { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 8px 0; font: 700 .85rem/1.4 "Segoe UI",sans-serif; }
+[data-basis-cell] { width: 78px; min-height: 40px; }
+[data-basis-explorer] .number-fields { margin: 14px 0; }
+[data-basis-explorer] .lab-status { margin: 0; }
+[data-basis-explorer] canvas, [data-coordinate-lab] canvas { align-self: start; }
+.lab[data-basis-explorer] canvas, .lab[data-row-workbench] canvas { height: auto; aspect-ratio: 1; }
+[data-row-workbench] select, [data-row-workbench] input { max-width: 100%; min-height: 42px; }
+[data-row-workbench] .number-fields label { min-width: 115px; }
+details { scroll-margin-top: 60px; }
 .lab canvas { display: block; width: 100%; height: 390px; background: #fbfaf5; touch-action: none; }
 .lab canvas.error-curve { height: 210px; border-top: 1px solid var(--line); }
 .lab[data-inner-lab] [data-inner-plane] { height: auto; aspect-ratio: 1; }

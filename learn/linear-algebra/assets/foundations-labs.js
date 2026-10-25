@@ -78,7 +78,8 @@
     document.querySelectorAll("[data-system-lab]").forEach((lab)=>{
       const canvas=lab.querySelector("canvas"),fields=Object.fromEntries([...lab.querySelectorAll("[data-line-value]")].map(el=>[el.dataset.lineValue,el]));
       const get=name=>Number(fields[name].value);
-      let fit=false,view,dragged=null,lockedExtent=null;
+      let fit=false,view,dragged=null,lockedExtent=null,stage=0,choiceNote='';
+      const tutor=document.createElement('div');tutor.className='guided-task';tutor.innerHTML='<h3>选择消元，再回代、验算</h3><p data-system-step aria-live="polite"></p><button type="button" data-system-choice="subtract">第一式减第二式</button><button type="button" data-system-choice="add">第一式加第二式</button><button type="button" data-system-choice="left">只减左边，右边不变</button><p data-system-choice-feedback aria-live="polite"></p><button type="button" data-system-back>上一步</button><button type="button" data-system-next>下一步</button><button type="button" data-system-start>重头尝试</button>';lab.querySelector('.lab-plain').append(tutor);
       function render() {
         const m1=get("m1"),h1=get("h1"),m2=get("m2"),h2=get("h2"),solution=lineSystem(m1,h1,m2,h2);
         const extent=lockedExtent??(fit&&solution.point?Math.max(6,...solution.point.map(n=>Math.abs(n)+1)):6);
@@ -99,14 +100,19 @@
         status.textContent=solution.type==="unique"?`唯一解：公共点 ${pair(solution.point)}。${outside?"交点在当前视野外，不代表无解；点“显示交点”查看。":"它同时满足两条方程。"}`:solution.type==="infinite"?"无穷多解：两条直线完全重合，线上每一点都同时满足两式。":"无解：两条直线斜率相同、位置不同，没有公共点。";
         const a=m2-m1,b=h1-h2;
         lab.querySelector("[data-elimination]").textContent=solution.type==="unique"?`第一式减第二式：${label(a)}x = ${label(b)}，所以 x = ${exact(solution.point[0])}，代回得到 y = ${exact(solution.point[1])}。`:solution.type==="infinite"?"第一式减第二式：0 = 0。它没有增加限制；保留的一条直线上仍有无穷多个解。":`第一式减第二式：0 = ${label(b)}。右端不是 0，产生矛盾，所以无解。`;
+        const steps=[`0/3 原方程：${equation(m1,h1)}；${equation(m2,h2)}。两条 y 的系数都为 1，选哪种操作能消去 y？`,solution.type==='unique'?`1/3 新方程：${label(a)}x=${label(b)}，两边除以 ${label(a)}，x=${exact(solution.point[0])}。`:solution.type==='infinite'?'1/3 新方程 0=0，没有增加限制。':'1/3 新方程 0='+label(b)+'，产生矛盾。',solution.type==='unique'?`2/3 回代第一式 y=${label(m1)}x+${label(h1)}，代入 x=${exact(solution.point[0])}，得到 y=${exact(solution.point[1])}。`:solution.type==='infinite'?'2/3 不必求唯一坐标：保留原来的一条直线，每个线上的点都是解。':'2/3 无法回代找共同解：两条限制已经互相矛盾。',solution.type==='unique'?`3/3 验算：第一式左端=${exact(-m1*solution.point[0]+solution.point[1])}，右端=${label(h1)}；第二式左端=${exact(-m2*solution.point[0]+solution.point[1])}，右端=${label(h2)}。两条同时成立。金点强调共同解。`:'3/3 核对图像：'+(solution.type==='infinite'?'两条线重合，对应无穷多解。':'两条线平行且不同，对应无解。')];
+        tutor.querySelector('[data-system-step]').textContent=steps[stage];tutor.querySelector('[data-system-choice-feedback]').textContent=choiceNote;tutor.querySelector('[data-system-back]').disabled=stage===0;tutor.querySelector('[data-system-next]').disabled=stage===0||stage===3;
+        if(stage===3&&solution.point){const p=point(solution.point);ctx.strokeStyle='#b7861b';ctx.lineWidth=3;ctx.beginPath();ctx.arc(p.x,p.y,12,0,Math.PI*2);ctx.stroke();}
         lab.querySelector("[data-fit-intersection]").textContent=fit?"恢复标准视野":"显示交点";
         lab.querySelector("[data-fit-intersection]").disabled=solution.type!=="unique";
       }
       const clearPreset=()=>lab.querySelectorAll("[data-system-preset]").forEach(el=>el.setAttribute("aria-pressed","false"));
-      Object.values(fields).forEach(el=>el.addEventListener("input",()=>{clearPreset();render();}));
+      Object.values(fields).forEach(el=>el.addEventListener("input",()=>{stage=0;choiceNote='参数已改变，请重新选择消元方式。';clearPreset();render();}));
+      tutor.querySelectorAll('[data-system-choice]').forEach(b=>b.addEventListener('click',()=>{const choice=b.dataset.systemChoice;choiceNote=choice==='subtract'?'正确：两边都相减，并保留一条原方程。':choice==='add'?'相加是合法的，但得到 2y 项，并没有消去 y；试试相减。':'不合法：等号两边必须同步运算，否则改变了限制。';if(choice==='subtract')stage=1;render();}));
+      tutor.querySelector('[data-system-back]').addEventListener('click',()=>{stage--;render();});tutor.querySelector('[data-system-next]').addEventListener('click',()=>{stage++;render();});tutor.querySelector('[data-system-start]').addEventListener('click',()=>{stage=0;choiceNote='';render();});
       lab.querySelectorAll("[data-system-preset]").forEach(button=>button.addEventListener("click",()=>{
         const values={unique:[-2,5,-0.5,2],parallel:[-1,2,-1,3],same:[-1,2,-1,2]}[button.dataset.systemPreset];
-        ["m1","h1","m2","h2"].forEach((name,i)=>{fields[name].value=values[i];});fit=false;
+        ["m1","h1","m2","h2"].forEach((name,i)=>{fields[name].value=values[i];});fit=false;stage=0;choiceNote='';
         lab.querySelectorAll("[data-system-preset]").forEach(el=>el.setAttribute("aria-pressed",String(el===button)));render();
       }));
       lab.querySelector("[data-fit-intersection]").addEventListener("click",()=>{fit=!fit;render();});
@@ -128,7 +134,7 @@
       const canvas=lab.querySelector("canvas");
       const fields=Object.fromEntries([...lab.querySelectorAll("[data-set-value]")].map(el=>[el.dataset.setValue,el]));
       const get=name=>Number(fields[name].value);
-      let kind="line",operation="sum";
+      let kind="line",operation="sum",revealed=false,prediction=null;
       function render() {
         const spec=sets[kind],demo=closureExample(kind,get("s"),get("t"),get("c"),operation),view=plot(canvas,spec.extent),{ctx,point,width,height,origin}=view;
         ctx.save();ctx.beginPath();ctx.rect(0,32,width,height-32);ctx.clip();
@@ -137,12 +143,12 @@
         if (kind==="shifted") segment(view,[-spec.extent,1+spec.extent],[spec.extent,1-spec.extent],"rgba(8,108,114,.4)",9);
         if (kind==="cross") {segment(view,[-spec.extent,0],[spec.extent,0],"rgba(8,108,114,.4)",9);segment(view,[0,-spec.extent],[0,spec.extent],"rgba(8,108,114,.4)",9);}
         arrow(view,[0,0],demo.u,"#086c72",5);
-        if (operation==="sum") {arrow(view,[0,0],demo.v,"#b7861b",3);ctx.setLineDash([5,5]);arrow(view,demo.u,demo.result,"#b7861b",2);ctx.setLineDash([]);}
-        arrow(view,[0,0],demo.result,"#c35c3a",2.5);
+        if (operation==="sum") {arrow(view,[0,0],demo.v,"#b7861b",3);if(revealed){ctx.setLineDash([5,5]);arrow(view,demo.u,demo.result,"#b7861b",2);ctx.setLineDash([]);}}
+        if(revealed)arrow(view,[0,0],demo.result,"#c35c3a",2.5);
         ctx.font="bold 14px Segoe UI, sans-serif";const p=point(demo.u),q=point(demo.v),r=point(demo.result);
         ctx.fillStyle="#086c72";ctx.fillText("u",p.x+8,p.y+18);
         if(operation==="sum"){ctx.fillStyle="#89620d";ctx.fillText("v",q.x+8,q.y-10);}
-        ctx.fillStyle="#c35c3a";ctx.fillText(operation==="sum"?"u+v":"c·u",demo.result[0]<0?r.x-34:r.x+8,demo.result[1]<0?r.y+19:r.y-10);
+        if(revealed){ctx.fillStyle="#c35c3a";ctx.fillText(operation==="sum"?"u+v":"c·u",demo.result[0]<0?r.x-34:r.x+8,demo.result[1]<0?r.y+19:r.y-10);}
         const zero=point([0,0]);ctx.strokeStyle=spec.zero?"#256b46":"#933b32";ctx.lineWidth=2;ctx.beginPath();ctx.arc(zero.x,zero.y,7,0,Math.PI*2);ctx.stroke();
         if(!spec.zero){ctx.beginPath();ctx.moveTo(zero.x-5,zero.y-5);ctx.lineTo(zero.x+5,zero.y+5);ctx.moveTo(zero.x-5,zero.y+5);ctx.lineTo(zero.x+5,zero.y-5);ctx.stroke();}
         ctx.restore();ctx.fillStyle="#465457";ctx.font="bold 13px Segoe UI, sans-serif";ctx.fillText("青色区域/粗线是集合 · 珊瑚色是运算结果",12,22);
@@ -151,6 +157,7 @@
         lab.querySelector("[data-zero-check]").textContent=spec.zero?"零向量检查：原点在集合中。":"零向量检查：原点不在集合中，已经足以否定它是子空间。";
         const status=lab.querySelector("[data-closure-status]");status.dataset.outcome=demo.inside?"inside":"outside";
         status.textContent=`输入 u=${pair(demo.u)}${operation==="sum"?`、v=${pair(demo.v)}`:""} 都选自集合。${operation==="sum"?"u+v":`${label(get("c"))}·u`}=${pair(demo.result)}，${demo.inside?"这次仍在集合中。一次通过不能代替对所有情况的证明。":"结果跑出了集合！这就是一个反例，足以否定相应运算的封闭性。"}`;
+        if(!revealed){status.textContent=`当前输入 u=${pair(demo.u)}${operation==='sum'?'、v='+pair(demo.v):'，c='+label(get('c'))}；结果暂不显示。先手算，再选择你的预测。一次预测不会影响下一课访问。`;status.dataset.outcome='pending';}else if(prediction!==null){status.textContent=(prediction===demo.inside?'预测正确。':'预测需要修正。')+status.textContent;}
         lab.querySelector("[data-set-verdict]").textContent=spec.proof;
         lab.querySelector("[data-counterexample]").textContent=kind==="line"?"试一组相消的向量":"一键查看反例";
         lab.querySelectorAll("[data-set-kind]").forEach(el=>el.setAttribute("aria-pressed",String(el.dataset.setKind===kind)));
@@ -158,15 +165,17 @@
         fields.c.disabled=operation==="sum";fields.t.disabled=operation!=="sum";
       }
       lab.querySelectorAll("[data-set-kind]").forEach(button=>button.addEventListener("click",()=>{
-        kind=button.dataset.setKind;operation="sum";
+        kind=button.dataset.setKind;operation="sum";revealed=false;prediction=null;
         [fields.s,fields.t].forEach(el=>{el.min=sets[kind].min;el.max=sets[kind].max;el.value=1;});
         if(kind==="shifted")fields.t.value=0;
         fields.c.value=1;render();
       }));
-      lab.querySelectorAll("[data-closure-op]").forEach(button=>button.addEventListener("click",()=>{operation=button.dataset.closureOp;render();}));
-      Object.values(fields).forEach(el=>el.addEventListener("input",render));
+      lab.querySelectorAll("[data-closure-op]").forEach(button=>button.addEventListener("click",()=>{operation=button.dataset.closureOp;revealed=false;prediction=null;render();}));
+      Object.values(fields).forEach(el=>el.addEventListener("input",()=>{revealed=false;prediction=null;render();}));
+      lab.querySelectorAll('[data-closure-predict]').forEach(button=>button.addEventListener('click',()=>{prediction=button.dataset.closurePredict==='inside';revealed=true;render();}));
+      lab.querySelector('[data-closure-reset]').addEventListener('click',()=>{kind='line';operation='sum';fields.s.min=-2;fields.s.max=2;fields.s.value=1;fields.t.min=-2;fields.t.max=2;fields.t.value=.5;fields.c.value=1;revealed=false;prediction=null;render();});
       lab.querySelector("[data-counterexample]").addEventListener("click",()=>{
-        fields.s.value=1;fields.t.value=kind==="line"?-1:kind==="shifted"?0:1;fields.c.value=-1;operation=kind==="quadrant"?"scale":"sum";render();
+        fields.s.value=1;fields.t.value=kind==="line"?-1:kind==="shifted"?0:1;fields.c.value=-1;operation=kind==="quadrant"?"scale":"sum";revealed=true;prediction=null;render();
       });
       new ResizeObserver(render).observe(canvas);render();
     });

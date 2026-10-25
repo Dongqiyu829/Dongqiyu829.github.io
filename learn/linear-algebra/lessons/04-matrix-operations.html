@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="线性代数第04课：动手学习矩阵加法、数乘、转置、单位矩阵和矩阵乘法"><title>第 04 课 · 矩阵操作</title><link rel="stylesheet" href="../assets/course.css?v=20261024f"><script defer src="../assets/course.js?v=20261024f"></script><script defer src="../assets/vector-lab.js?v=20261024f"></script><script defer src="../assets/matrix-labs.js?v=20261024f"></script></head><body>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="线性代数第04课：动手学习矩阵加法、数乘、转置、单位矩阵和矩阵乘法"><title>第 04 课 · 矩阵操作</title><link rel="stylesheet" href="../assets/course.css?v=20261025a"><script defer src="../assets/course.js?v=20261025a"></script><script defer src="../assets/vector-lab.js?v=20261025a"></script><script defer src="../assets/matrix-labs.js?v=20261024f"></script></head><body>
 
 <nav class="course-nav"><a href="../index.html">← 线性代数主页</a><span class="crumb">第 04 课 · 矩阵操作</span>
 </nav><main>
@@ -99,6 +99,7 @@
 <p>先在纸上算 CD，再填四格；反馈会指出需要复查的位置。</p>
 <div class="matrix-input"><input type="number" data-expected="4" aria-label="CD 第一行第一列"><input type="number" data-expected="6" aria-label="CD 第一行第二列"><input type="number" data-expected="1" aria-label="CD 第二行第一列"><input type="number" data-expected="3" aria-label="CD 第二行第二列"></div>
 <button type="button" data-check-values>核对四格</button><p class="feedback" data-check-output aria-live="polite"></p>
+<details><summary>逐格解析：先找行和列，再相乘相加</summary><ol><li>左上：C 第一行 (1,2) 与 D 第一列 (2,1)，1×2+2×1=4。</li><li>右上：C 第一行与 D 第二列 (0,3)，1×0+2×3=6。</li><li>左下：C 第二行 (0,1) 与 D 第一列，0×2+1×1=1。</li><li>右下：C 第二行与 D 第二列，0×0+1×3=3。结果大小仍为 2×2，按列也可核对“先 D 后 C”。</li></ol></details>
 </div>
 <div class="lab" data-vector-lab="composition">
 <div class="lab-head">
@@ -106,6 +107,7 @@
 </h3>
 <p>B 在这里是 <code>(x,y)→(x+ky,y)</code>。金色是先 A 后 B，即 BAx；珊瑚色是先 B 后 A，即 ABx。初始 k=1 正是上面的 B。
 </p>
+<button type="button" data-vector-reset>恢复本题输入 (1,1)、k=1</button>
 </div>
 <div class="lab-grid"><canvas aria-label="比较 AB 与 BA 的二维变换输出"></canvas>
 <div class="lab-controls"><label class="control">输入 x <span data-number="x">1</span><input data-value="x" type="range" min="-1" max="1" step="1" value="1"></label><label class="control">输入 y <span data-number="y">1</span><input data-value="y" type="range" min="-1" max="1" step="1" value="1"></label><label class="control">剪切强度 k <span data-number="k">1</span><input data-value="k" type="range" min="-1" max="1" step=".5" value="1"></label>
@@ -177,6 +179,7 @@
 <p data-completion-status>可选：只记录本设备，不影响跳课。
 </p>
 </section>
-<nav class="lesson-nav"><a href="03-basis-of-vector-space.html">← 第 03 课</a><a href="../index.html">课程目录</a><a href="05-matrices-and-linear-transformations.html">第 05 课 →</a>
+<nav class="lesson-nav"><a href="03-basis-of-vector-space.html">← 第 03 课</a><a href="../index.html">课程目录</a><a href="04t-trace.html">04T · Trace 短课 →</a>
 </nav>
-</main></body></html>
+<section class="win"><h2>把这一课放回整条学习路线</h2><p>矩阵加法叠加输出，矩阵乘法复合机器，右边先作用。先完成 04T 的 Trace 短课，再在 05 区分真正移动箭头与只改它的坐标表示。</p></section>
+<script defer src="../assets/beginner-labs.js?v=20261025a"></script></main></body></html>

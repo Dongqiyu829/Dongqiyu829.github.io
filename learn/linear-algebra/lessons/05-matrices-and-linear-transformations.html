@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="线性代数第05课：拖动矩阵的两列，理解线性变换怎样改变整个平面"><title>第 05 课 · 矩阵与线性变换</title><link rel="stylesheet" href="../assets/course.css?v=20261024f"><script defer src="../assets/course.js?v=20261024f"></script><script defer src="../assets/matrix-labs.js?v=20261024f"></script></head><body>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="线性代数第05课：拖动矩阵的两列，理解线性变换怎样改变整个平面"><title>第 05 课 · 矩阵与线性变换</title><link rel="stylesheet" href="../assets/course.css?v=20261025a"><script defer src="../assets/course.js?v=20261025a"></script><script defer src="../assets/matrix-labs.js?v=20261024f"></script></head><body>
 
 <nav class="course-nav"><a href="../index.html">← 线性代数主页</a><span class="crumb">第 05 课 · 矩阵与线性变换</span>
 </nav><main>
@@ -18,7 +18,7 @@
 <section class="win"><strong>学完你应当能：</strong>从两支标准方向的像写出 2×2 变换矩阵；算出任意输入的像；判断给定规则是否线性；分清同一箭头、它的坐标和改变箭头的变换。互动图可拖动金色、紫色箭头的端点，也可用滑块精确调整。
 </section>
 
-<section>
+<details class="beyond"><summary>忘了第 02 课的线性规则？展开复习，不必从头再学</summary>
 <p class="eyebrow">01 · What Counts as Linear?
 </p>
 <h2>“线性”先有一个可检验的意思
@@ -39,9 +39,7 @@
 </div>
 <p class="term-note"><strong>小心：</strong>固定原点是必要条件，但单凭它还不够。例如 F(x,y)=(x²,y) 固定原点，却有 <code>F(2,0)=(4,0)</code>、<code>2F(1,0)=(2,0)</code>，两者不同，所以不保持数乘。矩阵乘列向量则保持加法和数乘，这正是它适合描述线性变换的原因。
 </p>
-</section>
-
-<section>
+</details><section>
 <p class="eyebrow">02 · Two Columns Move the Plane
 </p>
 <h2>任意箭头都由两支基本方向拼成
@@ -84,6 +82,7 @@
 </p>
 <h2>“换坐标”与“移动箭头”不能混成一件事
 </h2>
+<div class="lab" data-coordinate-motion><div class="lab-head"><h3>先操作，再读两种矩阵等式</h3><p>珊瑚色原箭头 v 固定为 (3,1)。按钮一只更换描述它的方向组，按钮二真正用 A 改变对象。每次明确问：变的是箭头，还是它的数字标签？</p><button type="button" data-coordinate-mode>保持箭头，切换标准基/斜基</button><button type="button" data-motion-mode>固定标准坐标，让 A 改变箭头</button></div><canvas aria-label="比较同一箭头换坐标与 A 真正改变箭头"></canvas><p class="lab-readout" data-motion-output aria-live="polite"></p></div>
 <p>Lesson 03 用新基 <code>b₁=(1,1)</code>、<code>b₂=(1,−1)</code> 描述同一支箭头 v=(3,1)，得到新坐标 <code>(2,1)</code>。箭头没有移动，<strong>改变的只是它的数字标签</strong>。若把新基作为矩阵 P 的两列，P 就把“新坐标”翻译成通常坐标：
 </p>
 <div class="formula"><span class="matrix"><span>1</span><span>1</span><span>1</span><span>−1</span></span><span class="column-vector"><span>2</span><span>1</span></span> = <span class="column-vector"><span>3</span><span>1</span></span>
@@ -145,6 +144,7 @@
 <p data-completion-status>可选：只记录本设备，不影响跳课。
 </p>
 </section>
-<nav class="lesson-nav"><a href="04-matrix-operations.html">← 第 04 课</a><a href="../index.html">课程目录</a><a href="06-inverse-rank-nullspace.html">第 06 课 →</a>
+<nav class="lesson-nav"><a href="04t-trace.html">← 04T · Trace 短课</a><a href="../index.html">课程目录</a><a href="06-inverse-rank-nullspace.html">第 06 课 →</a>
 </nav>
-</main></body></html>
+<section class="win"><h2>把这一课放回整条学习路线</h2><p>03 学过同一箭头的不同配方；本课把“换表示”和“改对象”放在同一图里比较。下一课问变换丢失了哪些信息，还能不能倒推输入。</p></section>
+<script defer src="../assets/beginner-labs.js?v=20261025a"></script></main></body></html>

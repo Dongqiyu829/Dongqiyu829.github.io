@@ -1,8 +1,9 @@
 <!doctype html>
-<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="线性代数第02课：线性变换与向量空间的直观解释"><title>第 02 课 · 线性变换与向量空间</title><link rel="stylesheet" href="../assets/course.css?v=20261024f"><script defer src="../assets/course.js?v=20261024f"></script><script defer src="../assets/vector-lab.js?v=20261024f"></script><script defer src="../assets/foundations-labs.js?v=20261024f"></script></head>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="线性代数第02课：线性变换与向量空间的直观解释"><title>第 02 课 · 线性变换与向量空间</title><link rel="stylesheet" href="../assets/course.css?v=20261025a"><script defer src="../assets/course.js?v=20261025a"></script><script defer src="../assets/vector-lab.js?v=20261025a"></script><script defer src="../assets/foundations-labs.js?v=20261025a"></script></head>
 <body><nav class="course-nav"><a href="../index.html">← 线性代数主页</a><span class="crumb">第 02 课 · 线性变换与向量空间</span></nav><main>
 <header class="hero"><p class="eyebrow">Lesson 02 · Linear Maps & Vector Spaces</p><h1>一个向量集合，怎样才算“自成世界”？</h1><p class="lede">向量空间不是神秘的新物体。它就是一群向量组成的集合，并且在做加法、缩放时不会跑到集合外面。</p><div class="meta"><span>约 30 分钟</span><span>动态变换网格</span><span>封闭性判断</span></div></header>
-<section class="win"><strong>本课胜利条件：</strong>你能解释线性变换为何保持加法和数乘，并能用“含零向量、对加法封闭、对数乘封闭”判断一个集合是否为向量空间（或子空间）。</section>
+<section class="win"><strong>本课胜利条件：</strong>分清空间（对象与运算）和变换（输入到输出的规则）；在普通加法、数乘下，用零向量、加法封闭、数乘封闭判断 ℝ² 的子集是不是子空间。这个三项检查不能脱离已知向量空间，冒充所有抽象空间的完整定义。</section>
+<section class="callout"><h2>先分清两件事：在哪里算，怎样送过去</h2><p>上一课用两支箭头配出结果。现在问：若只允许在过原点的直线上选箭头，加法、数乘后还能留在线上吗？这是<strong>向量空间/子空间</strong>的问题，研究一类对象及运算。另一个问题是：规则 T 把每支输入送到哪里，是否兼容这些运算？这是<strong>线性变换</strong>的问题。空间不是一台机器，机器也不是空间。</p><p>本课主线先在熟悉的 ℝ² 中挑子集，再检查它是否继承成一个向量空间。一般向量空间还可由多项式、函数等对象组成，并须指定符合规则的加法和数乘，不能只理解成二维箭头集合。</p></section>
 
 <section><p class="eyebrow">01 · A Gentle Machine</p><h2>线性变换保留“先相加”和“先缩放”的结果</h2>
 <p>回忆 Lesson 01：把矩阵 A 乘一支输入列向量，会产生一支输出列向量。把这条输入到输出的规则叫 <strong>变换 T</strong>。本课仍用</p><div class="formula">A=<span class="matrix"><span>2</span><span>1</span><span>1</span><span>2</span></span>，T(<span class="vector-name">x</span>)=A<span class="vector-name">x</span></div>
@@ -20,7 +21,7 @@
 
 <section><p class="eyebrow">03 · Vector Space</p><h2>向量空间：运算之后仍留在这个集合里</h2>
 <p><strong>集合</strong>就是指定哪些对象算“成员”。例如所有二维实数向量构成的集合记为 <code>ℝ²</code>：<code>ℝ</code> 是实数（包括正数、负数、零），右上角的 2 表示每个向量有两个分量。现在只挑出 ℝ² 的一部分向量，问它们能否独立地做加法和数乘。</p>
-<p>若结果总留在挑出的集合里，就叫对该运算<strong>封闭</strong>。这样的集合（连同普通的向量运算）是 ℝ² 的<strong>子空间</strong>，本身也叫向量空间。想象一条穿过原点的直线：沿线的箭头相加或任意缩放，仍沿着它。</p>
+<p>若结果总留在挑出的集合里，就叫对该运算<strong>封闭</strong>。ℝ² 的一个<strong>非空</strong>子集，若对普通加法、任意实数数乘都封闭，就继承为 ℝ² 的<strong>子空间</strong>，本身也是向量空间。想象一条穿过原点的直线：沿线的箭头相加或任意缩放，仍沿着它；但一条平移过的直线并不满足这些条件。</p>
 <div class="checkpoint"><h3>在 ℝ² 里，逐项检查</h3><ol><li><strong>零向量 (0,0) 在里面吗？</strong>这个集合至少不应是空的。</li><li>任取集合中的 u、v，<strong>u+v 还在吗？</strong>这叫对加法封闭。</li><li>任取集合中的 u 和<strong>任意实数</strong> c（包括负数），<strong>cu 还在吗？</strong>这叫对数乘封闭。</li></ol><p>对 ℝ² 的子集，以上三项通过就够了，因为其他加法和数乘规则已由 ℝ² 提供。若换成每支向量有 n 个分量的 ℝⁿ，方法一样。</p></div>
 <p>现在亲手试：先从集合里选两支向量，再检查运算是否把结果送到集合外。下面“坐标轴的<strong>并集</strong>”指在横轴或竖轴上的点都算成员，两条轴之间的点不算；它与整个平面不同。</p>
 <div class="lab" data-closure-lab>
@@ -31,10 +32,10 @@
     <label class="control">成员 u 的参数 s <span data-set-number="s">1</span><input type="range" data-set-value="s" min="-2" max="2" step=".5" value="1"></label>
     <label class="control">成员 v 的参数 t <span data-set-number="t">0.5</span><input type="range" data-set-value="t" min="-2" max="2" step=".5" value=".5"></label>
     <label class="control">数乘系数 c <span data-set-number="c">1</span><input type="range" data-set-value="c" min="-2" max="2" step=".5" value="1"></label>
-    <button type="button" data-counterexample>试一组相消的向量</button>
+    <div role="group" aria-label="先预测封闭性"><button type="button" data-closure-predict="inside">我预测：结果还在集合里</button><button type="button" data-closure-predict="outside">我预测：结果跑出集合</button></div><button type="button" data-counterexample>试一组相消的向量</button><button type="button" data-closure-reset>重置为过原点直线</button>
     <p data-zero-check aria-live="polite"></p><p class="lab-status" data-closure-status aria-live="polite"></p>
   </div></div>
-  <div class="lab-plain"><p class="callout"><strong>怎样从实验走到结论？</strong>一次反例足以否定封闭性；有限次成功不能证明“任意”情况都成立。图只展示有限视野，u、v 是选取的一族示例，集合本身并不受滑块范围限制。</p><p class="lab-readout" data-set-verdict aria-live="polite"></p></div>
+  <div class="lab-plain"><p class="callout"><strong>怎样从实验走到结论？</strong>一次反例足以否定封闭性；有限次成功不能证明“任意”情况都成立。图只展示有限视野，u、v 是选取的一族示例，集合本身并不受滑块范围限制。</p><details><summary>做过预测后，再展开一般性理由</summary><p class="lab-readout" data-set-verdict aria-live="polite"></p></details></div>
 </div>
 <ol class="guided-task"><li>选“过原点直线”，分别切换加法、数乘并改变参数；用下面的通式解释结果为什么总在线上。</li><li>选“第一象限”，再选“数乘”，把 c 改成 −1：输入还在第一象限，结果却跑出去了。</li><li>选“两坐标轴的并集”，令 s=t=1，观察加法结果 (1,1)。它含零向量，也对数乘封闭，却仍然不是子空间。</li><li>选“平移直线”，先检查原点，再看加法。不要把“是一条直线”误当成“是子空间”。</li></ol>
 <div class="exercise" data-quiz><h3>操作后自测：零向量和数乘检查都通过，够了吗？</h3><p>两条坐标轴的并集包含 (0,0)，也对任意实数数乘封闭。它是 ℝ² 的子空间吗？</p><button type="button" data-answer="incorrect" data-message="还要检查加法。(1,0) 与 (0,1) 都在集合中，但它们的和 (1,1) 不在。">是，已经通过两项检查</button><button type="button" data-answer="correct" data-message="对。(1,0)+(0,1)=(1,1) 不在任一坐标轴上；一个加法反例就足以否定加法封闭。">不是，加法检查仍会失败</button><p class="feedback" data-feedback-output aria-live="polite"></p></div>
@@ -49,7 +50,10 @@
 <div class="checkpoint"><h3>计算训练</h3><p>另取矩阵 <code>B</code>：第一行是 <code>1,1</code>，第二行是 <code>2,2</code>，即 <span class="matrix"><span>1</span><span>1</span><span>2</span><span>2</span></span>。找一支非零输入列向量，让 B 乘它后得到零向量。</p><button type="button" data-reveal-target="#answer02" aria-expanded="false">查看解析</button><div class="answer" id="answer02"><p>设输入为 <span class="column-vector"><span>x₁</span><span>x₂</span></span>。输出是 <span class="column-vector"><span>x₁+x₂</span><span>2x₁+2x₂</span></span>，所以只需 <code>x₁+x₂=0</code>（第二行自动成立）。取 <span class="column-vector"><span>1</span><span>−1</span></span>：</p><div class="formula"><span class="matrix"><span>1</span><span>1</span><span>2</span><span>2</span></span><span class="column-vector"><span>1</span><span>−1</span></span> = <span class="column-vector"><span>0</span><span>0</span></span></div><p>所有输入可写成 <code>t·(1,−1)</code>，其中 t 是任意实数；它们构成一条穿过原点的直线。</p></div></div>
 </section>
 
-<details class="beyond"><summary>Beyond the Course · 折叠的进阶视角</summary><h3>为什么抽象定义还有更多规则？</h3><p>若对象不是 ℝⁿ 中的普通数字列，就必须从头规定加法和数乘该怎样做，并确保它们满足一份规则清单；这些规则叫<strong>公理</strong>。例如<strong>交换律</strong>要求 u+v=v+u，<strong>结合律</strong>要求 (u+v)+w=u+(v+w)，<strong>分配律</strong>要求 c(u+v)=cu+cv。对于 ℝⁿ 的子集，这些规则直接继承，所以主线只检查上面的三项。</p><h3>平移过的直线：仿射集合</h3><p><code>x+y=1</code> 对应一条不过原点的直线，因此不是子空间。它可以从 <code>x+y=0</code> 这条穿过原点的直线整体平移得到；这种“子空间加上固定位置”的集合叫<strong>仿射子空间</strong>。它在几何和优化中很常见，但不满足本课的零向量检查。</p></details>
+<section class="exercise" data-number-check data-hint="选择第一象限、数乘；u=(1,1)，c=−1。把两个分量都乘 −1。" data-success="(−1,−1) 跑出第一象限；一个反例足以否定数乘封闭。"><h3>独立计算一个反例</h3><p>第一象限包含 u=(1,1)。计算 −u，再在实验里选“第一象限→数乘→c=−1”核对。</p><div class="number-fields"><label>结果 x<input type="number" data-expected="-1" aria-label="02 反例 x"></label><label>结果 y<input type="number" data-expected="-1" aria-label="02 反例 y"></label></div><button type="button" data-check-values>核对反例</button><p class="feedback" data-check-output aria-live="polite"></p><details><summary>逐步解析与推广</summary><p>① u 两个分量都为正，是集合成员。② 乘 −1 得 (−1,−1)。③ 两个分量都小于 0，不再是成员。④ 子空间要求任意实数数乘都封闭，所以这一次失败就够了；只试加法成功不能弥补数乘失败。</p></details></section>
+<section class="example"><h3>不是箭头也能组成空间</h3><p>所有 a+bt（a、b 任意实数）组成一个多项式空间。比如 (1+2t)+(3−t)=4+t 仍是这种形状；−2(1+2t)=−2−4t 也还在里面。零向量在这里是<strong>零多项式</strong>，不是平面上的某一点。这只是一般向量空间的一个直观例子；是否是 ℝ² 的子空间，是另一个关于对象和所处空间的问题。</p></section>
+<details class="beyond"><summary>Beyond the Course · 折叠的进阶视角</summary><h3>为什么抽象定义还有更多规则？</h3><p>对象、加法、数乘需满足交换律、结合律、分配律等完整规则；这些叫公理。对于已知 ℝ² 的子集，规则会继承，才可使用主线的三项子空间检查。</p><h3>平移直线</h3><p>x+y=1 是 x+y=0 的整体平移，称为仿射子空间，但并非本课的线性子空间。</p></details>
 <section class="complete-row"><button type="button" data-complete-lesson="linear-02" aria-pressed="false">标记本课已完成</button><p data-completion-status>可选：只记录本设备，不影响其他课程。</p></section>
 <nav class="lesson-nav"><a href="01-vectors-and-transformations.html">← 第 01 课</a><a href="../index.html">课程目录</a><a class="button-link primary" href="03-basis-of-vector-space.html">下一课：基与坐标 →</a></nav>
-</main></body></html>
+<section class="win"><h2>把这一课放回整条学习路线</h2><p>本课区分“空间”与“变换”，并用反例检验子空间。下一课从一个空间中选出既够用又不重复的方向，给每个向量唯一的配方。</p></section>
+<script defer src="../assets/beginner-labs.js?v=20261025a"></script></main></body></html>

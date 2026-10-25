@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="面向初学者的中文互动线性代数课程：先预测，再动手改变图像，最后解释和计算。">
   <title>Introduction to Linear Algebra · 互动线性代数</title>
-  <link rel="stylesheet" href="assets/course.css?v=20261024f">
-  <script defer src="assets/course.js?v=20261024f"></script>
-  <script defer src="assets/vector-lab.js?v=20261024f"></script>
+  <link rel="stylesheet" href="assets/course.css?v=20261025a">
+  <script defer src="assets/course.js?v=20261025a"></script>
+  <script defer src="assets/vector-lab.js?v=20261025a"></script>
 </head>
 <body>
 <nav class="course-nav" aria-label="课程导航">
   <a href="../../">董骐与 · 个人主页</a>
-  <span class="crumb" data-course-progress data-total="10">0 / 10 节已完成（本设备）</span>
+  <span class="crumb" data-course-progress data-total="11">0 / 11 节已完成（本设备）</span>
 </nav>
 <main>
   <header class="hero">
@@ -26,9 +26,11 @@
     <strong>自由学习，也可以自愿留痕。</strong>所有已发布课程都能直接进入，不设解锁门槛。自测会立刻给出解释；“完成”按钮只把进度保存在当前浏览器，不上传账号，也不会阻止你跳课。
   </section>
 
+  <section class="win"><h2>从零开始怎么学？</h2><p><strong>先修：</strong>会正负数四则运算、代入和一元一次方程即可，不需要矩阵、向量或三角函数。推荐按 00→01→02→03→04→04T→05→06→07 学，每课约 25–45 分钟，可拆成两次。00–01 是具体计算，02–03 抽象度较高，建议慢下来多做反例；04–07 将这些想法连成矩阵的几何。</p><p><strong>当前开放：</strong>00–09，另含独立 Trace 短课 04T；本轮打磨 00–07，不要求现在学工程进阶。12–13 始终为可选路线，不是入门先修。每张卡片列出本课能学会的任务。</p></section>
+  <section aria-labelledby="play-title"><p class="eyebrow">Start with a Point</p><h2 id="play-title">不用矩阵，先认识 (2,1)</h2><p>横轴叫 x 轴，竖轴叫 y 轴，交点是原点 (0,0)。(2,1) 表示先向右 2 格，再向上 1 格。先猜：(1,2) 会在同一处吗？点按钮比较。这里只需看点的位置，下一课才把它画成箭头。</p><div class="lab" data-coordinate-lab><div class="lab-grid"><canvas aria-label="二维坐标入门：先横向再竖向到达一个点"></canvas><div class="lab-controls"></div></div></div><p><a class="button-link primary" href="lessons/00-systems-of-linear-equations.html">从账单与两条直线开始第 00 课 →</a></p><details><summary>未来你将理解的问题：AB 为什么未必等于 BA？</summary><p>不用现在理解矩阵。学完向量与矩阵以后，<a href="lessons/04-matrix-operations.html">第 04 课的顺序实验</a>会让你亲自比较“先 A 再 B”和“先 B 再 A”。</p></details></section>
   <section aria-labelledby="start-title">
     <p class="eyebrow">Start Here</p>
-    <h2 id="start-title">前十课：从方程走到几何与测量</h2>
+    <h2 id="start-title">已开放课程：00–09 与 Trace 短课</h2>
     <div class="course-grid">
       <article class="lesson-card" data-lesson-id="linear-00">
         <span class="status-tag" data-lesson-status>可直接开始</span>
@@ -55,6 +57,7 @@
         <a href="lessons/03-basis-of-vector-space.html">开始第 03 课 →</a>
       </article>
       <article class="lesson-card" data-lesson-id="linear-04"><span class="status-tag" data-lesson-status>可直接开始</span><h3>04 · 矩阵操作：数字表怎样接成变换机器？</h3><p>点选结果格，用元素箭头看清加法、转置、单位矩阵及 AB、BA 怎样计算。</p><a href="lessons/04-matrix-operations.html">开始第 04 课 →</a></article>
+      <article class="lesson-card" data-lesson-id="linear-04t"><span class="status-tag" data-lesson-status>可直接开始</span><h3>04T · Trace 独立短课：主对角线的摘要</h3><p>编辑四格，解释迹算了什么、没算什么；用性质计算，用反例纠错，不提前依赖特征值。</p><a href="lessons/04t-trace.html">开始 Trace 短课 →</a></article>
       <article class="lesson-card" data-lesson-id="linear-05"><span class="status-tag" data-lesson-status>可直接开始</span><h3>05 · 矩阵与线性变换：两列决定整张平面</h3><p>改变两列的去向，看网格和输入箭头一起变化；区分换坐标与移动箭头。</p><a href="lessons/05-matrices-and-linear-transformations.html">开始第 05 课 →</a></article>
       <article class="lesson-card" data-lesson-id="linear-06"><span class="status-tag" data-lesson-status>可直接开始</span><h3>06 · 可逆矩阵、秩与零空间：信息何时丢失？</h3><p>让两列重合，看平面压成直线；逐步消元，辨别唯一解、无解与无穷多解。</p><a href="lessons/06-inverse-rank-nullspace.html">开始第 06 课 →</a></article>
       <article class="lesson-card" data-lesson-id="linear-07"><span class="status-tag" data-lesson-status>可直接开始</span><h3>07 · 行列式：面积与方向</h3><p>拖动两列，观察面积归零与方向翻转；沿元素箭头算行列式，再判断能否倒回输入。</p><a href="lessons/07-determinants.html">开始第 07 课 →</a></article>
@@ -73,9 +76,9 @@
     </div>
   </section>
 
-  <section aria-labelledby="play-title">
+  <details class="beyond"><summary>未来你将理解的复合变换实验 · 第 04 课以后再看</summary><section aria-labelledby="future-composition">
     <p class="eyebrow">Try Before the Formula</p>
-    <h2 id="play-title">先玩一个矩阵操作预览：顺序能交换吗？</h2>
+    <h2 id="future-composition">未来实验预览（学完 04 再看）：顺序能交换吗？</h2>
     <p>固定 A 为上面的矩阵；B 是一台“水平剪切机”：把输入 <code>(x,y)</code> 变成 <code>(x+ky,y)</code>。这里 k 是你可调的剪切强度。先猜：同一支箭头，先 A 后 B，和先 B 后 A，会落在同一处吗？</p>
     <div class="lab" data-vector-lab="composition"><div class="lab-head"><h3>拖动 k 和输入，比较两条路径</h3><p>青色是原输入，金色是先 A 后 B，珊瑚色是先 B 后 A。调到 k=0，再调到 k=1，观察何时重合。</p></div><div class="lab-grid"><canvas aria-label="比较矩阵变换先后顺序的二维互动图"></canvas><div class="lab-controls">
       <label class="control">输入横坐标 x <span data-number="x">1</span><input data-value="x" type="range" min="-1" max="1" step="1" value="1"></label>
@@ -83,18 +86,18 @@
       <label class="control">剪切强度 k <span data-number="k">1</span><input data-value="k" type="range" min="-1" max="1" step=".5" value="1"></label>
       <div class="legend"><span><i class="dot input"></i>输入</span><span><i class="dot basis"></i>先 A 后 B</span><span><i class="dot output"></i>先 B 后 A</span></div><p class="lab-readout" data-readout aria-live="polite"></p>
     </div></div></div>
-    <div class="exercise" data-quiz><h3>操作后自测：把 k 调成 0</h3><p>这时两条路径重合，最直接的原因是什么？</p><button type="button" data-answer="correct" data-message="对。k=0 时 B(x,y)=(x,y)，B 不改变任何输入；无论放在 A 前面还是后面，结果都是 A 的输出。">B 变成“不改变向量”的操作</button><button type="button" data-answer="incorrect" data-message="只有这次 B 不改变向量；任意两个矩阵不一定能交换顺序。">所有矩阵乘法都能交换顺序</button><button type="button" data-answer="incorrect" data-message="默认输入是 (1,1)，并不是零向量。">因为输入一定是零向量</button><p class="feedback" data-feedback-output aria-live="polite"></p></div>
+    <p class="term-note">读数会标明当前 k。请真的将 k 调成 0，再观察两条路径；若输入恰好是零向量，任意 k 也会重合。一次重合不能说明两台机器总能交换。</p>
     <p class="term-note"><strong>发现：</strong>默认输入 (1,1)、k=1 时，先 A 后 B 得到 (6,3)，先 B 后 A 得到 (5,4)。矩阵乘法的先后顺序不能随意调换。<a href="lessons/04-matrix-operations.html">到第 04 课动手算 AB 与 BA →</a></p>
   </section>
 
-  <section aria-labelledby="route-title">
+  </details><section aria-labelledby="route-title">
     <p class="eyebrow">Lesson 00–13</p>
     <h2 id="route-title">完整课程路线</h2>
-    <p>前十课已经可学，10–13 是开发路线。每课都要有可操作的图、必须先预测的任务和能核对的计算；只有术语和静态文字的页面不会算作完成。</p>
+    <p>00–09 与核心 Trace 短课 04T 已开放，共 11 个学习单元。00–07 是本轮打磨范围；10–11 为后续核心计划，12–13 是可选工程进阶，不增加入门主线负担。保留原编号与旧链接，04T 插在 04、05 之间。</p>
     <div class="route">
       <div class="route-item"><div><strong>线性方程组</strong><p>解、消元、三种可能性；几何上是直线或平面的交集。</p></div><span class="status-tag">已开放</span></div>
       <div class="route-item"><div><strong>向量与变换</strong><p>先学向量与线性组合，再把方程组改写成矩阵乘列向量。</p></div><span class="status-tag">已开放</span></div>
-      <div class="route-item"><div><strong>线性变换与向量空间</strong><p>保持加法与数乘的变换；向量空间是对这些运算封闭的向量集合。</p></div><span class="status-tag">已开放</span></div>
+      <div class="route-item"><div><strong>线性变换与向量空间</strong><p>区分对象集合与映射；检验 ℝ² 子空间的封闭性，再认识非箭头的向量空间。</p></div><span class="status-tag">已开放</span></div>
       <div class="route-item"><div><strong>向量空间的基</strong><p>生成、线性无关、基、坐标与维数。</p></div><span class="status-tag">已开放</span></div>
       <div class="route-item"><div><strong>矩阵操作</strong><p>编辑数字、交换操作顺序，再学加法、转置、矩阵乘法和单位矩阵。迹只先当作对角线之和来计算。</p></div><span class="status-tag">已开放</span></div>
       <div class="route-item"><div><strong>矩阵与线性变换</strong><p>改变两列的去向，重建整张变换网格；区分变换与换坐标。</p></div><span class="status-tag">已开放</span></div>
@@ -115,5 +118,5 @@
     <p>主线为自编的入门解释与互动练习，重理解和计算，不以抽象证明为第一目标。进阶折叠区会提示更严格的定义与后续方向。高级概念顺序参考用户提供的 <a href="https://stupid-benz.github.io/MATH2131/main.pdf">MATH2131 讲义</a>，但课程内容、例题与表达均重新组织。</p>
   </section>
 </main>
-</body>
+<script defer src="assets/beginner-labs.js?v=20261025a"></script></body>
 </html>
