@@ -43,6 +43,6 @@ assert.deepEqual(rows,[[1,1,1,6],[0,-1,-3,-11],[0,0,7,21]]);
 assert.deepEqual([1+2+3,2+2-3,1-2+6],[6,1,5]);
 assert.throws(()=>rowOperation([[2,1,5],[1,2,4]],'scale',0,1,0));
 const root=path.resolve(__dirname,'..');
-for(const file of fs.readdirSync(path.join(root,'lessons')).filter(f=>f.endsWith('.html'))){const html=fs.readFileSync(path.join(root,'lessons',file),'utf8');assert.ok(html.indexOf('learning-modes.js')<html.indexOf('course.js'));assert.ok(html.includes('transfer-practice.js'));}
+for(const file of fs.readdirSync(path.join(root,'lessons')).filter(f=>f.endsWith('.html'))){const html=fs.readFileSync(path.join(root,'lessons',file),'utf8');assert.ok(html.indexOf('learning-modes.js')<html.indexOf('course.js'));const id=file.split('-')[0];if(transfers[id])assert.ok(html.includes('transfer-practice.js'));else assert.ok(html.includes('id="transfer"')&&html.includes('data-number-check'),'New lessons must provide independent practice even without the generated practice bank.');}
 const route=fs.readFileSync(path.join(root,'reference/course-route.html'),'utf8');assert.ok(route.indexOf('04-matrix-operations.html')<route.indexOf('04t-trace.html'));assert.ok(route.indexOf('04t-trace.html')<route.indexOf('05-matrices-and-linear-transformations.html'));
 console.log('PASS: prediction transitions, fractions, 11 transfer answers, 9 review questions, 3-variable elimination and script/route order.');

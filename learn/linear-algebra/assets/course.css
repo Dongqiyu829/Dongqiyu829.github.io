@@ -246,6 +246,19 @@ input[aria-invalid="true"] { border: 2px solid var(--danger); background: #fbe6e
 .lab-controls h4 { margin: 8px 0; }
 .optional-study, .stage-review { margin: 24px 0; padding: 16px; border: 1px solid var(--line); border-radius: 12px; }
 .route-item.trace-route::before { content: "04T"; counter-increment: none; }
+.eigen-views { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 1px; background: var(--line); }
+.eigen-views figure { margin: 0; background: #fbfaf5; min-width: 0; }
+.eigen-views figcaption { padding: 12px; color: var(--teal-dark); font-weight: 800; }
+.eigen-views canvas, .lab[data-eigen-explorer] canvas, .lab[data-eigen-cases] canvas { height: auto; aspect-ratio: 1; align-self: start; }
+[data-diag-controls] { display: flex; flex-wrap: wrap; align-items: start; gap: 10px 20px; margin-top: 18px; border-left: 0; }
+[data-diag-controls] > .control { flex: 1 1 220px; }
+[data-diag-controls] > label, [data-eigen-cases] select { max-width: 100%; }
+[data-eigen-explorer] input[type="number"], [data-eigen-cases] input[type="number"] { width: 100%; }
+[data-calc-body] { min-height: 95px; }
+.eigen-lesson .math-line { white-space: normal; }
+[data-diag-formula] { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 18px; }
+[data-diag-formula] > span { white-space: nowrap; }
+@media (max-width:600px) { .eigen-views { grid-template-columns: 1fr; } }
 
 @media print {
   body { background: #fff; font-size: 10.5pt; }
