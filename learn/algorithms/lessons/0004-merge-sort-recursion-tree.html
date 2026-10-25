@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="从一个数组理解递归调用与 merge，再按递归树逐层求和，严谨证明 Merge Sort 的 Θ(n log n)。">
+  <title>第 4 课：Merge Sort，递归树怎样算出总工作量？</title>
+  <link rel="stylesheet" href="../assets/course.css?v=20261025b">
+  <link rel="stylesheet" href="../assets/short-lesson.css?v=20261025b">
+  <link rel="stylesheet" href="../assets/recursion-tree.css?v=20261025b">
+  <script defer src="../assets/quiz.js?v=20261025b"></script>
+  <script defer src="../assets/recursion-tree.js?v=20261025b"></script>
+  <script defer src="../assets/compiler-lab.js?v=20261025b"></script>
+  <script defer src="../assets/reflection.js?v=20261025b"></script>
+<!-- course-data:start -->
+<script type="application/json" data-course-manifest>{"schemaVersion":1,"release":"20261025b","planning":{"topicCount":24,"route":"reference/course-route.html"},"lessons":[{"id":"lesson-0001","topicId":"binary-search-invariant","path":"lessons/0001-binary-search-loop-invariant.html","title":"二分搜索：为什么这半边可以丢？","published":true},{"id":"lesson-0002","topicId":"quadratic-tight-bound","path":"lessons/0002-asymptotic-analysis.html","title":"数清工作量，再写 Θ(n²)","published":true},{"id":"lesson-0003","topicId":"geometric-sum","path":"lessons/0003-doubling-work-sum.html","title":"两层循环，为什么只有 Θ(n)？","published":true},{"id":"lesson-0004","topicId":"merge-sort-recursion-tree","path":"lessons/0004-merge-sort-recursion-tree.html","title":"Merge Sort：递归树怎样算出总工作量？","published":true}]}</script>
+<!-- course-data:end -->
+</head>
+<body>
+<nav class="course-nav" aria-label="课程导航"><a href="../index.html">← 算法学习主页</a><span class="crumb">第 4 课 · Merge Sort / 递归树</span></nav>
+<main>
+  <header class="hero"><p class="eyebrow">COMP3711H Prep · Lesson 04</p><h1>Merge Sort：<br>递归树怎样算出总工作量？</h1><p class="lede">先把八个数排好，再把每一次合并的账算清。递归树只是记账图，不需要先背递推公式。</p><div class="meta"><span>主线 20–25 分钟</span><span>证明与编码可展开</span><span>一个数组贯穿全课</span></div></header>
+  <section class="win" data-learning-outcome><strong>学完能做什么：</strong>从 Merge Sort 的递归过程画出各层子问题，写出每层的工作量，并用上下界证明总时间为 Θ(n log n)。<p>主线：排序过程 6 分钟 → 逐层计数 6 分钟 → 证明与迁移 8–10 分钟。完整实现留作可选实践。</p></section>
+
+  <section aria-labelledby="problem-title"><p class="eyebrow">01 · 把一个大任务变小</p><h2 id="problem-title">要给这八个数排序，你会怎么拆？</h2>
+    <p>第一课的二分搜索要求输入有序。现在输入是 <code>[7,2,5,1,6,3,8,4]</code>，我们要得到 <code>[1,2,3,4,5,6,7,8]</code>，每个元素都保留，允许重复值。</p>
+    <p>把它切成左右两半：<code>[7,2,5,1]</code> 和 <code>[6,3,8,4]</code>。这还没有排序！它只是给出两个<strong>子问题</strong>：分别把左半和右半排好。</p>
+    <div class="exercise" data-activity="prediction" data-quiz><p><strong>假设两半已经排成 [1,2,5,7] 与 [3,4,6,8]，接下来应该？</strong></p><button type="button" data-answer="incorrect" data-message="直接拼接会得到 …7,3…，中间仍然逆序。两个局部有序序列还需要合并。" aria-pressed="false">把两半直接拼接</button><button type="button" data-answer="correct" data-message="对。各半内部已经有序，全局最小值一定在两个尚未取走的队首中。" aria-pressed="false">比较队首依次取</button><p class="feedback" data-feedback-output aria-live="polite"></p></div>
+    <p>这就是<strong>分治</strong>的一个例子：拆成更小的同类任务，解决它们，再把解合起来。选两半，是因为它们都显著变小，而且两个有序序列能够快速合并。</p>
+  </section>
+
+  <section aria-labelledby="recursive-title"><h2 id="recursive-title">递归调用不是凭空获得答案</h2>
+    <p><strong>递归调用</strong>就是一个函数再次调用自己，但这次处理更小的输入。父调用先暂停，等子调用返回有序结果，再继续。每次调用有自己的数组、进度和返回值。</p>
+<pre><code>sort(A):
+    如果长度 ≤ 1：直接返回 A
+    从中间切成 L、R
+    left  = sort(L)   // 等左边排好再返回
+    right = sort(R)   // 再等右边排好
+    返回 merge(left, right)</code></pre>
+    <p>跟着最左边走：<code>[7,2,5,1,6,3,8,4] → [7,2,5,1] → [7,2] → [7]</code>。一个数本来就有序，于是 [7] 返回；[2] 也返回，合成 [2,7]。同理 [5] 与 [1] 合成 [1,5]；再合成 [1,2,5,7]。右半最终返回 [3,4,6,8]。</p>
+    <p><strong>为什么会结束？</strong>长度 m≥2 时，两半长度分别为 ⌊m/2⌋、⌈m/2⌉，都小于 m。到 0 或 1 就直接返回，叫<strong>递归边界（base case）</strong>。⌊ ⌋ 表示向下取整，⌈ ⌉ 表示向上取整。</p>
+    <details><summary>从叶子向上核对完整返回过程</summary><ol class="merge-walk"><li>[7]+[2] → [2,7]；[5]+[1] → [1,5]；[6]+[3] → [3,6]；[8]+[4] → [4,8]。</li><li>[2,7]+[1,5] → [1,2,5,7]；[3,6]+[4,8] → [3,4,6,8]。</li><li>[1,2,5,7]+[3,4,6,8] → [1,2,3,4,5,6,7,8]。</li></ol></details>
+  </section>
+
+  <section aria-labelledby="merge-title"><h2 id="merge-title">merge：只比较两个队首</h2>
+    <p>现在合并 <code>L=[1,2,5,7]</code>、<code>R=[3,4,6,8]</code>。用两个下标 i、j 指向各自尚未取出的第一个数。每次把较小队首写入新数组，再移动那一侧下标；相等时取左边即可。</p>
+    <ol class="merge-walk"><li>1 与 3 比，取 1；再以 2 与 3 比，取 2。输出 [1,2]。</li><li>5 与 3 比，取 3；5 与 4 比，取 4。输出 [1,2,3,4]。</li><li>继续取 5、6、7；左半用尽，把右半剩下的 8 接上。</li></ol>
+    <p><strong>先自己解释：</strong>为什么不用把左边每个数与右边每个数比较？</p><details><summary>用有序性检查理由</summary><p>各侧队首是该侧剩余元素的最小值。因此两队首中较小的，就是所有剩余元素的最小值；取走它后，原性质仍成立。一侧用尽后，另一侧的剩余部分可直接依次写入。</p></details>
+    <p>合并总长为 m 的两段，<strong>每个元素恰好写入新数组一次，所以恰好 m 次写入</strong>。比较次数可能不足 m，但最多 m−1 次；每次指针操作为常数。因此一次 merge 的时间是 Θ(m)，不是 Θ(m²)。</p>
+    <details><summary>严格正确性：为什么整套递归排序成立？</summary><p>对长度作强归纳。长度≤1 时已排好且元素不变。假设所有更短输入都能正确排序；长度 m≥2 时两子问题都更短，因此分别返回保留原元素的有序数组。merge 每步选出剩余全局最小值，输出前缀一直有序且不丢不重；最终输出所有 m 个元素。因此整个结果有序且恰好是原数组的一个排列。长度严格下降也保证终止。</p></details>
+  </section>
+
+  <section aria-labelledby="tree-title"><p class="eyebrow">02 · 同一层一起记账</p><h2 id="tree-title">子问题翻倍，单个问题减半</h2>
+    <p>第三课先列每轮工作再求和；这次先列<strong>每层</strong>的工作。每个节点代表一次 sort 调用；两个子节点是它切出的左右半。深度 0 是最初调用。</p>
+    <p>给一个节点计费时，<strong>只计它自己的 merge</strong>，不把子调用的时间再记进去，否则重复收费。树按深度排开是为了算账；真实程序通常先走完左子树、再走右子树，合并从底部返回，并非同层同时执行。</p>
+    <div class="exercise" data-activity="prediction" data-quiz><p><strong>n=8 时，深度 1 有两个规模为 4 的调用。本层合并共写入？</strong></p><button type="button" data-answer="incorrect" data-message="4 是单个调用的写入量，这一层还有另一个规模 4 的调用，不能漏掉。" aria-pressed="false">合计 4 次</button><button type="button" data-answer="correct" data-message="对，2×4=8。节点数翻倍，单节点工作减半；要先相乘得到本层工作。" aria-pressed="false">合计 8 次</button><button type="button" data-answer="incorrect" data-message="16 把额外的工作算进来了。这里只计两个节点各自的 merge，不包含它们的子调用。" aria-pressed="false">合计 16 次</button><p class="feedback" data-feedback-output aria-live="polite"></p></div>
+    <div class="exercise" data-activity="exploration" data-recursion-tree><h3>每次展开一层，先预测再核对</h3><p>“根L / 根R”表示父节点的左 / 右子调用，继续添加 L/R 表示路径。节点显示实际子数组、规模与自身合并写入数。换成 n=5，观察哪些层不再满。</p><div class="tree-controls" role="group" aria-label="递归树输入规模"><button type="button" data-tree-size="8" aria-pressed="true">n = 8</button><button type="button" data-tree-size="5" aria-pressed="false">n = 5</button><button type="button" data-tree-size="16" aria-pressed="false">n = 16</button><button type="button" data-tree-size="1" aria-pressed="false">n = 1</button><button type="button" data-tree-size="0" aria-pressed="false">n = 0</button></div><ol class="tree-levels" data-tree-rows aria-label="按深度排列的递归调用"></ol><div class="tree-controls"><button type="button" data-tree-next>展开下一层</button><button type="button" data-tree-reset>重新开始</button></div><p data-tree-state role="status"></p><noscript><p>交互不可用时，下面的完整层级账本仍可阅读；n=5 的各层合并写入数为 5、5、2、0，总共 12。</p></noscript></div>
+    <p>n=8 的完整账本（叶子不 merge）：</p>
+    <table><thead><tr><th scope="col">深度</th><th scope="col">调用数</th><th scope="col">各自规模</th><th scope="col">本层写入</th></tr></thead><tbody><tr><td>0</td><td>1</td><td>8</td><td>1×8=8</td></tr><tr><td>1</td><td>2</td><td>4</td><td>2×4=8</td></tr><tr><td>2</td><td>4</td><td>2</td><td>4×2=8</td></tr><tr><td>3</td><td>8</td><td>1</td><td>0，直接返回</td></tr></tbody></table>
+    <p>因此合并写入总量是 <code>8+8+8=24</code>。叶子的 0 指<strong>合并写入</strong>为 0，不是函数调用免费；八个叶子另有 Θ(8) 控制开销。</p>
+  </section>
+
+  <section aria-labelledby="sum-title"><p class="eyebrow">03 · 从八个数推到 n 个数</p><h2 id="sum-title">n 的工作，重复了多少层？</h2>
+    <p>先设 n=2ᵏ。在深度 d&lt;k，有 2ᵈ 个规模为 n/2ᵈ 的子问题。因此这一层：</p><div class="formula">2ᵈ × (n / 2ᵈ) = n 次 merge 写入</div>
+    <p>从 n 减半 k 次才变成 1，所以 <code>k=log₂ n</code>。这里 log₂ n 的意思是“2 的几次方等于 n”；例如 log₂8=3。深度 0 到 k−1 共 k 个合并层，深度 k 为叶子。<strong>总层数 k+1，合并层数 k，别差一层。</strong></p>
+    <div class="formula formula-key">W(n) = n + n + ⋯ + n = n log₂ n<br>每层 Θ(n) × log₂ n 个合并层 → Θ(n log n)</div>
+    <p>第三课的各轮是 1、2、4、…，总和线性；这里各层都是 n，因此对数个 n 要相加。这一次“层数乘每层”是紧确计数，而不是用最大层代替所有较小层。</p>
+    <p>本课讨论的是<strong>总运行时间</strong>。以新数组完成每次 merge 的普通版本，即便输入已经有序也照常合并；不加入“已有序就跳过”的优化。</p>
+    <details><summary>严格论证：任意整数 n 与单位代价模型</summary>
+      <p><strong>模型与输入：</strong>n 是元素个数，n≥0；整数比较、索引、一次元素写入按常数时间计。C++ 动态数组追加按摊还常数，Python 列表切片按长度计。下面程序的切分、分配、复制均包含在总时间中。分析的是可表示输入在该模型下的渐进增长，不是无穷精度整数的位复杂度。</p>
+      <p>定义 W(n) 为所有 merge 向新输出数组的写入总数。W(0)=W(1)=0；长度 m≥2 的一个调用贡献 m，子问题大小为 ⌊m/2⌋、⌈m/2⌉。所以现在才可把刚才的过程记成 <code>W(m)=W(⌊m/2⌋)+W(⌈m/2⌉)+m</code>。</p>
+      <p><strong>树高：</strong>n≥2，令 h=⌊log₂n⌋，H=⌈log₂n⌉。深度 d 的已有节点大小介于 ⌊n/2ᵈ⌋ 与 ⌈n/2ᵈ⌉，由每次均分归纳得到。因而最大深度为 H；至少要走 H 次才可让最大子问题降到 1，至多 H 次也一定到 1。</p>
+      <p><strong>每层上界：</strong>同层子数组互不相交，所有待合并节点的长度总和至多 n，所以每个深度的 merge 写入≤n；至多 H 个合并层，故 W(n)≤nH。</p>
+      <p><strong>匹配下界：</strong>对每个 d=0,…,h−1，⌊n/2ᵈ⌋≥2，尚无分支停在叶子。该层所有节点都合并，并完整划分原数组，长度总和恰为 n。因此前 h 层已经贡献 nh，W(n)≥nh。最后一个不满的合并层可少于 n，例如 n=5 时为 2；不能声称任意 n 的所有合并层都恰为 n。</p>
+      <div class="formula">n⌊log₂n⌋ ≤ W(n) ≤ n⌈log₂n⌉<br>对 n≥2：½ n log₂n ≤ W(n) ≤ 2n log₂n</div>
+      <p>最后一步用到对 x≥1：⌊x⌋≥x/2 且 ⌈x⌉≤2x。这给出固定常数的双侧界，不只是几个样例。</p>
+      <p><strong>从写入到时间：</strong>一次规模 m 的内部调用，除子递归外只做 O(m) 的切分、合并、循环控制和分配；至少有 m 次写入。n≥1 时恰有 n 个单元素叶子、n−1 个内部节点，故调用数为 2n−1。存在固定 a,b&gt;0，使 <code>a(W(n)+n) ≤ T(n) ≤ b(W(n)+n)</code>。结合上式，所有输入排列均有 T(n)=Θ(n log n)，n=0、1 为 Θ(1)。这里没有借助任何通用递推定理。</p>
+    </details>
+  </section>
+
+  <section data-activity="transfer" aria-labelledby="transfer-title"><p class="eyebrow">04 · 独立迁移，换一种拆法</p><h2 id="transfer-title">若总是拆成 1 和 m−1，会怎样？</h2>
+    <p>仍把两个递归结果用线性 merge 合起来，但把规模 m≥2 拆成 1 与 m−1。先不运行、不看答案，画 n=5 的形状，列出每层合并写入，再对一般 n≥2 推导总量和紧确界。最后指出：原来 Θ(n log n) 的哪条论证失效了？</p>
+    <div class="independent-work" data-reflection data-exercise-id="l4-unbalanced-transfer"><p class="activity-kind">迁移型 · 需要写推导，不自动批改</p><label for="l4-transfer-answer">写出 n=5 的各层工作、一般 n 的求和式，以及上下界理由。</label><textarea id="l4-transfer-answer" rows="6" placeholder="先画一条不断减 1 的分支；不必写得很漂亮。"></textarea><button type="button" data-copy-response>复制回答给教师</button><p class="editor-note" data-reflection-status role="status">只在本页输入，不自动保存或发送。请先复制保留；教师需看到你的推导才能反馈。</p><details><summary>只看一个提示</summary><p>每层只有那个长度仍大于 1 的分支继续合并。长度是每次减半，还是每次减 1？再回忆第二课如何给 1+2+⋯+n 求和。</p></details></div>
+    <details><summary>独立作答后核对参考推导</summary><p>n=5 的合并层写入依次为 5、4、3、2，共 14；其旁边的单元素叶子没有 merge。一般 <code>W(n)=n+(n−1)+⋯+2=n(n+1)/2−1</code>。</p><p>对 n≥2，有 <code>n²/2 ≤ W(n) ≤ n²</code>，因为 n/2−1≥0，且 n(n+1)/2≤n²。所以总时间 Θ(n²)。失败的关键是均衡拆分带来的对数深度：现在最长分支有 n−1 个合并层，不能再用 log₂n。merge 本身仍是线性的；不能因为用了递归就直接得出 n log n。</p></details>
+  </section>
+
+  <details><summary>可选实践 · 在 C++ / Python 中补完 merge 并核对计数</summary>
+    <p>递归和测试已给出。只补 TODO：两侧都有剩余元素时，选择较小的队首写入 out，并把相应下标加 1。下面那条 writes 计数不需要改；剩余元素复制也已经提供。输入数组不被修改。</p>
+    <div class="code-lab" data-compiler-lab data-programs-source="../assets/merge-programs.json?v=20261025b"><div class="language-switch" role="group" aria-label="选择编程语言"><button type="button" data-lab-language="cpp" aria-pressed="true">C++</button><button type="button" data-lab-language="python" aria-pressed="false">Python</button></div><p class="editor-note">切换语言或重填会覆盖内容，请先复制保存。编辑和运行由 OneCompiler 提供；载入确认不代表测试通过。手机可用下方运行按钮，也可复制到独立页面。</p><div class="external-editor is-loading"><iframe data-lab-frame title="C++ 在线代码编辑器" src="https://onecompiler.com/embed/cpp?listenToEvents=true&amp;codeChangeEvent=true&amp;hideLanguageSelection=true&amp;fontSize=16" loading="lazy" allow="clipboard-write" referrerpolicy="strict-origin-when-cross-origin"></iframe></div><p data-lab-status class="editor-note" role="status">等待编辑器响应；完整代码在下方可复制。</p><div class="compiler-controls"><button type="button" data-lab-run disabled>运行当前编辑区代码</button><button type="button" data-lab-starter>重新填入起始代码（覆盖编辑区）</button><button type="button" data-lab-reload>重新加载编辑器（覆盖编辑区）</button><button type="button" data-copy-starter>复制当前语言起始代码</button><a data-lab-open href="https://onecompiler.com/cpp" target="_blank" rel="noopener">独立页面编辑（先复制代码）</a></div><p data-copy-status class="editor-note" role="status"></p>
+<!-- compiler-fallback:start -->
+<details data-lab-fallback-panel class="compiler-fallback"><summary>编辑器不可用？复制完整起始代码（含全部测试）</summary>
+<h3>C++</h3><pre tabindex="0" data-program-code="cpp">#include &lt;algorithm&gt;
+#include &lt;iostream&gt;
+#include &lt;stdexcept&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+struct Stats { long long writes = 0; int maxDepth = 0; };
+
+vector&lt;int&gt; mergeSort(const vector&lt;int&gt;&amp; a, Stats&amp; stats, int depth = 0) {
+    stats.maxDepth = max(stats.maxDepth, depth);
+    if (a.size() &lt;= 1) return a;
+    size_t middle = a.size() / 2;
+    auto left = mergeSort(vector&lt;int&gt;(a.begin(), a.begin() + middle), stats, depth + 1);
+    auto right = mergeSort(vector&lt;int&gt;(a.begin() + middle, a.end()), stats, depth + 1);
+    vector&lt;int&gt; out;
+    out.reserve(a.size());
+    size_t i = 0, j = 0;
+    while (i &lt; left.size() &amp;&amp; j &lt; right.size()) {
+        throw runtime_error("TODO: 选择较小的队首");
+        ++stats.writes;
+    }
+    while (i &lt; left.size()) { out.push_back(left[i++]); ++stats.writes; }
+    while (j &lt; right.size()) { out.push_back(right[j++]); ++stats.writes; }
+    return out;
+}
+
+int main() {
+    vector&lt;vector&lt;int&gt;&gt; tests = {
+        {}, {7}, {2,1}, {2,2,2,2},
+        {-2,3,-2,0,1}, {1,2,3,4,5}, {6,5,4,3,2,1},
+        {7,2,5,1,6,3,8,4}
+    };
+    long long expectedWrites[] = {0,0,2,8,12,12,16,24};
+    int expectedDepth[] = {0,0,1,2,3,3,3,3};
+    int passed = 0;
+    for (int k = 0; k &lt; 8; ++k) {
+        const auto original = tests[k];
+        auto expected = original;
+        sort(expected.begin(), expected.end());
+        Stats stats;
+        try {
+            auto actual = mergeSort(tests[k], stats);
+            bool ok = actual == expected &amp;&amp; tests[k] == original
+                &amp;&amp; stats.writes == expectedWrites[k] &amp;&amp; stats.maxDepth == expectedDepth[k];
+            passed += ok;
+            cout &lt;&lt; (ok ? "PASS" : "FAIL") &lt;&lt; " n=" &lt;&lt; tests[k].size()
+                 &lt;&lt; " writes=" &lt;&lt; stats.writes &lt;&lt; " expected=" &lt;&lt; expectedWrites[k]
+                 &lt;&lt; " depth=" &lt;&lt; stats.maxDepth &lt;&lt; " expected=" &lt;&lt; expectedDepth[k] &lt;&lt; " sorted=[";
+            for (int value : actual) cout &lt;&lt; value &lt;&lt; ' ';
+            cout &lt;&lt; "]" &lt;&lt; endl;
+        } catch (const exception&amp; error) {
+            cout &lt;&lt; "FAIL n=" &lt;&lt; tests[k].size() &lt;&lt; " error=" &lt;&lt; error.what() &lt;&lt; endl;
+        }
+    }
+    cout &lt;&lt; passed &lt;&lt; "/8 passed" &lt;&lt; endl;
+}
+</pre>
+<h3>Python</h3><pre tabindex="0" data-program-code="python">def merge_sort(a, stats, depth=0):
+    stats["max_depth"] = max(stats["max_depth"], depth)
+    if len(a) &lt;= 1:
+        return a[:]
+    middle = len(a) // 2
+    left = merge_sort(a[:middle], stats, depth + 1)
+    right = merge_sort(a[middle:], stats, depth + 1)
+    out = []
+    i = j = 0
+    while i &lt; len(left) and j &lt; len(right):
+        raise NotImplementedError("TODO: 选择较小的队首")
+        stats["writes"] += 1
+    while i &lt; len(left):
+        out.append(left[i])
+        i += 1
+        stats["writes"] += 1
+    while j &lt; len(right):
+        out.append(right[j])
+        j += 1
+        stats["writes"] += 1
+    return out
+
+
+tests = [
+    ([], 0, 0), ([7], 0, 0), ([2, 1], 2, 1), ([2, 2, 2, 2], 8, 2),
+    ([-2, 3, -2, 0, 1], 12, 3), ([1, 2, 3, 4, 5], 12, 3),
+    ([6, 5, 4, 3, 2, 1], 16, 3), ([7, 2, 5, 1, 6, 3, 8, 4], 24, 3)
+]
+passed = 0
+for a, expected_writes, expected_depth in tests:
+    original = a[:]
+    stats = {"writes": 0, "max_depth": 0}
+    try:
+        actual = merge_sort(a, stats)
+        ok = (actual == sorted(original) and a == original
+              and stats["writes"] == expected_writes and stats["max_depth"] == expected_depth)
+        passed += ok
+        print("PASS" if ok else "FAIL", f"n={len(a)} sorted={actual}",
+              f"writes={stats['writes']} expected={expected_writes}",
+              f"depth={stats['max_depth']} expected={expected_depth}")
+    except Exception as error:
+        print("FAIL", f"n={len(a)} error={error}")
+print(f"{passed}/8 passed")
+</pre>
+</details>
+<!-- compiler-fallback:end -->
+    </div><p>8 个测试同时检查有序结果、元素保留、输入未改变、merge 写入总量和最大递归深度，含空数组、单元素、重复、负数、有序、逆序、奇数长度及 2 的幂。writes 只数合并输出，不冒充比较次数或全部 CPU 指令；有限测试不能替代证明。</p>
+  </details>
+  <details><summary>可选进阶 · 为什么“比较两边”没有变成普通二重循环？</summary><p>merge 的每次队首比较都会永久取走至少一个元素，两个下标总共只前进 m 次，不会把每个元素与另一边所有元素比较。单次比较次数至多 m−1。</p><p>对本课均衡拆分的两段，长度各至少 ⌊m/2⌋，至少比较 ⌊m/2⌋ 次才可能耗尽一侧；因此每个内部节点的比较数为 Θ(m)。沿同一棵树求和，整体比较次数也为 Θ(n log n)。第二课逐对比较枚举所有元素对，才会得到 Θ(n²)。两者的增长阶来自实际枚举了什么，不能凭代码有几个循环判断。</p></details>
+  <section class="win"><strong>今天的一句话：</strong>先数每个节点自身的工作，再按层求和；均衡拆分让单层工作为线性、合并层数为对数。遇到不均衡拆分，要重新画树。</section>
+  <section class="self-check" aria-label="本课学习成果自检"><h2>不看答案，我能做到吗？</h2><label><input type="checkbox"> 我能解释递归怎样返回有序结果，并为 n=8 写出 8、8、8、0 的逐层账本。</label><label><input type="checkbox"> 我能给出任意 n 的上下界，解释拆成 1 与 m−1 为什么变成二次。</label><p class="editor-note">自检与完成标记不是解锁条件，也不代表教师已判断掌握。</p></section>
+  <section class="complete-row"><button type="button" data-complete-lesson="lesson-0004" aria-pressed="false">标记本课已完成</button><p data-completion-status aria-live="polite">自愿记录本设备进度。</p></section>
+  <section class="sources"><h2>复习与参考</h2><p><a href="../reference/merge-sort-tree.html">一页参考卡：递归树、merge 与双侧界</a>。主参考：<a href="https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2011/90a37c49b07b105ea7a027abc67eddc6_MIT6_006F11_lec03.pdf#page=18">MIT 6.006 Lecture 03，幻灯片 18 起的 Merge Sort 与 merging</a>；本课数组、图示、写入计数与迁移练习为自编。通用递推定理留到后续短课。</p><p>把迁移推导或卡住的那一步复制给我，我们可以先补清楚，再继续。无需先完成所有可选内容。</p></section>
+  <nav class="lesson-nav" aria-label="课程切换"><a href="0003-doubling-work-sum.html">← 第三课：倍增循环与求和</a><a class="lesson-nav-next" href="../reference/course-route.html">下一主题与课程路线 →</a><a href="../index.html">返回课程目录</a></nav>
+</main>
+</body>
+</html>

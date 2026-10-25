@@ -1,0 +1,15 @@
+.tree-controls { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0; }
+.tree-controls button { min-height: 44px; }
+.tree-controls [aria-pressed="true"] { background: var(--accent); color: #fff; }
+.tree-levels { padding-left: 0; list-style: none; }
+.tree-level { padding: 12px 0 18px; border-top: 2px solid var(--line); }
+.tree-level h4 { margin: 8px 0 12px; font: 700 1rem/1.6 "Microsoft YaHei", sans-serif; }
+.tree-nodes { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; padding: 0; }
+.tree-node { flex: 1 1 165px; min-width: 0; border: 1px solid var(--accent); border-radius: 8px; padding: 10px; background: #fff; }
+.tree-node strong, .tree-node span { display: block; overflow-wrap: anywhere; }
+.tree-node strong { font: 700 .9rem/1.6 Consolas, monospace; }
+.tree-node span { font-size: .85rem; margin-top: 6px; }
+.tree-leaf { border-style: dashed; border-color: #68777b; background: #f1f4f1; }
+.merge-walk { padding-left: 1.4em; }
+.merge-walk li { margin: 12px 0; }
+@media (max-width: 600px) { .tree-controls button { flex: 1 1 100px; } .tree-node { flex-basis: 100%; } }

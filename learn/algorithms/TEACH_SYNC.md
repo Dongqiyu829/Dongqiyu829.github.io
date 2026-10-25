@@ -1,7 +1,7 @@
 # COMP3711H Teaching Sync
 
 Updated: 2026-10-25 (Asia/Shanghai)
-Release: 20261025a
+Release: 20261025b
 Repository: Dongqiyu829/Dongqiyu829.github.io, main, learn/algorithms/
 
 This file is a repository handoff, not an automatic connection to ChatGPT.
@@ -20,8 +20,9 @@ Student answers, completion marks and mastery are not synchronized with a teache
 - Lesson 01: lessons/0001-binary-search-loop-invariant.html — lower_bound, index contract, boundary demo, invariant and counterexample to hi=mid-1; optional upper_bound.
 - Lesson 02: lessons/0002-asymptotic-analysis.html — pair comparisons, inversion-counting background, n(n-1)/2 and a quadratic tight bound; transfer allows self-pairs.
 - Lesson 03: lessons/0003-doubling-work-sum.html — doubling-loop work sums, general-n bounds, transfer changes <= to <.
-- assets/course-manifest.json is the source for published lesson IDs/paths, topic IDs, planned topic count and release. There are currently 3 published lessons and 24 planned topics; topics need not map one-to-one to pages.
-- References: reference/binary-search-boundaries.html, reference/asymptotic-bounds.html, reference/doubling-sums.html and reference/algorithm-answer-template.html.
+- Lesson 04: lessons/0004-merge-sort-recursion-tree.html — concrete 8-element array, recursive calls/base case, linear merge, depth-by-depth tree, power-of-two counting then arbitrary-n two-sided proof. Main path 20–25 minutes; optional coding and comparison-count challenge. Transfer: split into 1 and m-1, derive quadratic work. No Master Theorem in this lesson.
+- assets/course-manifest.json is the source for published lesson IDs/paths, topic IDs, planned topic count and release. There are currently 4 published lessons and 24 planned topics; topics need not map one-to-one to pages.
+- References: reference/binary-search-boundaries.html, reference/asymptotic-bounds.html, reference/doubling-sums.html, reference/merge-sort-tree.html and reference/algorithm-answer-template.html.
 - Previous interval-scheduling discussion previewed earliest-finish exchange reasoning: replacing F by E is safe when end(E)<=end(F)<=start(next). Do not infer full mastery from this preview or skip the foundations.
 
 ## Access and progress
@@ -35,7 +36,8 @@ Student answers, completion marks and mastery are not synchronized with a teache
 ## Shared components and quality changes
 
 - Lesson 02's extra closing p tag is fixed. All public HTML uses a standard validator, resource/link/anchor checks and duplicate-ID checks.
-- Both coding lessons now use assets/compiler-lab.js. Lesson 01 programs are in assets/binary-programs.json; Lesson 03 uses assets/doubling-programs.json.
+- All coding lessons use assets/compiler-lab.js. Lesson 01 programs are in assets/binary-programs.json; Lesson 03 uses assets/doubling-programs.json; Lesson 04 uses assets/merge-programs.json.
+- assets/recursion-tree.js / .css provide depth-by-depth accounting (not execution animation) for n=8,5,16,1,0. Labels identify parent paths, actual subarrays, sizes and own merge writes. Complete static table remains readable without JavaScript.
 - assets/code-runner.js is only a compatibility loader for cached older Lesson 01 pages.
 - Complete C++ and Python starters plus all tests are embedded as native HTML code banks; they survive third-party failure, JSON blocking and disabled JavaScript.
 - populateCode requests are not treated as success. Confirmation requires matching code echoed from the current iframe and trusted origin/language. No automatic reinjection after user edits.
@@ -51,7 +53,7 @@ Student answers, completion marks and mastery are not synchronized with a teache
 - Read current GitHub HEAD and file SHAs before changing the remote tree, preserve concurrent changes, and fast-forward with an expected SHA.
 - Site HTML caching still follows GitHub Pages behavior; never promise instant refresh of an already-open old tab.
 
-## Acceptance status for this maintenance run
+## Prior release acceptance (20261025a; historical)
 
 - Local strict static checks: 9 HTML pages, 64 internal link/resource references (including 30 versioned assets), 1 fragment link; zero remaining HTML, ID, nesting, missing-resource or version errors.
 - Browser fault/interaction matrix: 14 scenarios passed; application console/page errors zero. Desktop 1280px and mobile 390px / 320px; native no-JavaScript code banks and print-media references checked.
@@ -65,12 +67,18 @@ Student answers, completion marks and mastery are not synchronized with a teache
 ## Reusable standards and next teaching phase
 
 See docs/TEACHING_STANDARD.md for lesson structure, misconception checklist, progress semantics, editor failure handling and the minimum acceptance matrix.
-No Lesson 04 is authored in this maintenance run.
-Next: introduce recursion calls, splitting subproblems and recursion-tree per-level vs total work using Merge Sort. Keep Master Theorem separate; use actual student transfer answers to decide the next scope.
+Lesson 04 is now authored; release acceptance and public deployment verification are recorded in docs/LESSON04_ACCEPTANCE.md once completed. No student mastery is inferred from publication or automated tests.
+Next teaching decision: read the student's unbalanced-split derivation, then either reinforce recursion-tree accounting or introduce Master Theorem in its own short lesson; do not jump over missing prerequisites.
+
+## Follow-up improvements (not Lesson 04 release blockers)
+
+- Physical-phone validation: actual soft-keyboard behavior, small-screen editing and Safari/iOS. Headless touch viewports do not satisfy this item.
+- Optional open-response draft protection: define opt-in storage scope, privacy and clear/delete controls before implementation. Current responses are not automatically saved or synchronized.
 
 ## Primary sources
 
 - https://amir.goharshady.com/teaching/honors-algorithms
 - https://www.cs.umd.edu/class/spring2025/cmsc451-0101/lectures.html
 - https://onecompiler.com/apis/embed-editor
+- https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2011/90a37c49b07b105ea7a027abc67eddc6_MIT6_006F11_lec03.pdf#page=18
 

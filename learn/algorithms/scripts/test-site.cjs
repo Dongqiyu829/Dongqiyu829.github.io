@@ -7,7 +7,8 @@ let browser,server;
 const result={passed:[],failed:[],consoleErrors:[],pageErrors:[],viewports:[1280,390,320]};
 async function test(name,fn){if(process.env.COURSE_TEST_FILTER&&!name.includes(process.env.COURSE_TEST_FILTER))return;try{await fn();result.passed.push(name);console.log('PASS '+name);}catch(error){result.failed.push({name,error:error.stack});console.error('FAIL '+name+': '+error.message);}}
 const key='comp3711h-learning-progress-v1';
-const l1='/lessons/0001-binary-search-loop-invariant.html',l2='/lessons/0002-asymptotic-analysis.html',l3='/lessons/0003-doubling-work-sum.html';
+const publishedCount=manifest.lessons.filter(l=>l.published).length;
+const l1='/lessons/0001-binary-search-loop-invariant.html',l2='/lessons/0002-asymptotic-analysis.html',l3='/lessons/0003-doubling-work-sum.html',l4='/lessons/0004-merge-sort-recursion-tree.html';
 function mockHTML(echo=true){return '<pre id="code"></pre><script>window.messages=0;window.addEventListener("message",e=>{if(e.data.eventType!=="populateCode")return;window.messages++;document.querySelector("pre").textContent=e.data.files[0].content;document.body.dataset.language=e.data.language;'+(echo?'parent.postMessage(e.data,"*");':'')+'});</script>';}
 (async()=>{
   const local=await startServer();server=local.server;const origin=local.origin;
@@ -21,7 +22,7 @@ function mockHTML(echo=true){return '<pre id="code"></pre><script>window.message
     else await page.route('https://onecompiler.com/**',r=>r.fulfill({contentType:'text/html',body:mockHTML(options.mode!=='noecho')}));
     return {context,page};
   }
-  await test('all 9 pages at desktop / 390px / 320px; no overflow or duplicate IDs',async()=>{
+  await test('all '+pages.length+' pages at desktop / 390px / 320px; no overflow or duplicate IDs',async()=>{
     const {context,page}=await open();
     for(const width of result.viewports){
       await page.setViewportSize({width,height:width===1280?900:844});
@@ -40,8 +41,8 @@ function mockHTML(echo=true){return '<pre id="code"></pre><script>window.message
     const {context,page}=await open();
     await page.addInitScript(k=>localStorage.setItem(k,JSON.stringify(['lesson-0001','lesson-0001','future-id'])),key);
     await page.goto(origin+'/index.html');
-    assert.equal(await page.locator('[data-course-progress]').innerText(),'1 / 3');
-    assert.equal(await page.locator('[data-published-count]').innerText(),'3');
+    assert.equal(await page.locator('[data-course-progress]').innerText(),'1 / '+publishedCount);
+    assert.equal(await page.locator('[data-published-count]').innerText(),String(publishedCount));
     assert((await page.locator('[data-planned-count]').allTextContents()).every(text=>text==='24'));
     assert.deepEqual(await page.evaluate(k=>JSON.parse(localStorage.getItem(k)),key),['lesson-0001','lesson-0001','future-id']);
     // Remove init script by using a fresh page in the same context for the user toggle.
@@ -54,10 +55,10 @@ function mockHTML(echo=true){return '<pre id="code"></pre><script>window.message
     const {context,page}=await open();
     await page.addInitScript(data=>document.addEventListener('DOMContentLoaded',()=>{
       const node=document.querySelector('[data-course-manifest]');
-      data.lessons.push({...data.lessons[0],id:'lesson-0004',path:'lessons/part-two.html'});
+      data.lessons.push({...data.lessons[0],id:'lesson-extra',path:'lessons/part-two.html'});
       node.textContent=JSON.stringify(data);
     }),manifest);
-    await page.goto(origin+'/index.html');assert.equal(await page.locator('[data-course-progress]').innerText(),'0 / 4');assert((await page.locator('[data-planned-count]').allTextContents()).every(text=>text==='24'));
+    await page.goto(origin+'/index.html');assert.equal(await page.locator('[data-course-progress]').innerText(),'0 / '+(publishedCount+1));assert((await page.locator('[data-planned-count]').allTextContents()).every(text=>text==='24'));
     await context.close();
   });
   for(const [name,raw]of[['non-array','{}'],['null','null'],['corrupt','{broken']])await test('malformed legacy '+name+' does not crash or overwrite',async()=>{
@@ -80,7 +81,7 @@ function mockHTML(echo=true){return '<pre id="code"></pre><script>window.message
   });
   await test('all predictions, explorations and independent responses do not auto-complete',async()=>{
     const {context,page}=await open({context:{viewport:{width:390,height:844}}});
-    for(const lesson of [l1,l2,l3]){
+    for(const lesson of [l1,l2,l3,l4]){
       await page.goto(origin+lesson);
       for(const quiz of await page.locator('[data-quiz]').all()){
         await quiz.locator('[data-answer="incorrect"]').first().click();assert.match(await quiz.locator('[data-feedback-output]').getAttribute('class'),/incorrect/);
@@ -138,10 +139,10 @@ function mockHTML(echo=true){return '<pre id="code"></pre><script>window.message
   });
   await test('blocked third-party editor and JSON requests: complete C++/Python remain copyable',async()=>{
     const {context,page}=await open({mode:'blocked',expectedNetworkFailure:true});await page.route('**/*programs.json*',r=>r.abort());
-    for(const lesson of [l1,l3]){
-      await page.goto(origin+lesson);const lab=page.locator('[data-compiler-lab]');await lab.locator('iframe').scrollIntoViewIfNeeded();
+    for(const lesson of [l1,l3,l4]){
+      await page.goto(origin+lesson);if(lesson===l4)await page.locator('[data-compiler-lab]').evaluate(el=>el.parentElement.open=true);const lab=page.locator('[data-compiler-lab]');await lab.locator('iframe').scrollIntoViewIfNeeded();
       await page.waitForFunction(()=>['unconfirmed','unavailable'].includes(document.querySelector('[data-compiler-lab]').dataset.editorState),null,{timeout:20000});
-      const file=lesson===l1?'binary-programs.json':'doubling-programs.json';const programs=JSON.parse(fs.readFileSync(path.join(root,'assets',file),'utf8'));
+      const file=lesson===l1?'binary-programs.json':lesson===l3?'doubling-programs.json':'merge-programs.json';const programs=JSON.parse(fs.readFileSync(path.join(root,'assets',file),'utf8'));
       for(const lang of ['cpp','python'])assert.equal(await lab.locator('[data-program-code="'+lang+'"]').textContent(),programs[lang]);
       await page.evaluate(()=>Object.defineProperty(navigator,'clipboard',{value:{writeText:async()=>{throw new Error('Denied');}},configurable:true}));
       await lab.locator('[data-copy-starter]').click();assert.match(await lab.locator('[data-copy-status]').innerText(),/手动复制/);
@@ -150,11 +151,32 @@ function mockHTML(echo=true){return '<pre id="code"></pre><script>window.message
   });
   await test('JavaScript disabled: lesson text, native disclosures and both complete code banks readable',async()=>{
     const {context,page}=await open({context:{javaScriptEnabled:false,viewport:{width:390,height:844}}});
-    for(const lesson of [l1,l2,l3]){
+    for(const lesson of [l1,l2,l3,l4]){
       await page.goto(origin+lesson);assert.equal(await page.locator('h1').count(),1);assert(await page.locator('main').innerText());
-      if(lesson!==l2){await page.locator('[data-lab-fallback-panel] summary').click();assert(await page.locator('[data-program-code="cpp"]').isVisible());assert(await page.locator('[data-program-code="python"]').isVisible());}
+      if(lesson!==l2){if(lesson===l4)await page.getByText('可选实践 · 在 C++ / Python 中补完 merge 并核对计数',{exact:true}).click();await page.locator('[data-lab-fallback-panel] summary').click();assert(await page.locator('[data-program-code="cpp"]').isVisible());assert(await page.locator('[data-program-code="python"]').isVisible());}
       assert(await page.locator('a[href="../index.html"]').first().isVisible());
     }
+    await context.close();
+  });
+  await test('merge tree: every layer, uneven inputs, leaf cases, reset, navigation and free completion',async()=>{
+    const {context,page}=await open({context:{viewport:{width:320,height:844}}});await page.goto(origin+l4);
+    const tree=page.locator('[data-recursion-tree]');
+    for(const [n,work]of[[8,[8,8,8,0]],[5,[5,5,2,0]],[16,[16,16,16,16,0]],[1,[0]],[0,[0]]]){
+      await tree.locator('[data-tree-size="'+n+'"]').click();assert.equal(await tree.getAttribute('data-depth'),'0');
+      for(let d=0;d<work.length;d++){
+        if(d)await tree.locator('[data-tree-next]').click();
+        assert.equal(Number(await tree.locator('[data-depth="'+d+'"]').getAttribute('data-work')),work[d]);
+        assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+      }
+      assert.equal(await tree.getAttribute('data-done'),'true');assert(await tree.locator('[data-tree-next]').isDisabled());assert.equal(Number(await tree.getAttribute('data-total')),work.reduce((a,b)=>a+b,0));
+      await tree.locator('[data-tree-reset]').click();assert.equal(await tree.getAttribute('data-depth'),'0');
+    }
+    await tree.locator('[data-tree-size="5"]').click();while(await tree.getAttribute('data-done')!=='true')await tree.locator('[data-tree-next]').click();
+    const validator=new HtmlValidate({extends:['html-validate:recommended'],rules:{'attribute-boolean-style':'off'}});assert((await validator.validateString(await page.content())).valid);
+    await tree.screenshot({path:path.join(root,'work/qa/merge-tree-320.png')});
+    await page.locator('[data-complete-lesson]').click();assert.equal(await page.locator('[data-complete-lesson]').getAttribute('aria-pressed'),'true');
+    await page.locator('a[href="../index.html"]').first().click();assert.equal(await page.locator('[data-course-progress]').innerText(),'1 / '+publishedCount);
+    await page.locator('[data-lesson-id="lesson-0004"] a').click();await page.locator('.lesson-nav a').first().click();assert(page.url().endsWith(l3));await page.locator('.lesson-nav-next').click();assert(page.url().endsWith(l4));
     await context.close();
   });
   await test('reference cards in print media remain readable without horizontal overflow',async()=>{
