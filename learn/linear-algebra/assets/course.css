@@ -268,7 +268,7 @@ input[aria-invalid="true"] { border: 2px solid var(--danger); background: #fbe6e
 .symmetric-editor [data-mirror-b] { align-self: center; text-align: center; }
 [data-q-current] { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 12px; }
 [data-active-calculation] { margin-top: 18px; }
-[data-q-surface] { touch-action: pan-y; }
+.lab canvas[data-q-surface] { touch-action: pan-y; }
 @media (max-width:600px) { .eigen-views { grid-template-columns: 1fr; } }
 
 @media print {
