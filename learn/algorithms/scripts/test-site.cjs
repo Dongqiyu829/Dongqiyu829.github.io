@@ -158,24 +158,21 @@ function mockHTML(echo=true){return '<pre id="code"></pre><script>window.message
     }
     await context.close();
   });
-  await test('merge tree: every layer, uneven inputs, leaf cases, reset, navigation and free completion',async()=>{
-    const {context,page}=await open({context:{viewport:{width:320,height:844}}});await page.goto(origin+l4);
-    const tree=page.locator('[data-recursion-tree]');
-    for(const [n,work]of[[8,[8,8,8,0]],[5,[5,5,2,0]],[16,[16,16,16,16,0]],[1,[0]],[0,[0]]]){
-      await tree.locator('[data-tree-size="'+n+'"]').click();assert.equal(await tree.getAttribute('data-depth'),'0');
-      for(let d=0;d<work.length;d++){
-        if(d)await tree.locator('[data-tree-next]').click();
-        assert.equal(Number(await tree.locator('[data-depth="'+d+'"]').getAttribute('data-work')),work[d]);
-        assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
-      }
-      assert.equal(await tree.getAttribute('data-done'),'true');assert(await tree.locator('[data-tree-next]').isDisabled());assert.equal(Number(await tree.getAttribute('data-total')),work.reduce((a,b)=>a+b,0));
-      await tree.locator('[data-tree-reset]').click();assert.equal(await tree.getAttribute('data-depth'),'0');
+  await test('Split/Merge: original inputs, sorted child returns, own work, edge sizes and navigation',async()=>{
+    const {verifyTree}=require('./recursion-tree-test.cjs');
+    const {context,page}=await open();
+    for(const width of [1280,390,320]){
+      await page.setViewportSize({width,height:844});await page.goto(origin+l4);
+      await verifyTree(page,{captureDir:path.join(root,'work/qa')});
     }
-    await tree.locator('[data-tree-size="5"]').click();while(await tree.getAttribute('data-done')!=='true')await tree.locator('[data-tree-next]').click();
-    const validator=new HtmlValidate({extends:['html-validate:recommended'],rules:{'attribute-boolean-style':'off'}});assert((await validator.validateString(await page.content())).valid);
-    await tree.screenshot({path:path.join(root,'work/qa/merge-tree-320.png')});
+    const validator=new HtmlValidate({extends:['html-validate:recommended'],rules:{'attribute-boolean-style':'off'}});
+    // Playwright screenshots can leave empty style attributes on caret-bearing inputs.
+    const rendered=await validator.validateString((await page.content()).replace(/\sstyle=""/g,''));
+    if(!rendered.valid)save('split-merge-rendered-errors.json',rendered.results.map(r=>r.messages));
+    assert(rendered.valid);
     await page.locator('[data-complete-lesson]').click();assert.equal(await page.locator('[data-complete-lesson]').getAttribute('aria-pressed'),'true');
-    await page.locator('a[href="../index.html"]').first().click();assert.equal(await page.locator('[data-course-progress]').innerText(),'1 / '+publishedCount);
+    await page.locator('a[href="../index.html"]').first().click();
+    await page.waitForFunction(count=>document.querySelector('[data-course-progress]').textContent==='1 / '+count,publishedCount);
     await page.locator('[data-lesson-id="lesson-0004"] a').click();await page.locator('.lesson-nav a').first().click();assert(page.url().endsWith(l3));await page.locator('.lesson-nav-next').click();assert(page.url().endsWith(l4));
     await context.close();
   });

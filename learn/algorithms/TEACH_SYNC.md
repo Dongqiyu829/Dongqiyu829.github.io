@@ -1,7 +1,7 @@
 # COMP3711H Teaching Sync
 
 Updated: 2026-10-25 (Asia/Shanghai)
-Release: 20261025b
+Release: 20261025c
 Repository: Dongqiyu829/Dongqiyu829.github.io, main, learn/algorithms/
 
 This file is a repository handoff, not an automatic connection to ChatGPT.
@@ -37,7 +37,8 @@ Student answers, completion marks and mastery are not synchronized with a teache
 
 - Lesson 02's extra closing p tag is fixed. All public HTML uses a standard validator, resource/link/anchor checks and duplicate-ID checks.
 - All coding lessons use assets/compiler-lab.js. Lesson 01 programs are in assets/binary-programs.json; Lesson 03 uses assets/doubling-programs.json; Lesson 04 uses assets/merge-programs.json.
-- assets/recursion-tree.js / .css provide depth-by-depth accounting (not execution animation) for n=8,5,16,1,0. Labels identify parent paths, actual subarrays, sizes and own merge writes. Complete static table remains readable without JavaScript.
+- assets/recursion-tree.js / .css now separate Split (raw subarrays/base cases, no completed merge charges) and Merge (sorted child returns, own merge writes, sorted node return). Inputs n=0,1,5,6,8,16; snapshots grouped by depth are explicitly not real execution order. Statically readable n=5 split/return details and the complete n=8 accounting table survive disabled JavaScript.
+- Lesson 04 keeps its original single main outcome and 20-25 minute path. Peak auxiliary space, stack depth, cumulative writes vs simultaneous memory, and stable tie handling are optional disclosures; the snapshot cache is not a simulation of the sorting program's memory.
 - assets/code-runner.js is only a compatibility loader for cached older Lesson 01 pages.
 - Complete C++ and Python starters plus all tests are embedded as native HTML code banks; they survive third-party failure, JSON blocking and disabled JavaScript.
 - populateCode requests are not treated as success. Confirmation requires matching code echoed from the current iframe and trusted origin/language. No automatic reinjection after user edits.
@@ -79,6 +80,12 @@ Student answers, completion marks and mastery are not synchronized with a teache
 See docs/TEACHING_STANDARD.md for lesson structure, misconception checklist, progress semantics, editor failure handling and the minimum acceptance matrix.
 Lesson 04 is published and verified; no student mastery is inferred from publication or automated tests.
 Next teaching decision: read the student's unbalanced-split derivation, then either reinforce recursion-tree accounting or introduce Master Theorem in its own short lesson; do not jump over missing prerequisites.
+Fifth-lesson design is prepared in [docs/LESSON05_PLAN.md](docs/LESSON05_PLAN.md), not published as a lesson. First ask for the n=8 node/layer/tree counts and explanations (4/8/24); use the actual response to choose reinforcement or a comparison of constant / upper-heavy / lower-heavy level work. Only then introduce the selected Master Theorem version and its conditions. Fourth-lesson acceptance is not learner mastery evidence.
+
+## Split/Merge follow-up (20261025c)
+
+- Scope: fourth-lesson visualization and optional supplements, reference card, next-lesson planning, and matching tests. Shared Compiler Lab, storage, free access, lesson count and the first three lesson bodies are preserved; old pages only receive mechanical release metadata/asset updates.
+- Detailed current acceptance: [docs/LESSON04_SPLIT_MERGE_ACCEPTANCE.md](docs/LESSON04_SPLIT_MERGE_ACCEPTANCE.md). Local and public verification results will be finalized there after deployment; do not substitute earlier release results for this run.
 
 ## Follow-up improvements (not Lesson 04 release blockers)
 
@@ -91,4 +98,6 @@ Next teaching decision: read the student's unbalanced-split derivation, then eit
 - https://www.cs.umd.edu/class/spring2025/cmsc451-0101/lectures.html
 - https://onecompiler.com/apis/embed-editor
 - https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2011/90a37c49b07b105ea7a027abc67eddc6_MIT6_006F11_lec03.pdf#page=18
+- https://www.cs.cornell.edu/courses/cs2110/2026sp/lectures/lec07/
+- https://www.cs.ucdavis.edu/~bai/ECS122A/Notes/mastertheorem.pdf
 

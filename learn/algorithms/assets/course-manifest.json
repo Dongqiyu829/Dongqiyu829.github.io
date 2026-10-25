@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "release": "20261025b",
+  "release": "20261025c",
   "planning": { "topicCount": 24, "route": "reference/course-route.html" },
   "lessons": [
     { "id": "lesson-0001", "topicId": "binary-search-invariant", "path": "lessons/0001-binary-search-loop-invariant.html", "title": "二分搜索：为什么这半边可以丢？", "published": true },

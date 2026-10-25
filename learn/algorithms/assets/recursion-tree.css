@@ -10,6 +10,11 @@
 .tree-node strong { font: 700 .9rem/1.6 Consolas, monospace; }
 .tree-node span { font-size: .85rem; margin-top: 6px; }
 .tree-leaf { border-style: dashed; border-color: #68777b; background: #f1f4f1; }
+.tree-returned { border-width: 2px; background: #edf5f1; }
+.tree-node [data-tree-field="result"] { color: #174b39; font-weight: 700; border-top: 1px solid #93b7a3; padding-top: 8px; }
+.tree-node [data-tree-field="work"] { font-weight: 700; }
+.tree-phase-note { border-left: 4px solid var(--accent); padding-left: 12px; }
+.tree-current { padding: 12px; background: #edf5f1; border: 1px solid #93b7a3; border-radius: 8px; overflow-wrap: anywhere; }
 .merge-walk { padding-left: 1.4em; }
 .merge-walk li { margin: 12px 0; }
-@media (max-width: 600px) { .tree-controls button { flex: 1 1 100px; } .tree-node { flex-basis: 100%; } }
+@media (max-width: 600px) { .tree-controls button { flex: 1 1 100px; } .tree-controls [data-tree-phase] { flex-basis: 100%; } .tree-node { flex-basis: 100%; } }

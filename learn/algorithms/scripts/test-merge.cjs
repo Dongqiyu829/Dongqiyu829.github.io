@@ -7,7 +7,7 @@ const out=path.join(root,'work/qa');fs.mkdirSync(out,{recursive:true});
 const cxx=process.env.CXX||'C:/Program Files/mingw64/bin/g++.exe';
 const python=process.env.COURSE_PYTHON||path.join(os.homedir(),'anaconda3/python.exe');
 function run(command,args){const r=spawnSync(command,args,{encoding:'utf8',timeout:60000});assert.equal(r.status,0,r.stderr||r.error?.message);return r.stdout.trim();}
-const result={harnesses:{},boundaries:{},treeSizes:0};
+const result={harnesses:{},boundaries:{},treeSizes:0,returnSnapshots:0};
 for(const language of ['cpp','python']){
  const file=path.join(out,'merge-harness.'+(language==='cpp'?'cpp':'py'));fs.writeFileSync(file,complete(language));
  const exe=path.join(out,'merge-harness.exe');if(language==='cpp')run(cxx,['-std=c++17','-O2',file,'-o',exe]);
@@ -85,5 +85,13 @@ for(let n=0;n<=1025;n++){
    assert(work<=n);if(d<Math.floor(Math.log2(n||1)))assert.equal(work,n);total+=work;
  });
  assert.equal(total,n?n*(h+1)-2**h:0);assert.equal(calls,n?2*n-1:1);assert.equal(leaves,n||1);result.treeSizes++;
+ const input=Array.from({length:n},(_,i)=>((n-i)*17)%23-11),original=input.slice();
+ for(const nodes of levelsFor(input))for(const node of nodes){
+   assert.deepEqual(node.returned,node.values.slice().sort((a,b)=>a-b));
+   if(node.work){assert.equal(node.children.length,2);assert.deepEqual(node.children.flatMap(x=>x.values),node.values);}
+   else assert.equal(node.children.length,0);
+   result.returnSnapshots++;
+ }
+ assert.deepEqual(input,original);
 }
 save('merge-algorithm-results.json',result);console.log(JSON.stringify(result,null,2));

@@ -4,15 +4,15 @@
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="从一个数组理解递归调用与 merge，再按递归树逐层求和，严谨证明 Merge Sort 的 Θ(n log n)。">
   <title>第 4 课：Merge Sort，递归树怎样算出总工作量？</title>
-  <link rel="stylesheet" href="../assets/course.css?v=20261025b">
-  <link rel="stylesheet" href="../assets/short-lesson.css?v=20261025b">
-  <link rel="stylesheet" href="../assets/recursion-tree.css?v=20261025b">
-  <script defer src="../assets/quiz.js?v=20261025b"></script>
-  <script defer src="../assets/recursion-tree.js?v=20261025b"></script>
-  <script defer src="../assets/compiler-lab.js?v=20261025b"></script>
-  <script defer src="../assets/reflection.js?v=20261025b"></script>
+  <link rel="stylesheet" href="../assets/course.css?v=20261025c">
+  <link rel="stylesheet" href="../assets/short-lesson.css?v=20261025c">
+  <link rel="stylesheet" href="../assets/recursion-tree.css?v=20261025c">
+  <script defer src="../assets/quiz.js?v=20261025c"></script>
+  <script defer src="../assets/recursion-tree.js?v=20261025c"></script>
+  <script defer src="../assets/compiler-lab.js?v=20261025c"></script>
+  <script defer src="../assets/reflection.js?v=20261025c"></script>
 <!-- course-data:start -->
-<script type="application/json" data-course-manifest>{"schemaVersion":1,"release":"20261025b","planning":{"topicCount":24,"route":"reference/course-route.html"},"lessons":[{"id":"lesson-0001","topicId":"binary-search-invariant","path":"lessons/0001-binary-search-loop-invariant.html","title":"二分搜索：为什么这半边可以丢？","published":true},{"id":"lesson-0002","topicId":"quadratic-tight-bound","path":"lessons/0002-asymptotic-analysis.html","title":"数清工作量，再写 Θ(n²)","published":true},{"id":"lesson-0003","topicId":"geometric-sum","path":"lessons/0003-doubling-work-sum.html","title":"两层循环，为什么只有 Θ(n)？","published":true},{"id":"lesson-0004","topicId":"merge-sort-recursion-tree","path":"lessons/0004-merge-sort-recursion-tree.html","title":"Merge Sort：递归树怎样算出总工作量？","published":true}]}</script>
+<script type="application/json" data-course-manifest>{"schemaVersion":1,"release":"20261025c","planning":{"topicCount":24,"route":"reference/course-route.html"},"lessons":[{"id":"lesson-0001","topicId":"binary-search-invariant","path":"lessons/0001-binary-search-loop-invariant.html","title":"二分搜索：为什么这半边可以丢？","published":true},{"id":"lesson-0002","topicId":"quadratic-tight-bound","path":"lessons/0002-asymptotic-analysis.html","title":"数清工作量，再写 Θ(n²)","published":true},{"id":"lesson-0003","topicId":"geometric-sum","path":"lessons/0003-doubling-work-sum.html","title":"两层循环，为什么只有 Θ(n)？","published":true},{"id":"lesson-0004","topicId":"merge-sort-recursion-tree","path":"lessons/0004-merge-sort-recursion-tree.html","title":"Merge Sort：递归树怎样算出总工作量？","published":true}]}</script>
 <!-- course-data:end -->
 </head>
 <body>
@@ -53,7 +53,19 @@
     <p>第三课先列每轮工作再求和；这次先列<strong>每层</strong>的工作。每个节点代表一次 sort 调用；两个子节点是它切出的左右半。深度 0 是最初调用。</p>
     <p>给一个节点计费时，<strong>只计它自己的 merge</strong>，不把子调用的时间再记进去，否则重复收费。树按深度排开是为了算账；真实程序通常先走完左子树、再走右子树，合并从底部返回，并非同层同时执行。</p>
     <div class="exercise" data-activity="prediction" data-quiz><p><strong>n=8 时，深度 1 有两个规模为 4 的调用。本层合并共写入？</strong></p><button type="button" data-answer="incorrect" data-message="4 是单个调用的写入量，这一层还有另一个规模 4 的调用，不能漏掉。" aria-pressed="false">合计 4 次</button><button type="button" data-answer="correct" data-message="对，2×4=8。节点数翻倍，单节点工作减半；要先相乘得到本层工作。" aria-pressed="false">合计 8 次</button><button type="button" data-answer="incorrect" data-message="16 把额外的工作算进来了。这里只计两个节点各自的 merge，不包含它们的子调用。" aria-pressed="false">合计 16 次</button><p class="feedback" data-feedback-output aria-live="polite"></p></div>
-    <div class="exercise" data-activity="exploration" data-recursion-tree><h3>每次展开一层，先预测再核对</h3><p>“根L / 根R”表示父节点的左 / 右子调用，继续添加 L/R 表示路径。节点显示实际子数组、规模与自身合并写入数。换成 n=5，观察哪些层不再满。</p><div class="tree-controls" role="group" aria-label="递归树输入规模"><button type="button" data-tree-size="8" aria-pressed="true">n = 8</button><button type="button" data-tree-size="5" aria-pressed="false">n = 5</button><button type="button" data-tree-size="16" aria-pressed="false">n = 16</button><button type="button" data-tree-size="1" aria-pressed="false">n = 1</button><button type="button" data-tree-size="0" aria-pressed="false">n = 0</button></div><ol class="tree-levels" data-tree-rows aria-label="按深度排列的递归调用"></ol><div class="tree-controls"><button type="button" data-tree-next>展开下一层</button><button type="button" data-tree-reset>重新开始</button></div><p data-tree-state role="status"></p><noscript><p>交互不可用时，下面的完整层级账本仍可阅读；n=5 的各层合并写入数为 5、5、2、0，总共 12。</p></noscript></div>
+    <div class="exercise" data-activity="exploration" data-recursion-tree>
+      <h3>先向下拆，再看有序结果向上返回</h3>
+      <p>根L / 根R 表示左右子调用，继续添加 L/R 表示路径。Split 只显示原始子数组和边界；Merge 才揭示左右有序返回与本节点的合并输出。可以自由切换；切换阶段会从该阶段起点开始，换输入或重置回到 Split。</p>
+      <p class="tree-phase-note"><strong>记账视角：</strong>按层展示方便比较工作量，不是实际执行顺序。程序先递归走完左侧，再走右侧；父调用必须等两侧返回才能合并。Merge 图中浅层的边界节点也在轮到该层时显示返回。</p>
+      <div class="tree-controls" role="group" aria-label="递归树输入规模"><button type="button" data-tree-size="8" aria-pressed="true">n = 8</button><button type="button" data-tree-size="5" aria-pressed="false">n = 5</button><button type="button" data-tree-size="6" aria-pressed="false">n = 6</button><button type="button" data-tree-size="16" aria-pressed="false">n = 16</button><button type="button" data-tree-size="1" aria-pressed="false">n = 1</button><button type="button" data-tree-size="0" aria-pressed="false">n = 0</button></div>
+      <div class="tree-controls" role="group" aria-label="递归展示阶段"><button type="button" data-tree-phase="split" aria-pressed="true">1 · Split 向下拆分</button><button type="button" data-tree-phase="merge" aria-pressed="false">2 · Merge 向上返回</button></div>
+      <p data-tree-state role="status"></p>
+      <p data-tree-current class="tree-current"></p>
+      <div class="tree-controls"><button type="button" data-tree-next>↓ 再拆一层</button><button type="button" data-tree-reset>重置到 Split 起点</button></div>
+      <ol class="tree-levels" data-tree-rows aria-label="按深度分组的拆分与返回"></ol>
+      <details><summary>无交互也能核对：n=5 的拆分与返回</summary><p>Split：[7,2,5,1,6] → [7,2] 与 [5,1,6]；继续分成 [7]、[2]、[5]、[1,6]，最后 [1,6] 拆成 [1] 与 [6]。长度≤1 直接返回。</p><p>Merge：[1]+[6] → [1,6]；[7]+[2] → [2,7]，[5]+[1,6] → [1,5,6]；根把 [2,7] 与 [1,5,6] 合成 [1,2,5,6,7]。各深度自身 merge 写入为 5、5、2、0，总共 12。这里仍是按层整理，实际调用先走左侧。</p></details>
+      <noscript><p>JavaScript 不可用时，请展开上面的静态拆分/返回例子；下面的完整层级账本也可直接阅读。</p></noscript>
+    </div>
     <p>n=8 的完整账本（叶子不 merge）：</p>
     <table><thead><tr><th scope="col">深度</th><th scope="col">调用数</th><th scope="col">各自规模</th><th scope="col">本层写入</th></tr></thead><tbody><tr><td>0</td><td>1</td><td>8</td><td>1×8=8</td></tr><tr><td>1</td><td>2</td><td>4</td><td>2×4=8</td></tr><tr><td>2</td><td>4</td><td>2</td><td>4×2=8</td></tr><tr><td>3</td><td>8</td><td>1</td><td>0，直接返回</td></tr></tbody></table>
     <p>因此合并写入总量是 <code>8+8+8=24</code>。叶子的 0 指<strong>合并写入</strong>为 0，不是函数调用免费；八个叶子另有 Θ(8) 控制开销。</p>
@@ -85,7 +97,7 @@
 
   <details><summary>可选实践 · 在 C++ / Python 中补完 merge 并核对计数</summary>
     <p>递归和测试已给出。只补 TODO：两侧都有剩余元素时，选择较小的队首写入 out，并把相应下标加 1。下面那条 writes 计数不需要改；剩余元素复制也已经提供。输入数组不被修改。</p>
-    <div class="code-lab" data-compiler-lab data-programs-source="../assets/merge-programs.json?v=20261025b"><div class="language-switch" role="group" aria-label="选择编程语言"><button type="button" data-lab-language="cpp" aria-pressed="true">C++</button><button type="button" data-lab-language="python" aria-pressed="false">Python</button></div><p class="editor-note">切换语言或重填会覆盖内容，请先复制保存。编辑和运行由 OneCompiler 提供；载入确认不代表测试通过。手机可用下方运行按钮，也可复制到独立页面。</p><div class="external-editor is-loading"><iframe data-lab-frame title="C++ 在线代码编辑器" src="https://onecompiler.com/embed/cpp?listenToEvents=true&amp;codeChangeEvent=true&amp;hideLanguageSelection=true&amp;fontSize=16" loading="lazy" allow="clipboard-write" referrerpolicy="strict-origin-when-cross-origin"></iframe></div><p data-lab-status class="editor-note" role="status">等待编辑器响应；完整代码在下方可复制。</p><div class="compiler-controls"><button type="button" data-lab-run disabled>运行当前编辑区代码</button><button type="button" data-lab-starter>重新填入起始代码（覆盖编辑区）</button><button type="button" data-lab-reload>重新加载编辑器（覆盖编辑区）</button><button type="button" data-copy-starter>复制当前语言起始代码</button><a data-lab-open href="https://onecompiler.com/cpp" target="_blank" rel="noopener">独立页面编辑（先复制代码）</a></div><p data-copy-status class="editor-note" role="status"></p>
+    <div class="code-lab" data-compiler-lab data-programs-source="../assets/merge-programs.json?v=20261025c"><div class="language-switch" role="group" aria-label="选择编程语言"><button type="button" data-lab-language="cpp" aria-pressed="true">C++</button><button type="button" data-lab-language="python" aria-pressed="false">Python</button></div><p class="editor-note">切换语言或重填会覆盖内容，请先复制保存。编辑和运行由 OneCompiler 提供；载入确认不代表测试通过。手机可用下方运行按钮，也可复制到独立页面。</p><div class="external-editor is-loading"><iframe data-lab-frame title="C++ 在线代码编辑器" src="https://onecompiler.com/embed/cpp?listenToEvents=true&amp;codeChangeEvent=true&amp;hideLanguageSelection=true&amp;fontSize=16" loading="lazy" allow="clipboard-write" referrerpolicy="strict-origin-when-cross-origin"></iframe></div><p data-lab-status class="editor-note" role="status">等待编辑器响应；完整代码在下方可复制。</p><div class="compiler-controls"><button type="button" data-lab-run disabled>运行当前编辑区代码</button><button type="button" data-lab-starter>重新填入起始代码（覆盖编辑区）</button><button type="button" data-lab-reload>重新加载编辑器（覆盖编辑区）</button><button type="button" data-copy-starter>复制当前语言起始代码</button><a data-lab-open href="https://onecompiler.com/cpp" target="_blank" rel="noopener">独立页面编辑（先复制代码）</a></div><p data-copy-status class="editor-note" role="status"></p>
 <!-- compiler-fallback:start -->
 <details data-lab-fallback-panel class="compiler-fallback"><summary>编辑器不可用？复制完整起始代码（含全部测试）</summary>
 <h3>C++</h3><pre tabindex="0" data-program-code="cpp">#include &lt;algorithm&gt;
@@ -194,8 +206,17 @@ print(f"{passed}/8 passed")
     </div><p>8 个测试同时检查有序结果、元素保留、输入未改变、merge 写入总量和最大递归深度，含空数组、单元素、重复、负数、有序、逆序、奇数长度及 2 的幂。writes 只数合并输出，不冒充比较次数或全部 CPU 指令；有限测试不能替代证明。</p>
   </details>
   <details><summary>可选进阶 · 为什么“比较两边”没有变成普通二重循环？</summary><p>merge 的每次队首比较都会永久取走至少一个元素，两个下标总共只前进 m 次，不会把每个元素与另一边所有元素比较。单次比较次数至多 m−1。</p><p>对本课均衡拆分的两段，长度各至少 ⌊m/2⌋，至少比较 ⌊m/2⌋ 次才可能耗尽一侧；因此每个内部节点的比较数为 Θ(m)。沿同一棵树求和，整体比较次数也为 Θ(n log n)。第二课逐对比较枚举所有元素对，才会得到 Θ(n²)。两者的增长阶来自实际枚举了什么，不能凭代码有几个循环判断。</p></details>
+  <details><summary>可选补充 · 栈只有 log n 层，为什么额外空间仍是 Θ(n)？</summary>
+    <p>本课 merge 不覆盖尚未读取的输入，而把结果写进新数组 out；最终一次合并就要容纳 n 个输出元素。左右有序数组在合并时也仍然存在，所以常见的数组版 Merge Sort 需要额外存储。</p>
+    <p><strong>空间数的是同一时刻仍需保留的数据。</strong>当前代码的左右递归依次执行；排右边时保留左侧结果，子调用结束后不再需要的临时数组可以释放。沿一条活跃调用链，数组规模约为 n、n/2、n/4、…，每层只保留该规模常数倍的数据；它们的和是 O(n)。根合并同时保留总长 n 的左右结果，给出 Ω(n) 下界。因此当前复制数组实现的峰值辅助空间为 Θ(n)，调用栈自身仅 Θ(log n)。</p>
+    <p>严谨地记峰值为 S(m)：除一个正在运行的子调用外，本层只保留 O(m) 数据，故 <code>S(m) ≤ S(⌈m/2⌉)+cm</code>，S(0)、S(1) 为常数。按几何和求得 S(n)=O(n)；配合根合并下界即 Θ(n)。这假定不再使用的数组可回收，计入数组及调用栈，排除原输入；即使不计最终输出，根合并的左右临时结果仍有线性规模。实际进程占用还受分配器与运行时影响。</p>
+    <p><strong>累计写入 Θ(n log n) 不等于峰值内存。</strong>同一批内存可以在不同时间被反复写入或回收，不能把整棵树每个历史数组的大小相加当成同时占用。本页图示为对照会保留节点快照，它是教学图，不是代码的内存执行模拟。</p>
+    <p>参考：<a href="https://www.cs.cornell.edu/courses/cs2110/2026sp/lectures/lec07/">Cornell CS 2110 · Merge Sort 的空间分析</a>。这里对本课复制实现的几何和说明为自编；空间结论不改变今天的主要学习目标。</p>
+  </details>
+  <details><summary>可选补充 · 相等时取左边与稳定排序</summary><p>稳定排序要求相同键值元素的先后顺序保持不变。例如把相等的 2 标成 2A、2B，若 A 原来在 B 前，排完也应如此。左右切分保留原顺序，各子结果稳定；跨两半相等时优先取左边，就保留较早的那个。因此用归纳可说明本课 ≤ 的 merge 是稳定的。只把比较改成 &lt; 仍能排成非降序，但可能破坏稳定性。</p></details>
   <section class="win"><strong>今天的一句话：</strong>先数每个节点自身的工作，再按层求和；均衡拆分让单层工作为线性、合并层数为对数。遇到不均衡拆分，要重新画树。</section>
   <section class="self-check" aria-label="本课学习成果自检"><h2>不看答案，我能做到吗？</h2><label><input type="checkbox"> 我能解释递归怎样返回有序结果，并为 n=8 写出 8、8、8、0 的逐层账本。</label><label><input type="checkbox"> 我能给出任意 n 的上下界，解释拆成 1 与 m−1 为什么变成二次。</label><p class="editor-note">自检与完成标记不是解锁条件，也不代表教师已判断掌握。</p></section>
+  <details><summary>准备下一课前 · 用三句话区分三种工作量</summary><p>不看图，n=8 时回答：深度 1 的一个节点自身写入几次？该层所有节点合计几次？整棵树的所有 merge 合计几次？再解释为何不能在每个节点都加上子递归总时间。请把理由和迁移题回答一起复制给教师；这不是解锁题。</p><details><summary>自行尝试后核对</summary><p>分别为 4、8、24 次。节点只计自己的 merge；否则子调用会被重复计费。教师需要看到你的解释，而不是完成标记，才决定下一课是否直接比较递归树的三种工作分布。</p></details></details>
   <section class="complete-row"><button type="button" data-complete-lesson="lesson-0004" aria-pressed="false">标记本课已完成</button><p data-completion-status aria-live="polite">自愿记录本设备进度。</p></section>
   <section class="sources"><h2>复习与参考</h2><p><a href="../reference/merge-sort-tree.html">一页参考卡：递归树、merge 与双侧界</a>。主参考：<a href="https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2011/90a37c49b07b105ea7a027abc67eddc6_MIT6_006F11_lec03.pdf#page=18">MIT 6.006 Lecture 03，幻灯片 18 起的 Merge Sort 与 merging</a>；本课数组、图示、写入计数与迁移练习为自编。通用递推定理留到后续短课。</p><p>把迁移推导或卡住的那一步复制给我，我们可以先补清楚，再继续。无需先完成所有可选内容。</p></section>
   <nav class="lesson-nav" aria-label="课程切换"><a href="0003-doubling-work-sum.html">← 第三课：倍增循环与求和</a><a class="lesson-nav-next" href="../reference/course-route.html">下一主题与课程路线 →</a><a href="../index.html">返回课程目录</a></nav>
