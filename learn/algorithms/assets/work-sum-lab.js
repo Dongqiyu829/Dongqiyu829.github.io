@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (i > n) return;
       const current = i;
       total += current; rounds++;
-      const row = document.createElement("div"); row.className = "sum-row";
+      const row = document.createElement("li"); row.className = "sum-row";
       const label = document.createElement("span"); label.textContent = `i=${current}`;
       const track = document.createElement("div"); track.className = "sum-track";
       const bar = document.createElement("div"); bar.className = "sum-bar"; bar.style.width = `${100 * current / Math.max(n, 1)}%`;

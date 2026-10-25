@@ -1,47 +1,74 @@
 # COMP3711H Teaching Sync
 
-Updated: 2026-10-24 (Asia/Shanghai)
+Updated: 2026-10-25 (Asia/Shanghai)
+Release: 20261025a
+Repository: Dongqiyu829/Dongqiyu829.github.io, main, learn/algorithms/
 
-This file is a lightweight handoff between the ongoing Teach/Codex workspace and the public course website. It is not a claim that those conversations are directly connected; the GitHub repository is the shared source of truth.
+This file is a repository handoff, not an automatic connection to ChatGPT.
+Student answers, completion marks and mastery are not synchronized with a teacher.
 
-## Mission and preferences
-- HKUST undergraduate preparing for COMP3711H; study a short concept every few days.
-- Prefer algorithms/LeetCode for now rather than abstract mathematical topics.
-- Learning format: intuitive problem → formal definition / proof → interactive counterexample or worked case → concrete transfer problem.
-- Challenge misconceptions precisely; encourage attempts first, followed by rigorous feedback.
-- Split difficult topics across multiple sessions rather than giving long monologues.
-- Main materials: HKUST Honors Algorithms (Amir Goharshady) and UMD CMSC451.
+## Mission and teaching contract
 
-## Existing course
-- Lesson 01: `lessons/0001-binary-search-loop-invariant.html` (beginner-first lower_bound: indices and return contract → discard reasoning → step-by-step boundary demo → invariant → C++ / Python two-line exercise). Formal proof and upper_bound transfer are optional reveals. Review card: `reference/binary-search-boundaries.html`.
-- Lesson 02: `lessons/0002-asymptotic-analysis.html` (one pair-comparison example: hand count → exact sum → two-sided bounds → Θ(n²); a one-line transfer change)
-- Lesson 03: `lessons/0003-doubling-work-sum.html` (one doubling loop, per-round counts, geometric sum, arbitrary-n two-sided proof, optional C++ / Python counting lab, change <= to < transfer). Review card: `reference/doubling-sums.html`.
-- Lesson 02 now linked on `index.html`, `reference/course-route.html` and from Lesson 01.
-- Lesson 02 reuses `assets/course.css` and `assets/quiz.js`, with shared `assets/short-lesson.css`. The old `asymptotic-lab` assets are no longer used by Lesson 02. Quick review: `reference/asymptotic-bounds.html`.
+- HKUST undergraduate preparing for COMP3711H; Chinese short lessons, intuitive algorithms, rigorous proofs and practical implementation.
+- One observable learning outcome per lesson; default main path 15–25 minutes. Split difficult topics, preserve core / rigorous / optional layers.
+- Use one concrete problem, an attempted prediction, stepwise reasoning, a complete proof, independent transfer and a brief self-check.
+- Exploration, prediction and transfer are distinct activities. Every lesson has an open response with hints and a reference solution; copy-to-teacher is manual, not semantic auto-grading.
+- Publishing, checking boxes or reading solutions is not evidence of mastery. Keep MISSION / NOTES / learning-records local.
 
-## Previous discussion context
-- The learner explored interval scheduling, proposed earliest-start greedy strategy and then examined the earliest-finish exchange argument.
-- In explaining the exchange step, the learner wrote that E ends earlier than F but accidentally used `d>b`; the correct inequality is `d<=b`. A concise proof is `d<=b<=start(A2)`, which ensures the replacement E is compatible with all later selected activities.
-- This interval scheduling discussion previews the greedy topic (now topic 10 on the expanded route), not a reason to skip the foundation sequence.
+## Published lessons and planning
 
-## Current state and next move
-- Lesson 01 rewritten on 2026-10-24 with beginner scaffolding. The main code challenge now practices lower_bound and has 8 visible edge tests; do not keep using the old upper_bound challenge description. New demo assets are `assets/binary-search-demo.{css,js}`. Preserve the large C++ / Python editor and freely accessible lessons.
-- Lesson 02 rewritten on 2026-10-24 around a single worked example. Keep main lessons short: concrete problem, intuition, learner attempt, rigorous derivation, then a small transfer. Optional definitions and extensions are collapsed or on reference cards.
-- Do **not** mark any lesson completed merely because it is published; completion is based on the learner's actual work and local UI status.
-- Current Lesson 02 transfer: change the inner loop start from `j=i+1` to `j=i`; derive W(n)=n(n+1)/2 and, for n>=1, (1/2)n²<=W(n)<=n². Ask for the learner's own three-line derivation before inferring mastery.
-- Geometric sums / doubling loops now form Lesson 03, rather than being compressed into Lesson 02. Do not assume mastery without the learner's own answers.
-- Current Lesson 03 transfer: change i<=n to i<n; n=8 gives 7 calls, n=10 gives 15. Still Θ(n), with n/2<=W(n)<2n for n>=2.
-- Next topic depends on actual answers: reinforce per-round counts or continue to Merge Sort recursion trees. The topic map now has 24 entries; this does not assert 24 fixed sessions.
+- Lesson 01: lessons/0001-binary-search-loop-invariant.html — lower_bound, index contract, boundary demo, invariant and counterexample to hi=mid-1; optional upper_bound.
+- Lesson 02: lessons/0002-asymptotic-analysis.html — pair comparisons, inversion-counting background, n(n-1)/2 and a quadratic tight bound; transfer allows self-pairs.
+- Lesson 03: lessons/0003-doubling-work-sum.html — doubling-loop work sums, general-n bounds, transfer changes <= to <.
+- assets/course-manifest.json is the source for published lesson IDs/paths, topic IDs, planned topic count and release. There are currently 3 published lessons and 24 planned topics; topics need not map one-to-one to pages.
+- References: reference/binary-search-boundaries.html, reference/asymptotic-bounds.html, reference/doubling-sums.html and reference/algorithm-answer-template.html.
+- Previous interval-scheduling discussion previewed earliest-finish exchange reasoning: replacing F by E is safe when end(E)<=end(F)<=start(next). Do not infer full mastery from this preview or skip the foundations.
 
-## Sources
+## Access and progress
+
+- Every published lesson is freely accessible, with previous/next/catalog links. No quiz or completion-based unlocking.
+- Keep the legacy key comp3711h-learning-progress-v1. Count unique completed IDs only within published lessons; retain other string IDs when saving.
+- Malformed or denied storage must not crash interactions. Use current-page temporary state and an explicit notice; do not overwrite malformed stored data.
+- Display published lesson count, personal completion / published lesson count, and planned topics separately.
+- Open answers are not persisted or sent automatically; self-checks do not write completion records.
+
+## Shared components and quality changes
+
+- Lesson 02's extra closing p tag is fixed. All public HTML uses a standard validator, resource/link/anchor checks and duplicate-ID checks.
+- Both coding lessons now use assets/compiler-lab.js. Lesson 01 programs are in assets/binary-programs.json; Lesson 03 uses assets/doubling-programs.json.
+- assets/code-runner.js is only a compatibility loader for cached older Lesson 01 pages.
+- Complete C++ and Python starters plus all tests are embedded as native HTML code banks; they survive third-party failure, JSON blocking and disabled JavaScript.
+- populateCode requests are not treated as success. Confirmation requires matching code echoed from the current iframe and trusted origin/language. No automatic reinjection after user edits.
+- Timeout / missing echo is explicit, with reset, reload, manual copy and standalone editor fallbacks. Mobile has a parent-page triggerRun button; it never asserts test success.
+- assets/reflection.js copies open responses only after an explicit click; failed clipboard permission falls back to selection/manual copying.
+- Native list semantics and accessible navigation names are used; reference print styles use dark text on white paper.
+
+## Cache and release procedure
+
+- Bump release only in assets/course-manifest.json.
+- node scripts/prepare-site.cjs mechanically updates all local asset versions, embedded course metadata, statistics and code banks.
+- node scripts/prepare-site.cjs --check detects drift; no bundler or website runtime package dependencies.
+- Read current GitHub HEAD and file SHAs before changing the remote tree, preserve concurrent changes, and fast-forward with an expected SHA.
+- Site HTML caching still follows GitHub Pages behavior; never promise instant refresh of an already-open old tab.
+
+## Acceptance status for this maintenance run
+
+- Local strict static checks: 9 HTML pages, 64 internal link/resource references (including 30 versioned assets), 1 fragment link; zero remaining HTML, ID, nesting, missing-resource or version errors.
+- Browser fault/interaction matrix: 14 scenarios passed; application console/page errors zero. Desktop 1280px and mobile 390px / 320px; native no-JavaScript code banks and print-media references checked.
+- Real OneCompiler service: both coding lessons and both languages received matching echoes and ran 8/8 tests, with reset/reload/refresh checks. Touch mobile 390px uses Ace rather than desktop Monaco; all four mobile combinations ran 8/8 via the page's Run button.
+- Algorithm checks: C++ lower_bound 3234 combinations; Python lower_bound and upper-bound transfer 3234 each; pair-loop n=0..512; doubling/strict-boundary exact counts and bounds n=0..512.
+- Final public deployment checks and the concise report are to be completed after this code release. Record final results in docs/QUALITY_REPORT.md; do not count local mock tests as online execution.
+- Physical phones, OS software keyboards, Safari/iOS and a long-duration third-party outage are not verified by the headless viewport tests.
+
+## Reusable standards and next teaching phase
+
+See docs/TEACHING_STANDARD.md for lesson structure, misconception checklist, progress semantics, editor failure handling and the minimum acceptance matrix.
+No Lesson 04 is authored in this maintenance run.
+Next: introduce recursion calls, splitting subproblems and recursion-tree per-level vs total work using Merge Sort. Keep Master Theorem separate; use actual student transfer answers to decide the next scope.
+
+## Primary sources
+
 - https://amir.goharshady.com/teaching/honors-algorithms
 - https://www.cs.umd.edu/class/spring2025/cmsc451-0101/lectures.html
-
-## Navigation and access update (2026-10-23)
-- All published lessons are independently accessible from `index.html`: there is NO prerequisite unlocking requirement.
-- Completion checkboxes are optional, device-local progress markers only. The site must not block navigation based on quiz results or completion status.
-- Lesson 01 has a prominent "进入第二课" action; Lesson 02 now has "进入第三课"; Lesson 03 links back to Lesson 02 and the catalog. All remain freely accessible.
-- Shared responsive styles live in `assets/course.css`; progress messaging lives in `assets/quiz.js`. Both use cache-busting version `20261023e` on the published pages.
-- Future lessons should maintain clear previous/next/catalog navigation while leaving all published lessons freely accessible.
-- New labs can reuse `assets/compiler-lab.js` with per-lesson JSON programs. Lesson 03 uses `assets/doubling-programs.json` and `assets/work-sum-lab.{css,js}`. Index progress reads the total from data-total; Lesson 01's existing editor remains separate.
+- https://onecompiler.com/apis/embed-editor
 

@@ -5,7 +5,7 @@
 .binary-demo h3 { margin-top: 0; }
 .demo-cases { display: flex; flex-wrap: wrap; gap: 6px; }
 .demo-cases button { margin: 0; min-height: 44px; font-size: .87rem; }
-.demo-array { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; margin: 20px 0; }
+.demo-array { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; margin: 20px 0; padding: 0; list-style: none; }
 .demo-cell { min-width: 0; padding: 9px 3px; border: 1px solid var(--line); border-radius: 8px; text-align: center; background: #fff; }
 .demo-cell span, .demo-cell strong, .demo-cell small { display: block; }
 .demo-cell span { color: var(--muted); font: .8rem/1.5 "Segoe UI", sans-serif; }

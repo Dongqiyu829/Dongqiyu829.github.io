@@ -24,8 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
       demo.querySelector("[data-demo-target]").textContent = `a = [${a.join(", ")}]，x = ${x}。找第一个 ≥ ${x} 的位置。`;
       array.replaceChildren();
       for (let i = 0; i <= a.length; i++) {
-        const cell = document.createElement("div");
-        cell.setAttribute("role", "listitem");
+        const cell = document.createElement("li");
         cell.dataset.index = String(i);
         cell.className = "demo-cell";
         if (i === a.length) cell.classList.add("sentinel");

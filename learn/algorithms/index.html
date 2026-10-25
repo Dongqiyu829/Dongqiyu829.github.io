@@ -1,26 +1,37 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="面向 HKUST COMP3711H 的中文算法短课：严格证明、算法直觉与实践。">
   <title>COMP3711H 算法学习</title>
-  <link rel="stylesheet" href="assets/course.css?v=20261023e">
-  <script defer src="assets/quiz.js?v=20261024a"></script>
+  <link rel="stylesheet" href="assets/course.css?v=20261025a">
+  <script defer src="assets/quiz.js?v=20261025a"></script>
+<!-- course-data:start -->
+<script type="application/json" data-course-manifest>{"schemaVersion":1,"release":"20261025a","planning":{"topicCount":24,"route":"reference/course-route.html"},"lessons":[{"id":"lesson-0001","topicId":"binary-search-invariant","path":"lessons/0001-binary-search-loop-invariant.html","title":"二分搜索：为什么这半边可以丢？","published":true},{"id":"lesson-0002","topicId":"quadratic-tight-bound","path":"lessons/0002-asymptotic-analysis.html","title":"数清工作量，再写 Θ(n²)","published":true},{"id":"lesson-0003","topicId":"geometric-sum","path":"lessons/0003-doubling-work-sum.html","title":"两层循环，为什么只有 Θ(n)？","published":true}]}</script>
+<!-- course-data:end -->
 </head>
 <body>
 <nav class="course-nav" aria-label="课程导航">
   <a href="../../">董骐与 · 个人主页</a>
-  <span class="crumb" data-course-progress data-total="24">0 / 24 已完成</span>
+  <span class="crumb">自由学习 · 持续更新</span>
 </nav>
 <main>
   <header class="hero">
     <p class="eyebrow">Mobile Algorithm Studio</p>
     <h1>COMP3711H 算法预习</h1>
-    <p class="lede">每隔几天完成一堂 20–35 分钟的中文短课：先建立直觉，再严格证明，最后做一次迁移练习。</p>
+    <p class="lede">每隔几天完成一堂 15–25 分钟的中文短课：先建立直觉，再严格证明，最后做一次迁移练习。</p>
     <div class="meta"><span>中文讲授</span><span>手机友好</span><span>持续更新</span></div>
   </header>
 
+  <!-- course-stats:start -->
+<section class="course-stats" aria-label="课程与个人进度">
+  <div><span>已发布课程</span><strong data-published-count>3</strong><small>可自由访问的课时页面</small></div>
+  <div><span>个人完成</span><strong data-course-progress>启用 JavaScript 读取</strong><small>只统计已发布课程</small></div>
+  <div><span>总规划</span><strong><span data-planned-count>24</span> 个主题</strong><small>一个主题可拆成多节课</small></div>
+</section>
+<p class="editor-note" data-progress-notice>完成标记只保存在本浏览器；JavaScript 不可用时不读取个人记录。</p>
+<!-- course-stats:end -->
   <section class="win">
     <strong>自由学习：</strong>所有已发布课程均可直接进入，无须完成前置互动或按顺序解锁。完成标记只记录本设备的个人进度；需要反馈时，把迁移题答案发回学习对话即可。
   </section>
@@ -55,7 +66,7 @@
     <div class="course-grid">
       <article class="lesson-card">
         <span class="status-tag">路线</span>
-        <h3>24 个主题的短课地图</h3>
+        <h3><span data-planned-count>24</span> 个主题的短课地图</h3>
         <p>证明与分析、分治、贪心、DP、图、网络流、随机化、NP 完全性与近似算法。</p>
         <a href="reference/course-route.html">查看完整路线 →</a>
       </article>

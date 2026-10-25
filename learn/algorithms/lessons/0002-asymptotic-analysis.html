@@ -1,13 +1,17 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="从逐对比较出发，先手算工作量，再亲手证明 Θ(n²)。一条主线学会渐进分析。">
   <title>第 2 课：从数清工作量到证明 Θ(n²)</title>
-  <link rel="stylesheet" href="../assets/course.css?v=20261023e">
-  <link rel="stylesheet" href="../assets/short-lesson.css?v=20261024a">
-  <script defer src="../assets/quiz.js?v=20261023e"></script>
+  <link rel="stylesheet" href="../assets/course.css?v=20261025a">
+  <link rel="stylesheet" href="../assets/short-lesson.css?v=20261025a">
+  <script defer src="../assets/quiz.js?v=20261025a"></script>
+  <script defer src="../assets/reflection.js?v=20261025a"></script>
+<!-- course-data:start -->
+<script type="application/json" data-course-manifest>{"schemaVersion":1,"release":"20261025a","planning":{"topicCount":24,"route":"reference/course-route.html"},"lessons":[{"id":"lesson-0001","topicId":"binary-search-invariant","path":"lessons/0001-binary-search-loop-invariant.html","title":"二分搜索：为什么这半边可以丢？","published":true},{"id":"lesson-0002","topicId":"quadratic-tight-bound","path":"lessons/0002-asymptotic-analysis.html","title":"数清工作量，再写 Θ(n²)","published":true},{"id":"lesson-0003","topicId":"geometric-sum","path":"lessons/0003-doubling-work-sum.html","title":"两层循环，为什么只有 Θ(n)？","published":true}]}</script>
+<!-- course-data:end -->
 </head>
 <body>
 <nav class="course-nav" aria-label="课程导航">
@@ -22,7 +26,7 @@
     <div class="meta"><span>约 15–20 分钟</span><span>一个例子 · 一次证明</span><span>先想，再展开答案</span></div>
   </header>
 
-  <section class="win">
+  <section class="win" data-learning-outcome>
     <strong>今天只带走一项能力：</strong>从逐对比较的代码得到工作次数，再用两个不等式证明它是 Θ(n²)。倍增循环、几何级数和不同输入情形，留到后面的短课。
   </section>
 
@@ -44,8 +48,9 @@ for (int i = 0; i &lt; n; ++i) {
         work(a[i], a[j]);
     }
 }</code></pre>
+    <p>一个实际用途是统计<strong>逆序对</strong>：位置 i&lt;j，但 a[i]&gt;a[j]。朴素办法会检查每一对位置，再判断是否逆序。本课只数“检查一对”被执行多少次；更快的方法留到分治专题。</p>
     <p>先约定：一次 <code>work</code> 只比较两个机器字范围内的整数，花常数时间。记 <code>W(n)</code> 为它被调用的次数。循环不提前退出，所以数组里的数值不影响这个次数。</p>
-    <div class="exercise" data-quiz>
+    <div class="exercise" data-activity="prediction" data-quiz>
       <p><strong>先别写复杂度：当 n = 4 时，work 一共执行几次？</strong></p>
       <button type="button" data-answer="correct" data-message="对。四轮依次是 3、2、1、0 次，总和为 6。接下来把这个数法推广到任意 n。" aria-pressed="false">执行 6 次</button>
       <button type="button" data-answer="incorrect" data-message="先固定 i=0：j 只能取 1、2、3。然后固定 i=1，再数一遍。不能把每轮都当成 4 次。" aria-pressed="false">执行 8 次</button>
@@ -101,8 +106,8 @@ for (int i = 0; i &lt; n; ++i) {
     </details>
     <p>如果<strong>只证明上面那一边</strong>，记作 <code>W(n)=O(n²)</code>；</p>
     <p><strong>只证明下面那一边</strong>，记作 <code>W(n)=Ω(n²)</code>。</p>
-    </p>今天先把“Θ 要两边”用熟，三个符号的辨析放在<a href="../reference/asymptotic-bounds.html">复习卡</a>中。</p>
-    <div class="exercise" data-quiz>
+    <p>今天先把“Θ 要两边”用熟，三个符号的辨析放在<a href="../reference/asymptotic-bounds.html">复习卡</a>中。</p>
+    <div class="exercise" data-activity="prediction" data-quiz>
       <p><strong>假如只知道 W(n) ≤ n²，足够推出 Θ(n²) 吗？</strong></p>
       <button type="button" data-answer="incorrect" data-message="还差下界。例如 W(n)=1 也满足 W(n)≤n²（n≥1），但它不会按 n² 的量级增长。" aria-pressed="false">足够，已经有上界</button>
       <button type="button" data-answer="correct" data-message="对。W(n)=1 就是反例。要写 Θ(n²)，还需要一个正常数乘 n² 的下界。" aria-pressed="false">不够，还需要下界</button>
@@ -115,7 +120,7 @@ for (int i = 0; i &lt; n; ++i) {
     </details>
   </section>
 
-  <section aria-labelledby="transfer-title">
+  <section aria-labelledby="transfer-title" data-activity="transfer">
     <p class="eyebrow">04 · 只改一行，你来接着推</p>
     <h2 id="transfer-title">把 j = i + 1 改成 j = i</h2>
     <p>这次允许每个位置和自身配对，其他部分相同。<strong>先不展开参考，写下三句话：</strong></p>
@@ -124,6 +129,14 @@ for (int i = 0; i &lt; n; ++i) {
       <li>对任意 n，W(n) 等于什么？</li>
       <li>找两个固定倍数的 n² 夹住它，并注明从多大的 n 开始成立。</li>
     </ol>
+<div class="independent-work" data-reflection data-exercise-id="l2-two-sided">
+      <p class="activity-kind">迁移型 · 独立推导，不自动批改</p>
+      <label for="l2-two-sided-answer">把允许自身配对后的 W(n) 求和式、精确值、上界、下界和适用的 n 写完整。</label>
+      <textarea id="l2-two-sided-answer" rows="6" placeholder="先写自己的推导；也可以写出具体卡住的一步。"></textarea>
+      <button type="button" data-copy-response>复制回答给教师</button>
+      <p class="editor-note" data-reflection-status role="status">回答只在当前页面输入，不自动保存、发送或判断对错。需要反馈时请自行复制到教师对话。</p>
+      <details><summary>先看一个提示</summary><p>每轮次数现在是 n、n−1、…、1。沿用配对求和；然后分别给 n+1 找一个固定倍数的上界和下界。</p></details>
+    </div>
     <details><summary>写完后核对推导</summary>
       <p>每轮依次有 4、3、2、1 次，共 10 次。一般地，<code>W(n)=n+(n−1)+⋯+1=n(n+1)/2</code>。</p>
       <p>对 n≥1，<code>n ≤ n+1 ≤ 2n</code>，所以 <code>½n² ≤ W(n) ≤ n²</code>。取 c₁=½、c₂=1、n₀=1，得到 <code>W(n)=Θ(n²)</code>。</p>
@@ -174,6 +187,12 @@ for n, expected in [(0, 0), (1, 0), (4, 6), (5, 10)]:
 
   <section class="win">
     <strong>合上页面前，试着复述：</strong>“先数每轮工作，再求总和；要证明 Θ，就找固定倍数的上界和下界。”把迁移题的三句话发给我，我会根据你的推导决定下一次补哪一步。无需先标记完成或解锁其他课程。
+  </section>
+<section class="self-check" aria-label="本课学习成果自检">
+    <h2>不看答案，我能做到吗？</h2>
+    <label><input type="checkbox"> 我能从循环写出实际工作次数的和，而不只数循环层数。</label>
+    <label><input type="checkbox"> 我能给出匹配的上下界及常数适用范围，独立说明为什么是 Θ。</label>
+    <p class="editor-note">自检不自动判分，不保存为掌握记录，也不是下一课的解锁条件。</p>
   </section>
   <section class="complete-row">
     <button type="button" data-complete-lesson="lesson-0002" aria-pressed="false">标记本课已完成</button>

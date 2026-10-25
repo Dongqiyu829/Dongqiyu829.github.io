@@ -1,0 +1,6 @@
+{
+  "private": true,
+  "description": "Development acceptance tools only; the published course has no runtime package dependencies",
+  "devDependencies": { "html-validate": "11.17.0", "playwright": "1.62.1" },
+  "scripts": { "prepare:site": "node prepare-site.cjs", "check:site": "node check-site.cjs", "test:site": "node test-site.cjs", "test:editors": "node test-editors-real.cjs", "test:algorithms": "node test-algorithms.cjs" }
+}

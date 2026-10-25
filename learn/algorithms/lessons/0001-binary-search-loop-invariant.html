@@ -1,16 +1,20 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="先看懂二分搜索为什么可以排除一半，再学边界、不变量与 C++ / Python 实现。">
   <title>第 1 课：二分搜索，为什么这半边可以丢？</title>
-  <link rel="stylesheet" href="../assets/course.css?v=20261023e">
-  <link rel="stylesheet" href="../assets/short-lesson.css?v=20261024a">
-  <link rel="stylesheet" href="../assets/binary-search-demo.css?v=20261024a">
-  <script defer src="../assets/quiz.js?v=20261023e"></script>
-  <script defer src="../assets/binary-search-demo.js?v=20261024a"></script>
-  <script defer src="../assets/code-runner.js?v=20261024a"></script>
+  <link rel="stylesheet" href="../assets/course.css?v=20261025a">
+  <link rel="stylesheet" href="../assets/short-lesson.css?v=20261025a">
+  <link rel="stylesheet" href="../assets/binary-search-demo.css?v=20261025a">
+  <script defer src="../assets/quiz.js?v=20261025a"></script>
+  <script defer src="../assets/binary-search-demo.js?v=20261025a"></script>
+  <script defer src="../assets/compiler-lab.js?v=20261025a"></script>
+  <script defer src="../assets/reflection.js?v=20261025a"></script>
+<!-- course-data:start -->
+<script type="application/json" data-course-manifest>{"schemaVersion":1,"release":"20261025a","planning":{"topicCount":24,"route":"reference/course-route.html"},"lessons":[{"id":"lesson-0001","topicId":"binary-search-invariant","path":"lessons/0001-binary-search-loop-invariant.html","title":"二分搜索：为什么这半边可以丢？","published":true},{"id":"lesson-0002","topicId":"quadratic-tight-bound","path":"lessons/0002-asymptotic-analysis.html","title":"数清工作量，再写 Θ(n²)","published":true},{"id":"lesson-0003","topicId":"geometric-sum","path":"lessons/0003-doubling-work-sum.html","title":"两层循环，为什么只有 Θ(n)？","published":true}]}</script>
+<!-- course-data:end -->
 </head>
 <body>
 <nav class="course-nav" aria-label="课程导航"><a href="../index.html">← 算法学习主页</a><span class="crumb">第 1 课 · 二分搜索入门</span></nav>
@@ -21,7 +25,7 @@
     <p class="lede">从一个数组开始。先想清要找什么，再解释每一次排除，最后把这些理由写成代码。</p>
     <div class="meta"><span>主线约 20 分钟</span><span>先手算 · 再演示 · 再编码</span><span>证明与进阶可展开</span></div>
   </header>
-  <section class="win">
+  <section class="win" data-learning-outcome>
     <strong>今天的目标：</strong>在一个已排好序的数组中，找到第一个大于或等于 x 的位置，并解释为什么两种情况分别更新 <code>lo = mid + 1</code> 和 <code>hi = mid</code>。
     <p>只需会读数组和 while 循环。下标、区间和“不变量”都会在用到时解释；不用预先认识复杂度符号。</p>
   </section>
@@ -36,7 +40,7 @@
     </div>
     <p><strong>下标</strong>就是位置编号，从 0 开始。因此 <code>a[1] = 2</code> 表示“1 号位置放着数字 2”。数组长度 <code>n = 5</code>，最后一个元素的下标是 4。</p>
     <p>令 <code>x = 2</code>。我们要返回<strong>第一个大于或等于 2 的元素的下标</strong>。这个任务叫 <code>lower_bound</code>。</p>
-    <div class="exercise" data-quiz>
+    <div class="exercise" data-activity="prediction" data-quiz>
       <p><strong>先自己找：应该返回哪个下标？</strong></p>
       <button type="button" data-answer="correct" data-message="对。a[1]=2 已经满足条件，且它前面的 a[0]=1 不满足。所以返回下标 1。" aria-pressed="false">下标 1</button>
       <button type="button" data-answer="incorrect" data-message="a[2]=2 虽然满足条件，但 a[1]=2 更早。找到一个 2，还没有完成“找第一个”的任务。" aria-pressed="false">下标 2</button>
@@ -69,14 +73,14 @@
     <p><strong>容易混淆的一点：</strong>hi 不在“待判断的元素”中，但 hi 仍可能是最终答案。比如 hi=2，只表示下标 2 起已经够大，还需要判断 0、1 是否有更早的答案。</p>
     <div class="formula">中间太小 → lo = mid + 1<br>中间够大 → hi = mid</div>
     <p>中间下标取 <code>mid = lo + (hi−lo) // 2</code>，其中 <code>// 2</code> 表示除以 2 后向下取整。只有 <code>lo &lt; hi</code> 时才取中间位置，所以一定有 <code>lo ≤ mid &lt; hi ≤ n</code>，不会读到 a[n]。</p>
-    <div class="exercise binary-demo" data-binary-demo>
+    <div class="exercise binary-demo" data-activity="exploration" data-binary-demo>
       <h3>现在你来走三步</h3>
       <p>默认仍是刚才的数组和 x=2。每次点击前，先预测下一步该改 lo 还是 hi，再看解释。走完后换一个边界例子。</p>
       <div class="demo-cases" role="group" aria-label="选择演示例子">
         <button type="button" data-case="duplicate" aria-pressed="true">重复值 x=2</button><button type="button" data-case="missing" aria-pressed="false">不存在 x=3</button><button type="button" data-case="below" aria-pressed="false">更小值 x=0</button><button type="button" data-case="above" aria-pressed="false">更大值 x=9</button><button type="button" data-case="empty" aria-pressed="false">空数组</button>
       </div>
       <p class="demo-target" data-demo-target></p>
-      <div class="demo-array" data-demo-array role="list" aria-label="数组与当前判断状态"></div>
+      <ol class="demo-array" data-demo-array aria-label="数组与当前判断状态"></ol>
       <p class="demo-state" data-demo-state></p>
       <div class="demo-controls"><button type="button" data-demo-next>走一步</button><button type="button" data-demo-reset>重新开始</button></div>
       <p class="demo-explanation" data-demo-explanation aria-live="polite"></p>
@@ -91,7 +95,7 @@
     <h2 id="finish-title">lo = hi 时，分界线已经确定</h2>
     <p>对于 x=2，最后得到 <code>lo = hi = 1</code>。此时待判断区间 <code>[1,1)</code> 为空，<strong>1 左边都小于 2，从 1 起都大于或等于 2</strong>，所以 1 正是第一个满足条件的位置。</p>
     <p>每次更新都会让 <code>hi−lo</code> 严格变小，因此循环能够结束。如果最后 lo=hi=n，就说明所有元素都太小，按约定返回 n。</p>
-    <div class="exercise" data-quiz>
+    <div class="exercise" data-activity="prediction" data-quiz>
       <p><strong>如果 a[mid] = x，为什么用 hi = mid？</strong></p>
       <button type="button" data-answer="correct" data-message="对。mid 已满足条件，但左边可能还有更早的位置。hi=mid 保留这个已知右边界，继续判断左边。" aria-pressed="false">左边可能还有答案</button>
       <button type="button" data-answer="incorrect" data-message="不一定。数组允许重复值；a[mid]=x 只说明它满足条件，不能证明它是第一个。" aria-pressed="false">中点必然就是答案</button>
@@ -137,22 +141,118 @@
       <p>C++ 中，这里的非负整数除法自动向下取整；Python 用 //。<code>len(a)</code> 与 <code>a.size()</code> 都是在取数组长度。</p>
     </details>
     <p>现在把上面的代码暂时遮住。在下面的练习中补两条更新，再运行测试。先做本课的 lower_bound；严格大于 x 的变体留作可选进阶。</p>
-    <div class="code-lab" data-code-challenge>
-      <div class="language-switch" role="group" aria-label="选择编程语言"><button type="button" data-language="cpp" aria-pressed="true">C++</button><button type="button" data-language="python" aria-pressed="false">Python</button></div>
-      <p class="editor-note">切换语言会载入对应的起始代码；如已写了答案，请先复制保留。</p>
-      <div class="external-editor is-loading"><iframe data-compiler-frame title="C++ 在线代码编辑器" src="https://onecompiler.com/embed/cpp?listenToEvents=true&amp;hideLanguageSelection=true&amp;fontSize=16" loading="lazy" allow="clipboard-write" referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
-      <p class="editor-note" data-editor-status role="status">正在载入 C++ 编辑器和测试代码…</p>
-      <button type="button" data-load-starter>重新填入起始代码（会覆盖当前代码）</button>
-      <details><summary>编辑器没有加载？查看可复制的起始代码</summary><pre data-fallback-code></pre></details>
+    <div class="code-lab" data-compiler-lab data-programs-source="../assets/binary-programs.json?v=20261025a">
+      <div class="language-switch" role="group" aria-label="选择编程语言"><button type="button" data-lab-language="cpp" aria-pressed="true">C++</button><button type="button" data-lab-language="python" aria-pressed="false">Python</button></div>
+      <p class="editor-note">切换语言或重填会覆盖编辑区内容，请先复制保留答案。载入确认不代表测试通过，运行结果请看控制台。手机上可用页面的运行按钮；长代码可横向滚动，或先复制到独立页面编辑。</p>
+      <div class="external-editor is-loading"><iframe data-lab-frame title="C++ 在线代码编辑器" src="https://onecompiler.com/embed/cpp?listenToEvents=true&amp;codeChangeEvent=true&amp;hideLanguageSelection=true&amp;fontSize=16" loading="lazy" allow="clipboard-write" referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
+      <p data-lab-status class="editor-note" role="status">等待编辑器响应；完整起始代码在下方可复制。</p>
+      <div class="compiler-controls">
+        <button type="button" data-lab-run disabled>运行当前编辑区代码</button>
+        <button type="button" data-lab-starter>重新填入起始代码（覆盖编辑区）</button>
+        <button type="button" data-lab-reload>重新加载编辑器（覆盖编辑区）</button>
+        <button type="button" data-copy-starter>复制当前语言起始代码</button>
+        <a data-lab-open href="https://onecompiler.com/cpp" target="_blank" rel="noopener">独立页面编辑（先复制代码）</a>
+      </div>
+      <p data-copy-status class="editor-note" role="status"></p>
+      <!-- compiler-fallback:start -->
+<details data-lab-fallback-panel class="compiler-fallback"><summary>编辑器不可用？复制完整起始代码（含全部测试）</summary>
+<h3>C++</h3><pre tabindex="0" data-program-code="cpp">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;stdexcept&gt;
+using namespace std;
+
+int lowerBound(const vector&lt;int&gt;&amp; a, int x) {
+    int lo = 0, hi = static_cast&lt;int&gt;(a.size());
+    while (lo &lt; hi) {
+        int mid = lo + (hi - lo) / 2;
+        if (a[mid] &lt; x) {
+            throw runtime_error("TODO 1: 替换为 lo 的更新");
+        } else {
+            throw runtime_error("TODO 2: 替换为 hi 的更新");
+        }
+    }
+    return lo;
+}
+
+int main() {
+    struct Test { vector&lt;int&gt; a; int x, expected; string name; };
+    vector&lt;Test&gt; tests = {
+        {{1,2,2,4,7},2,1,"重复值：找第一个"},
+        {{1,2,2,4,7},3,3,"目标不在数组里"},
+        {{},3,0,"空数组"},
+        {{1,2,2},0,0,"目标更小"},
+        {{1,2,2},9,3,"目标更大"},
+        {{-2,-2,0,5},-2,0,"重复负数"},
+        {{2},2,0,"单元素：满足"},
+        {{2},3,1,"单元素：不满足"}
+    };
+    int passed = 0;
+    for (const auto&amp; t : tests) {
+        try {
+            int actual = lowerBound(t.a, t.x);
+            bool ok = actual == t.expected;
+            passed += ok;
+            cout &lt;&lt; (ok ? "PASS " : "FAIL ") &lt;&lt; t.name
+                 &lt;&lt; " | expected=" &lt;&lt; t.expected &lt;&lt; " got=" &lt;&lt; actual &lt;&lt; endl;
+        } catch (const exception&amp; e) {
+            cout &lt;&lt; "ERROR " &lt;&lt; t.name &lt;&lt; " | " &lt;&lt; e.what() &lt;&lt; endl;
+        }
+    }
+    cout &lt;&lt; passed &lt;&lt; "/" &lt;&lt; tests.size() &lt;&lt; " passed" &lt;&lt; endl;
+}</pre>
+<h3>Python</h3><pre tabindex="0" data-program-code="python">def lower_bound(a, x):
+    lo, hi = 0, len(a)
+    while lo &lt; hi:
+        mid = lo + (hi - lo) // 2
+        if a[mid] &lt; x:
+            raise NotImplementedError("TODO 1: 替换为 lo 的更新")
+        else:
+            raise NotImplementedError("TODO 2: 替换为 hi 的更新")
+    return lo
+
+tests = [
+    ([1, 2, 2, 4, 7], 2, 1, "重复值：找第一个"),
+    ([1, 2, 2, 4, 7], 3, 3, "目标不在数组里"),
+    ([], 3, 0, "空数组"),
+    ([1, 2, 2], 0, 0, "目标更小"),
+    ([1, 2, 2], 9, 3, "目标更大"),
+    ([-2, -2, 0, 5], -2, 0, "重复负数"),
+    ([2], 2, 0, "单元素：满足"),
+    ([2], 3, 1, "单元素：不满足"),
+]
+passed = 0
+for a, x, expected, name in tests:
+    try:
+        actual = lower_bound(a, x)
+        ok = actual == expected
+        passed += ok
+        print(f'{"PASS" if ok else "FAIL"} {name} | expected={expected} got={actual}')
+    except Exception as error:
+        print(f'ERROR {name} | {error}')
+print(f'{passed}/{len(tests)} passed')
+</pre>
+</details>
+<!-- compiler-fallback:end -->
+      <noscript><p>JavaScript 不可用时，可展开上方代码区，手动复制 C++ 或 Python 的完整起始代码与测试。</p></noscript>
     </div>
     <p class="editor-note">8 个测试覆盖重复值、目标不存在、空数组、两端之外、负数和单元素。结果显示 PASS／FAIL、期望下标和实际结果；若超时，先检查 hi−lo 是否每轮严格减小。在线编辑器由 OneCompiler 提供，编辑与运行使用其服务；也可以复制代码到自己的环境。</p>
   </section>
 
-  <section aria-labelledby="transfer-title">
+  <section aria-labelledby="transfer-title" data-activity="transfer">
     <p class="eyebrow">06 · 换个目标，自己走一次</p>
     <h2 id="transfer-title">数组里没有 3，应该返回什么？</h2>
     <p>仍用 <code>[1,2,2,4,7]</code>，把目标改为 <code>x=3</code>。先不点演示，写下每轮开始时的 <code>(lo,hi)</code>，并用一句话说明最终返回的位置为什么对。</p>
     <details><summary>写完后核对</summary><p>(0,5)：mid=2，a[2]=2&lt;3 → lo=3。</p><p>(3,5)：mid=4，a[4]=7≥3 → hi=4。</p><p>(3,4)：mid=3，a[3]=4≥3 → hi=3。</p><p>lo=hi=3，返回下标 3。它的值是 4，是第一个≥3的元素；任务并不要求数组里恰好有一个 3。</p></details>
+<div class="independent-work" data-reflection data-exercise-id="l1-counterexample">
+      <p class="activity-kind">迁移型 · 独立推导，不自动批改</p>
+      <label for="l1-counterexample-answer">有人把 hi=mid 改成 hi=mid−1，其他代码不变。构造一个尽量短的有序数组和目标 x，写出错误返回值，并指出破坏了哪条不变量。</label>
+      <textarea id="l1-counterexample-answer" rows="6" placeholder="先写自己的推导；也可以写出具体卡住的一步。"></textarea>
+      <button type="button" data-copy-response>复制回答给教师</button>
+      <p class="editor-note" data-reflection-status role="status">回答只在当前页面输入，不自动保存、发送或判断对错。需要反馈时请自行复制到教师对话。</p>
+      <details><summary>先看一个提示</summary><p>先试两个不同的数。让 mid 正好是第一个满足条件的位置，看看 hi 跳到 mid 左边以后，右侧还能保证全部 ≥x 吗？</p></details>
+    </div>
+    <details><summary>写完后看反例参考</summary><p>取 a=[1,2]、x=2。初始 lo=0、hi=2，mid=1，a[1]≥2；错误更新得到 hi=0，循环立即结束并返回 0，但正确答案是 1。</p><p>此时“从 hi 起的元素都≥x”已经不成立，因为 a[0]=1&lt;2。这里混用了另一种边界约定的 −1 规则。单元素数组虽可能碰巧返回正确值，也不能证明这个改动安全。</p></details>
     <details><summary>可选进阶：改成第一个严格大于 x</summary>
       <p>这是 upper_bound。先用同一个数组、x=2 判断：应该返回下标 3。想一想，“中间值等于 x”这次应该被放在哪一边？</p>
       <details><summary>想过后再看提示</summary><p>等于 x 还不够，应该与“小于 x”一起排除。因此把条件改成 <code>a[mid] ≤ x</code> 时令 <code>lo=mid+1</code>，否则令 <code>hi=mid</code>。不变量相应变成“lo 左边都≤x，hi 起都&gt;x”。理解本课主线后再练这一题即可。</p></details>
@@ -160,6 +260,12 @@
   </section>
 
   <section class="win"><strong>合上页面前：</strong>试着回答“为什么太小要 +1，而够大不 −1？”把 x=3 的手算过程和这句解释发给我，我们从你真正卡住的地方继续。</section>
+<section class="self-check" aria-label="本课学习成果自检">
+    <h2>不看答案，我能做到吗？</h2>
+    <label><input type="checkbox"> 我能说明 lo 左边、hi 起分别保证什么，并解释两种边界更新。</label>
+    <label><input type="checkbox"> 我能独立给 hi=mid−1 的错误改动构造反例。</label>
+    <p class="editor-note">自检不自动判分，不保存为掌握记录，也不是下一课的解锁条件。</p>
+  </section>
   <section class="complete-row"><button type="button" data-complete-lesson="lesson-0001" aria-pressed="false">标记本课已完成</button><p data-completion-status aria-live="polite">自愿记录本设备进度，不影响继续学习。</p></section>
   <section class="lesson-continue" aria-label="下一课"><div><p class="eyebrow">NEXT · LESSON 02</p><h2>数清工作量，再写 Θ(n²)</h2><p>下一课从另一段小程序开始，练习怎样计算和证明工作量。可以随时进入，也可以回来继续练二分。</p></div><a class="lesson-next-button" href="0002-asymptotic-analysis.html">进入第二课 →</a></section>
   <section class="sources">
