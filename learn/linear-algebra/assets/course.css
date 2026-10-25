@@ -258,6 +258,17 @@ input[aria-invalid="true"] { border: 2px solid var(--danger); background: #fbe6e
 .eigen-lesson .math-line { white-space: normal; }
 [data-diag-formula] { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 18px; }
 [data-diag-formula] > span { white-space: nowrap; }
+.study-stages { margin: 24px 0; padding: 16px; border: 1px solid var(--line); border-radius: 10px; background: #fffaf0; display: flex; flex-wrap: wrap; gap: 12px 24px; }
+.study-stages p { flex-basis: 100%; margin: 0; font-size: .9rem; }
+.diag-phases { margin: 20px; padding-left: 30px; }
+.diag-phases li { padding: 8px 12px; border-left: 4px solid transparent; }
+.diag-phases .current-phase { border-color: var(--teal); background: var(--teal-soft); font-weight: 800; }
+[data-q-controls] { border-left: 0; }
+.symmetric-editor input { width: 85px; max-width: 100%; min-height: 42px; text-align: center; }
+.symmetric-editor [data-mirror-b] { align-self: center; text-align: center; }
+[data-q-current] { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 12px; }
+[data-active-calculation] { margin-top: 18px; }
+[data-q-surface] { touch-action: pan-y; }
 @media (max-width:600px) { .eigen-views { grid-template-columns: 1fr; } }
 
 @media print {
