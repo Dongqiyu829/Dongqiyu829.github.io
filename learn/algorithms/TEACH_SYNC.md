@@ -57,7 +57,9 @@ Student answers, completion marks and mastery are not synchronized with a teache
 - Browser fault/interaction matrix: 14 scenarios passed; application console/page errors zero. Desktop 1280px and mobile 390px / 320px; native no-JavaScript code banks and print-media references checked.
 - Real OneCompiler service: both coding lessons and both languages received matching echoes and ran 8/8 tests, with reset/reload/refresh checks. Touch mobile 390px uses Ace rather than desktop Monaco; all four mobile combinations ran 8/8 via the page's Run button.
 - Algorithm checks: C++ lower_bound 3234 combinations; Python lower_bound and upper-bound transfer 3234 each; pair-loop n=0..512; doubling/strict-boundary exact counts and bounds n=0..512.
-- Final public deployment checks and the concise report are to be completed after this code release. Record final results in docs/QUALITY_REPORT.md; do not count local mock tests as online execution.
+- Public release 20261025a deployed successfully in commit 9ede1ebe354e06987edf3476210d3b39beb5047e (Pages run 40172669914). All 9 public pages, 9 distinct directly linked CSS/JS resources and the personal-site root returned HTTP 200; public 1280/390/320px layouts and legacy 1 / 3 progress checked.
+- Deployed public-page C++/Python editors for Lessons 01 and 03 each ran 8/8 against real OneCompiler, including matched echoes, reset, iframe reload and default-C++ page refresh. The initial attempt before deployment completed timed out against the old page; the post-deployment rerun passed all four combinations.
+- Full scope, file changes, actual vs simulated checks, boundary counts and remaining limitations: [docs/QUALITY_REPORT.md](docs/QUALITY_REPORT.md). Do not count local mock tests as online execution.
 - Physical phones, OS software keyboards, Safari/iOS and a long-duration third-party outage are not verified by the headless viewport tests.
 
 ## Reusable standards and next teaching phase
