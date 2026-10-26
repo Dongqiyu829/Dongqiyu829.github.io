@@ -44,12 +44,24 @@
     const threshold=(values[0]||0)*rcond,rank=values.filter(s=>s>threshold).length,Sigma=zeros(m,n);values.forEach((s,i)=>Sigma[i][i]=s);
     return {U,V,values,Sigma,rank,threshold,rcond,rows:m,cols:n,truncated:values.some(s=>s>0&&s<=threshold)};
   }
+  // Exact 2x2 determinant test on the current finite decimal entries. No SVD
+  // cutoff, rounded products or underflow may turn a thin ellipse into a line.
+  // Fraction inputs are first converted to the stored decimal by the UI parser.
+  function exactRank2(A){
+    const [m,n]=shape(A);if(m!==2||n!==2)throw new Error('此精确形状判定只用于 2×2 实验。');
+    function decimal(x){const [mantissa,e='0']=String(x).toLowerCase().split('e'),[whole,fraction='']=mantissa.split('.');return [BigInt(whole+fraction),Number(e)-fraction.length];}
+    const [a,b,c,d]=A.flat().map(decimal),left=[a[0]*d[0],a[1]+d[1]],right=[b[0]*c[0],b[1]+c[1]],exponent=Math.min(left[1],right[1]);
+    const determinant=left[0]*10n**BigInt(left[1]-exponent)-right[0]*10n**BigInt(right[1]-exponent);
+    return determinant!==0n?2:A.flat().some(x=>x!==0)?1:0;
+  }
+  function shapeModels(A,info=svd(A)){const exactRank=exactRank2(A);return {exactRank,numericalRank:info.rank,threshold:info.threshold,answer:exactRank+'/'+info.rank};}
+  function svdCoordinates(A,x,info=svd(A)){const inputBasis=apply(transpose(info.V),x),outputBasis=apply(info.Sigma,inputBasis);return {input:x.slice(),inputBasis,outputBasis,output:apply(info.U,outputBasis),directOutput:apply(A,x)};}
   function reconstruct(info,k=info.values.length){if(!Number.isInteger(k)||k<0||k>info.values.length)throw new Error('k 超出奇异值数量。');const S=zeros(info.rows,info.cols);for(let i=0;i<k;i++)S[i][i]=info.values[i];return multiply(multiply(info.U,S),transpose(info.V));}
   function pseudoinverse(A,options){const info=svd(A,options),S=zeros(info.cols,info.rows);info.values.forEach((s,i)=>{if(s>info.threshold)S[i][i]=1/s;});return {matrix:multiply(multiply(info.V,S),transpose(info.U)),info};}
   function leastSquares(A,b,options){const {matrix,info}=pseudoinverse(A,options),x=apply(matrix,b),fitted=apply(A,x),residual=b.map((v,i)=>v-fitted[i]);return {x,fitted,residual,sse:dot(residual,residual),normalResidual:apply(transpose(A),residual),norm:norm(x),info,pseudoinverse:matrix};}
   function fitLine(points,options){if(points.length<2||points.some(p=>p.length!==2||p.some(x=>!Number.isFinite(x))))throw new Error('至少需要两个有限二维观测点。');const X=points.map(([x])=>[1,x]),y=points.map(p=>p[1]);return {...leastSquares(X,y,options),X,y,normal:multiply(transpose(X),X),rhs:apply(transpose(X),y)};}
   function toyImage(kind='toy',n=16){return Array.from({length:n},(_,i)=>Array.from({length:n},(_,j)=>kind==='zero'?0:kind==='rank1'?(.15+.7*i/(n-1))*(.25+.75*j/(n-1)):.1+.18*i/(n-1)+.15*j/(n-1)+(Math.hypot(i-n*.48,j-n*.5)<n*.28?.38:0)+(i>n*.65&&j<n*.42?.16:0)));}
   const presets={shear:{A:[[1,2],[0,1]],name:'剪切：不能对角化'},identity:{A:[[1,0],[0,1]],name:'单位矩阵：重奇异值'},stretch:{A:[[2,0],[0,1]],name:'沿轴伸缩'},rotation:{A:[[0,-1],[1,0]],name:'旋转 90°'},reflection:{A:[[1,0],[0,-1]],name:'反射'},rank1:{A:[[1,1],[2,2]],name:'秩一：圆压成线段'},zero:{A:[[0,0],[0,0]],name:'零矩阵：压成原点'},near:{A:[[1,0],[0,1e-11]],name:'近奇异：小方向仍非零'}};
-  const api={zeros,identity,shape,transpose,dot,norm,multiply,apply,frobenius,subtract,svd,reconstruct,pseudoinverse,leastSquares,fitLine,toyImage,presets};
+  const api={zeros,identity,shape,transpose,dot,norm,multiply,apply,frobenius,subtract,svd,exactRank2,shapeModels,svdCoordinates,reconstruct,pseudoinverse,leastSquares,fitLine,toyImage,presets};
   if(typeof module!=='undefined')module.exports=api;if(typeof window!=='undefined')window.LASVD=api;
 })();

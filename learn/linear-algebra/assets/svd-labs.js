@@ -21,22 +21,26 @@
   document.querySelectorAll('[data-svd-explorer]').forEach(lab=>{
     let A=clone(M.presets.shear.A),x=[1,0],phase=0,timer=null,view,gate;
     const input=lab.querySelector('[data-svd-input]'),output=lab.querySelector('[data-svd-output]'),select=lab.querySelector('[data-svd-preset]'),error=lab.querySelector('[data-svd-error]');select.innerHTML='<option value="" disabled>自定义矩阵</option>'+presetOptions;select.value='shear';
-    const info=()=>M.svd(A),stop=()=>{if(timer!==null){clearInterval(timer);timer=null;}lab.querySelector('[data-svd-play]').textContent='播放坐标步骤';};
+    const info=()=>M.svd(A),shapeNames=['一个点','线段','二维椭圆（含圆）'],stop=()=>{if(timer!==null){clearInterval(timer);timer=null;}lab.querySelector('[data-svd-play]').textContent='播放坐标步骤';};
+    function shapeExplanation(s){const models=M.shapeModels(A,s);return '原矩阵 A：精确秩 '+models.exactRank+'，单位圆像为'+shapeNames[models.exactRank]+'；将 σ≤τ='+fmt(models.threshold)+' 的方向置零后，截断近似矩阵 Aτ：数值秩 '+models.numericalRank+'，单位圆像为'+shapeNames[models.numericalRank]+'。'+(models.exactRank!==models.numericalRank?'这是两个不同矩阵的形状。微小正奇异值不等于零；上方右图画原矩阵 A 的细椭圆，有限像素可能分辨不出厚度。':'当前两种形状类别一致；原矩阵与截断模型仍须分别判断。');}
     function move(p){const length=M.norm(p);if(length<1e-8){setError(error,'单位圆上的输入不能是零向量；这次没有改变输入。');return;}x=p.map(v=>v/length);setError(error,'');gate?.changed();render();}
     const drag=handle(input,'单位圆输入端点，可拖动或用方向键旋转',()=>x,move,()=>view,.12);
     function render(){
-      const s=info(),c=M.apply(M.transpose(s.V),x),d=s.values.map((v,i)=>v*c[i]),y=M.apply(A,x),hidden=gate?.hidden();
+      const s=info(),coordinates=M.svdCoordinates(A,x,s),c=coordinates.inputBasis,d=coordinates.outputBasis,y=coordinates.directOutput,hidden=gate?.hidden();
       view=plane(input,2);if(view){circle(view,null,'#a9b8b5');if(!hidden)for(let j=0;j<2;j++)view.arrow(column(s.V,j),j?colors.output:colors.basis,'v'+(j+1),{offset:j?24:-22});view.arrow(x,colors.input,'x',{width:4});drag.sync();}
       const out=plane(output,Math.max(2,Math.ceil(s.values[0])+1));if(out&&!hidden){circle(out,A,'#8b9994');for(let j=0;j<2;j++)if(s.values[j]>0)out.arrow(column(s.U,j).map(v=>v*s.values[j]),j?colors.output:colors.basis,'σ'+(j+1)+'u'+(j+1),{offset:j?24:-22});out.arrow(y,colors.secondary,'Ax',{width:4});}
       lab.querySelector('[data-svd-vector-values]').textContent='实际输入 x='+pair(x)+(hidden?'；实际输出提交后揭示。':'；实际输出 Ax='+pair(y))+'。';lab.querySelector('[data-svd-current]').innerHTML='A='+matrix(A);lab.querySelector('[data-svd-results]').hidden=!!hidden;
-      lab.querySelector('[data-svd-results]').innerHTML=row('AᵀA='+matrix(M.multiply(M.transpose(A),A)))+row('σ='+pair(s.values)+'；数值秩='+s.rank+'；阈值 τ='+fmt(s.threshold)) + row('U='+matrix(s.U))+row('Σ='+matrix(s.Sigma))+row('Vᵀ='+matrix(M.transpose(s.V)));
+      lab.querySelector('[data-svd-results]').innerHTML=row('AᵀA='+matrix(M.multiply(M.transpose(A),A)))+row('σ='+pair(s.values)+'；精确秩='+M.exactRank2(A)+'；截断模型数值秩='+s.rank+'；阈值 τ='+fmt(s.threshold)) + row('U='+matrix(s.U))+row('Σ='+matrix(s.Sigma))+row('Vᵀ='+matrix(M.transpose(s.V)));
+      lab.querySelector('[data-svd-shape-models]').textContent=hidden?'待提交后分别显示原矩阵的精确形状与截断模型的近似形状；上方实际输出图始终不做阈值截断。':shapeExplanation(s);
+      const vectors=[coordinates.input,c,d,coordinates.output];lab.querySelectorAll('[data-svd-coordinate-card]').forEach((card,i)=>{card.classList.toggle('active',i===phase);if(i===phase)card.setAttribute('aria-current','step');else card.removeAttribute('aria-current');card.querySelector('[data-svd-column]').innerHTML=hidden&&i>0?'提交后显示':matrix(vectors[i].map(v=>[v]));});
+      lab.querySelectorAll('[data-svd-go]').forEach(button=>button.setAttribute('aria-pressed',String(Number(button.dataset.svdGo)===phase)));
       const texts=['实际输入 x='+pair(x)+'。上方左图是输入空间；右图是实际输出空间。','Vᵀx='+pair(c)+'：同一输入箭头在右奇异基中的坐标。没有移动原输入。','Σc='+pair(d)+'：得到输出左奇异基中的分量。现在进行了实际线性映射，零奇异值会消去相应输入信息。','U(Σc)='+pair(M.apply(s.U,d))+'=Ax：将输出分量写回实际输出空间；没有再额外施加一台变换。'];
       lab.querySelectorAll('[data-svd-phase]').forEach((li,i)=>{li.classList.toggle('active',i===phase);li.textContent=hidden?['原输入','输入换坐标','非负缩放','输出写回'][i]+'（提交后显示读数，或切回自由探索）':texts[i];});
       lab.querySelector('[data-svd-coordinates]').textContent=hidden?'输出、分解和方向暂未揭示。可先看 A 的两列判断维数。':texts[phase]+' 上方两图始终画实际的 x 与 Ax，不把中间坐标误画成原空间的新箭头。'+(s.truncated?' 小奇异值仍为正；这里只是按阈值报告数值秩。':'');
       lab.querySelector('[data-svd-angle-value]').textContent=String(Number(((Math.atan2(x[1],x[0])*180/Math.PI+360)%360).toFixed(1)))+'°';lab.querySelector('[data-svd-angle]').value=(Math.atan2(x[1],x[0])*180/Math.PI+360)%360;
       lab.querySelectorAll('[data-svd-cell]').forEach((field,i)=>{if(document.activeElement!==field)field.value=A[Math.floor(i/2)][i%2];});gate?.sync();
     }
-    gate=window.LAStudy.challenge(lab,{question:()=> '按当前数值阈值，单位圆的输出是二维椭圆（圆也算）、线段，还是一个点？',choices:[['2','二维椭圆 / 圆'],['1','线段'],['0','一个点']],assess:choice=>({correct:Number(choice)===info().rank,explanation:'当前 σ='+pair(info().values)+'，阈值 τ='+fmt(info().threshold)+'；超过阈值的方向数为 '+info().rank+'。严格的非零微小奇异值仍对应二维细椭圆，数值秩可能不同。'}),render});
+    gate=window.LAStudy.challenge(lab,{question:()=> '分别判断两个对象的单位圆像：①原矩阵 A（不截断）；②将 σ≤τ=10⁻¹⁰σ₁ 置零后的近似矩阵 Aτ。选出“原矩阵 / 截断模型”的形状组合。上方右图只画原矩阵 A。',choices:[['2/2','原矩阵：二维椭圆（含圆） / 截断模型：二维椭圆（含圆）'],['2/1','原矩阵：二维细椭圆 / 截断模型：线段'],['1/1','原矩阵：线段 / 截断模型：线段'],['0/0','原矩阵：一个点 / 截断模型：一个点']],assess:choice=>{const s=info();return {correct:choice===M.shapeModels(A,s).answer,explanation:shapeExplanation(s)};},render});
     select.addEventListener('change',()=>{stop();A=clone(M.presets[select.value].A);phase=0;setError(error,'');gate.changed();render();});
     lab.querySelectorAll('[data-svd-cell]').forEach(field=>field.addEventListener('input',()=>{const n=parse(field.value);if(!Number.isFinite(n)||Math.abs(n)>3){setError(error,'每格需为绝对值不大于 3 的有限数；支持分数和科学记数。空白未改变矩阵。');return;}const i=Number(field.dataset.svdCell);A[Math.floor(i/2)][i%2]=n;select.value='';setError(error,'');stop();gate.changed();render();}));
     lab.querySelector('[data-svd-angle]').addEventListener('input',e=>{const t=Number(e.target.value)*Math.PI/180;move([Math.cos(t),Math.sin(t)]);});

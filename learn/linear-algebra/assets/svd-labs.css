@@ -15,6 +15,18 @@
 .svd-lesson .svd-phases { margin: 12px 18px; padding-left: 26px; }
 .svd-lesson .svd-phases li { padding: 10px; border-left: 4px solid transparent; overflow-wrap: anywhere; }
 .svd-lesson .svd-phases .active { border-color: var(--teal); background: var(--teal-soft); font-weight: 800; }
+.svd-lesson .svd-coordinate-panel { margin: 12px 18px; padding: 14px; border: 1px solid var(--line); border-radius: 10px; }
+.svd-lesson .svd-coordinate-panel h4 { margin: 0 0 8px; overflow-wrap: anywhere; }
+.svd-lesson .svd-coordinate-panel p { margin: 8px 0 14px; font-size: .88rem; }
+.svd-lesson .svd-coordinate-chain { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 10px; list-style: none; margin: 0; padding: 0; }
+.svd-lesson .svd-coordinate-chain li { min-width: 0; padding: 10px; border: 2px solid var(--line); border-radius: 8px; background: #fff; overflow-wrap: anywhere; }
+.svd-lesson .svd-coordinate-chain li.active { border-color: var(--teal); background: var(--teal-soft); }
+.svd-lesson .svd-step-operation { display: block; margin: 8px 0; font-size: .8rem; color: var(--teal-dark); }
+.svd-lesson .svd-map-step { color: #84471c; font-weight: 800; }
+.svd-lesson [data-svd-column] { display: flex; align-items: center; justify-content: center; min-height: 70px; font-size: .9rem; }
+.svd-lesson .svd-coordinate-chain small { display: block; font-size: .8rem; line-height: 1.6; }
+@media(max-width:760px){ .svd-lesson .svd-coordinate-chain { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+@media(max-width:360px){ .svd-lesson .svd-coordinate-chain { grid-template-columns: 1fr; } }
 .svd-lesson .svd-editor { display: grid; grid-template-columns: repeat(2,minmax(0,110px)); gap: 8px; }
 .svd-lesson .svd-editor label { display: block; }
 .svd-lesson .svd-editor input { width: 100%; }
