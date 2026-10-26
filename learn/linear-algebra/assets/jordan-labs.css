@@ -1,0 +1,26 @@
+.jordan-lesson section[id] { scroll-margin-top:65px; }
+.jordan-lesson .stage-goals { border-left:4px solid var(--teal); padding:12px 18px; background:white; }
+.jordan-lesson .j-controls { display:flex; flex-wrap:wrap; gap:12px 20px; padding:18px; align-items:start; }
+.jordan-lesson .j-controls label { flex:1 1 180px; max-width:100%; }
+.jordan-lesson select { max-width:100%; min-height:44px; }
+.jordan-lesson input[type=text] { width:110px; max-width:100%; min-height:44px; }
+.jordan-lesson .j-plots { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; padding:14px; }
+.jordan-lesson figure { margin:0; min-width:0; }
+.jordan-lesson figcaption { padding:8px; font-weight:700; }
+.jordan-lesson .plot-wrap { position:relative; min-width:0; }
+.jordan-lesson .lab canvas { width:100%; height:320px; aspect-ratio:auto; touch-action:pan-y; }
+.jordan-lesson .j-handle { position:absolute; transform:translate(-50%,-50%); width:36px; height:36px; min-height:0; min-width:0; margin:0; padding:0; border:2px dashed var(--teal); border-radius:50%; background:rgba(255,255,255,.35); touch-action:none; cursor:grab; }
+.jordan-lesson .j-handle:focus-visible { outline:3px solid var(--gold); }
+.jordan-lesson .j-readout { padding:12px 18px; overflow-wrap:anywhere; }
+.jordan-lesson .j-readout > div { margin:8px 0; }
+.jordan-lesson .matrix { font-size:1rem; vertical-align:middle; gap:4px 10px; }
+.jordan-lesson .j-legend { padding:0 18px; font-size:.9rem; }
+.jordan-lesson .j-legend span { display:inline-block; margin-right:14px; }
+.jordan-lesson .j-scale { margin:0 18px; font-size:.88rem; }
+.jordan-lesson .j-norm { padding:14px; }
+.jordan-lesson .lab canvas[data-norm-plot] { height:220px; }
+.jordan-lesson .j-error { flex-basis:100%; }
+.jordan-lesson .j-error:empty { display:none; }
+.jordan-lesson .study-stages a { display:flex; align-items:center; min-height:44px; }
+.jordan-lesson .formula { overflow-wrap:anywhere; }
+@media(max-width:700px){.jordan-lesson .j-plots{grid-template-columns:1fr}.jordan-lesson .lab canvas{height:270px}.jordan-lesson .j-controls{padding:12px;gap:10px}.jordan-lesson .j-readout{padding:12px}.jordan-lesson .course-nav .crumb{font-size:.8rem}}
