@@ -81,7 +81,7 @@ Student answers, completion marks and mastery are not synchronized with a teache
 
 See docs/TEACHING_STANDARD.md for lesson structure, misconception checklist, progress semantics, editor failure handling and the minimum acceptance matrix.
 Lesson 04 is published and verified; no student mastery is inferred from publication or automated tests.
-Next teaching decision: read the student's unbalanced-split derivation, then either reinforce recursion-tree accounting or introduce Master Theorem in its own short lesson; do not jump over missing prerequisites.
+Next teaching decision: use the student's actual explanations of remaining-left counting and equality counterexamples to choose reinforcement or Randomized Quickselect. Earlier unbalanced-split/node-layer-tree diagnoses remain useful if those prerequisites are unclear; no new student response or mastery has been recorded by development.
 Fifth-lesson design is preserved in [docs/LESSON05_PLAN.md](docs/LESSON05_PLAN.md) and implemented under the user's 2026-10-27 request. The page explicitly asks for node/layer/tree diagnosis, offers a return to Lesson 04 and keeps rigorous depth optional. We still have no new student answer: use actual explanations to decide reinforcement or deeper follow-up; publication is not a passed diagnosis and never an access gate.
 
 ## Research Frontiers (2026-10-27)
@@ -111,7 +111,8 @@ Fifth-lesson design is preserved in [docs/LESSON05_PLAN.md](docs/LESSON05_PLAN.m
 - New course: same 20–25 minute core, concrete [2,4,1,3,5], naive baseline, three pair classes, a focused merge-count trace and equality counterexample. New reference: reference/counting-inversions.html. No broad rewrite of Lessons 01–05.
 - New teaching rule: each new lesson begins with 1–3 minutes of directly reused prerequisite recall, with no forced revisit, unlock or mastery inference.
 - Manual answer drafts implemented in assets/reflection.js without network requests or automatic saving/loading. Scope and overwrite warning are explicit. Existing responses/records remain untouched unless a user explicitly clicks an action.
-- Acceptance: docs/LESSON06_ACCEPTANCE.md. Results and public deployment are finalized there after checks; distinguish static, actual C++/Python execution, real browser UI, and external compiler service.
+- Acceptance: [docs/LESSON06_ACCEPTANCE.md](docs/LESSON06_ACCEPTANCE.md). Static: 17 pages / 143 internal references / 64 versioned references / 7 JSON / 10 production JS, zero errors or generation drift. Browser: 21 scenarios passed, local application console/page errors zero, widths 1280/390/320, no-JavaScript code banks and reference print media. New C++/Python each 14372 actual arrays and 8/8 fixtures; 3136 sorted-half traces; prior binary, pair/doubling, Merge Sort and Master models re-executed successfully.
+- Local-page real OneCompiler: Lesson 06 C++/Python each 8/8 with matching echoes, resets/reloads/default-C++ refresh. 390x844 touch viewport real service each 8/8; not a physical phone. Code commit 64dfc1c7526bc0d234f43dd72892d3dd279d2a67, Pages run 40453518466 succeeded. Public 17 pages / 14 direct assets / 4 JSON returned HTTP 200, release 20261027b; all three widths, old tree/models, new merge trace, manual drafts, navigation, 1 / 6 and 2 / 6 progress passed. Public Lesson 06 C++/Python each actually ran 8/8 with reset/reload/refresh. Public page exceptions zero; one known root favicon 404 console network error. Old lessons' real third-party service was not rerun this round; their local algorithms and shared UI were.
 
 ## Follow-up improvements (not release blockers)
 
