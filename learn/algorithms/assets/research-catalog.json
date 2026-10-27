@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "entries": [
+    {
+      "id": "eth-2026-10",
+      "title": "ETH 可能被推翻？",
+      "paperTitle": "The Exponential Time Hypothesis is False",
+      "authors": [
+        "OpenAI"
+      ],
+      "firstPublicDate": "2026-10-26",
+      "manuscriptDate": "2026-10-17",
+      "revisionDate": "2026-10-25",
+      "lastChecked": "2026-10-27",
+      "status": "independent-review",
+      "statusLabel": "前沿研究，独立验证中",
+      "formalization": "发布方报告 Lean 验证；范围按 378.md，本站未重建验证",
+      "path": "research/0001-eth-claim.html",
+      "courseLinks": [
+        "lesson-0002",
+        "lesson-0003",
+        "lesson-0005"
+      ],
+      "recommendedAfter": [
+        "NP-completeness",
+        "reductions",
+        "exact exponential algorithms"
+      ],
+      "sourceRevision": "42907c9e999cc00d6abe7a50bfc1023250edd1b9",
+      "sources": [
+        {
+          "role": "announcement",
+          "url": "https://openai.com/index/building-scientific-understanding-with-academic-communities/"
+        },
+        {
+          "role": "paper",
+          "url": "https://github.com/openai/math/blob/42907c9e999cc00d6abe7a50bfc1023250edd1b9/preprints/The-Exponential-Time-Hypothesis-is-False-October-25-2026/paper.pdf"
+        },
+        {
+          "role": "paper-source",
+          "url": "https://github.com/openai/math/blob/42907c9e999cc00d6abe7a50bfc1023250edd1b9/preprints/The-Exponential-Time-Hypothesis-is-False-October-25-2026/build/main_full_version.tex"
+        },
+        {
+          "role": "lean-scope",
+          "url": "https://github.com/openai/math/blob/42907c9e999cc00d6abe7a50bfc1023250edd1b9/lean/docs/378.md"
+        },
+        {
+          "role": "verification-config",
+          "url": "https://github.com/openai/math/blob/42907c9e999cc00d6abe7a50bfc1023250edd1b9/lean/ComparatorChallenges/SubexponentialSAT.json"
+        }
+      ],
+      "history": [
+        {
+          "date": "2026-10-26",
+          "event": "OpenAI 官方公告公开该主张并说明外部核查安排；非本站确认。",
+          "sourceRole": "announcement"
+        },
+        {
+          "date": "2026-10-27",
+          "event": "本站首次核对论文 TeX 源码、Lean 范围及验证配置；区分三个上界，保留独立审查状态。",
+          "sourceRole": "lean-scope"
+        }
+      ]
+    }
+  ]
+}

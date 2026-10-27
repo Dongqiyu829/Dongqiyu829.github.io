@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="面向 HKUST COMP3711H 的中文算法短课：严格证明、算法直觉与实践。">
   <title>COMP3711H 算法学习</title>
-  <link rel="stylesheet" href="assets/course.css?v=20261025c">
-  <script defer src="assets/quiz.js?v=20261025c"></script>
+  <link rel="stylesheet" href="assets/course.css?v=20261027a">
+  <script defer src="assets/quiz.js?v=20261027a"></script>
 <!-- course-data:start -->
-<script type="application/json" data-course-manifest>{"schemaVersion":1,"release":"20261025c","planning":{"topicCount":24,"route":"reference/course-route.html"},"lessons":[{"id":"lesson-0001","topicId":"binary-search-invariant","path":"lessons/0001-binary-search-loop-invariant.html","title":"二分搜索：为什么这半边可以丢？","published":true},{"id":"lesson-0002","topicId":"quadratic-tight-bound","path":"lessons/0002-asymptotic-analysis.html","title":"数清工作量，再写 Θ(n²)","published":true},{"id":"lesson-0003","topicId":"geometric-sum","path":"lessons/0003-doubling-work-sum.html","title":"两层循环，为什么只有 Θ(n)？","published":true},{"id":"lesson-0004","topicId":"merge-sort-recursion-tree","path":"lessons/0004-merge-sort-recursion-tree.html","title":"Merge Sort：递归树怎样算出总工作量？","published":true}]}</script>
+<script type="application/json" data-course-manifest>{"schemaVersion":1,"release":"20261027a","planning":{"topicCount":24,"route":"reference/course-route.html"},"lessons":[{"id":"lesson-0001","topicId":"binary-search-invariant","path":"lessons/0001-binary-search-loop-invariant.html","title":"二分搜索：为什么这半边可以丢？","published":true},{"id":"lesson-0002","topicId":"quadratic-tight-bound","path":"lessons/0002-asymptotic-analysis.html","title":"数清工作量，再写 Θ(n²)","published":true},{"id":"lesson-0003","topicId":"geometric-sum","path":"lessons/0003-doubling-work-sum.html","title":"两层循环，为什么只有 Θ(n)？","published":true},{"id":"lesson-0004","topicId":"merge-sort-recursion-tree","path":"lessons/0004-merge-sort-recursion-tree.html","title":"Merge Sort：递归树怎样算出总工作量？","published":true},{"id":"lesson-0005","topicId":"master-theorem","path":"lessons/0005-master-theorem.html","title":"递归树为什么有时由根决定，有时由叶子决定？","published":true}]}</script>
 <!-- course-data:end -->
 </head>
 <body>
@@ -26,7 +26,7 @@
 
   <!-- course-stats:start -->
 <section class="course-stats" aria-label="课程与个人进度">
-  <div><span>已发布课程</span><strong data-published-count>4</strong><small>可自由访问的课时页面</small></div>
+  <div><span>已发布课程</span><strong data-published-count>5</strong><small>可自由访问的课时页面</small></div>
   <div><span>个人完成</span><strong data-course-progress>启用 JavaScript 读取</strong><small>只统计已发布课程</small></div>
   <div><span>总规划</span><strong><span data-planned-count>24</span> 个主题</strong><small>一个主题可拆成多节课</small></div>
 </section>
@@ -64,9 +64,11 @@
         <p>从八个数的排序开始，理解递归与合并，再逐层求和，证明 Θ(n log n)。</p>
         <a href="lessons/0004-merge-sort-recursion-tree.html">开始第四课 →</a>
       </article>
+      <article class="lesson-card" data-lesson-id="lesson-0005"><span class="status-tag" data-lesson-status>可开始</span><h3>05 · 递归树：根、叶子还是各层决定总工作？</h3><p>先算三串逐层工作，再理解 Master Theorem 的情形与适用条件。</p><a href="lessons/0005-master-theorem.html">开始第五课 →</a></article>
     </div>
   </section>
 
+  <section><h2>算法前沿 · 独立于主课程</h2><p>从具体小问题读现代研究，记录主张、证据与修订；不参与个人完成率。</p><div class="course-grid"><article class="lesson-card"><span class="status-tag">独立验证中 · 2026-10-27 核查</span><h3>ETH 可能被推翻？</h3><p>从 3-SAT、亚指数时间读到论文与 Lean 范围的差别。10–15 分钟入门，深入建议在 NP 完全性后。</p><a href="research/0001-eth-claim.html">阅读第一篇专题 →</a></article><article class="lesson-card"><h3>Research Frontiers</h3><p>组合优化、SAT、近似、精确指数算法、流与匹配、Fine-Grained Complexity。</p><a href="research/index.html">栏目与候选选题 →</a></article></div></section>
   <section>
     <h2>课程工具</h2>
     <div class="course-grid">

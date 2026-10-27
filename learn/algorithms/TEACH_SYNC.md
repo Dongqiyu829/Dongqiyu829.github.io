@@ -1,7 +1,7 @@
 # COMP3711H Teaching Sync
 
-Updated: 2026-10-25 (Asia/Shanghai)
-Release: 20261025c
+Updated: 2026-10-27 (Asia/Shanghai)
+Release: 20261027a
 Repository: Dongqiyu829/Dongqiyu829.github.io, main, learn/algorithms/
 
 This file is a repository handoff, not an automatic connection to ChatGPT.
@@ -21,7 +21,8 @@ Student answers, completion marks and mastery are not synchronized with a teache
 - Lesson 02: lessons/0002-asymptotic-analysis.html — pair comparisons, inversion-counting background, n(n-1)/2 and a quadratic tight bound; transfer allows self-pairs.
 - Lesson 03: lessons/0003-doubling-work-sum.html — doubling-loop work sums, general-n bounds, transfer changes <= to <.
 - Lesson 04: lessons/0004-merge-sort-recursion-tree.html — concrete 8-element array, recursive calls/base case, linear merge, depth-by-depth tree, power-of-two counting then arbitrary-n two-sided proof. Main path 20–25 minutes; optional coding and comparison-count challenge. Transfer: split into 1 and m-1, derive quadratic work. No Master Theorem in this lesson.
-- assets/course-manifest.json is the source for published lesson IDs/paths, topic IDs, planned topic count and release. There are currently 4 published lessons and 24 planned topics; topics need not map one-to-one to pages.
+- Lesson 05: lessons/0005-master-theorem.html — diagnose node/level/tree, compare own work m/m²/1 with leaf cost 1, derive equal/root/leaf concentration, then classic Master Theorem conditions and limits. 20–25 minute path; strict proof, transfer 4T(n/2)+n and optional C++/Python counter. The counter computes work totals; its own runtime is not the modeled algorithm runtime. No learner mastery is inferred.
+- assets/course-manifest.json is the source for published lesson IDs/paths, topic IDs, planned topic count and release. There are currently 5 published lessons and 24 planned topics; topics need not map one-to-one to pages. Research pages are excluded from lessons and completion counts.
 - References: reference/binary-search-boundaries.html, reference/asymptotic-bounds.html, reference/doubling-sums.html, reference/merge-sort-tree.html and reference/algorithm-answer-template.html.
 - Previous interval-scheduling discussion previewed earliest-finish exchange reasoning: replacing F by E is safe when end(E)<=end(F)<=start(next). Do not infer full mastery from this preview or skip the foundations.
 
@@ -36,7 +37,7 @@ Student answers, completion marks and mastery are not synchronized with a teache
 ## Shared components and quality changes
 
 - Lesson 02's extra closing p tag is fixed. All public HTML uses a standard validator, resource/link/anchor checks and duplicate-ID checks.
-- All coding lessons use assets/compiler-lab.js. Lesson 01 programs are in assets/binary-programs.json; Lesson 03 uses assets/doubling-programs.json; Lesson 04 uses assets/merge-programs.json.
+- All coding lessons use assets/compiler-lab.js. Lesson 01 programs are in assets/binary-programs.json; Lesson 03 uses assets/doubling-programs.json; Lesson 04 uses assets/merge-programs.json; Lesson 05 uses assets/master-programs.json.
 - assets/recursion-tree.js / .css now separate Split (raw subarrays/base cases, no completed merge charges) and Merge (sorted child returns, own merge writes, sorted node return). Inputs n=0,1,5,6,8,16; snapshots grouped by depth are explicitly not real execution order. Statically readable n=5 split/return details and the complete n=8 accounting table survive disabled JavaScript.
 - Lesson 04 keeps its original single main outcome and 20-25 minute path. Peak auxiliary space, stack depth, cumulative writes vs simultaneous memory, and stable tie handling are optional disclosures; the snapshot cache is not a simulation of the sorting program's memory.
 - assets/code-runner.js is only a compatibility loader for cached older Lesson 01 pages.
@@ -80,7 +81,17 @@ Student answers, completion marks and mastery are not synchronized with a teache
 See docs/TEACHING_STANDARD.md for lesson structure, misconception checklist, progress semantics, editor failure handling and the minimum acceptance matrix.
 Lesson 04 is published and verified; no student mastery is inferred from publication or automated tests.
 Next teaching decision: read the student's unbalanced-split derivation, then either reinforce recursion-tree accounting or introduce Master Theorem in its own short lesson; do not jump over missing prerequisites.
-Fifth-lesson design is prepared in [docs/LESSON05_PLAN.md](docs/LESSON05_PLAN.md), not published as a lesson. First ask for the n=8 node/layer/tree counts and explanations (4/8/24); use the actual response to choose reinforcement or a comparison of constant / upper-heavy / lower-heavy level work. Only then introduce the selected Master Theorem version and its conditions. Fourth-lesson acceptance is not learner mastery evidence.
+Fifth-lesson design is preserved in [docs/LESSON05_PLAN.md](docs/LESSON05_PLAN.md) and implemented under the user's 2026-10-27 request. The page explicitly asks for node/layer/tree diagnosis, offers a return to Lesson 04 and keeps rigorous depth optional. We still have no new student answer: use actual explanations to decide reinforcement or deeper follow-up; publication is not a passed diagnosis and never an access gate.
+
+## Research Frontiers (2026-10-27)
+
+- research/index.html and research/0001-eth-claim.html form a freely accessible, separate route; no completion buttons and no writes to the completion store. Main curriculum ordering is unchanged. See docs/RESEARCH_POLICY.md and assets/research-catalog.json.
+- ETH entry: OpenAI author, official announcement 2026-10-26, manuscript 10-17 revised 10-25, checked 2026-10-27; independent-review status. Primary artifact snapshot 42907c9e999cc00d6abe7a50bfc1023250edd1b9. PDF extraction was unavailable; official same-directory TeX abstract/main theorem, Lean 378 scope and Comparator configuration were read. No Lean build or independent proof certification is claimed.
+- Paper claims poly(n+m) times 2 to O(n log log n / sqrt(log n)), and under fixed linear clause density 2 to O(n / sqrt(log n)); stated Lean scope has the weaker poly(L) times 2 to O(n (log log n)^2 / sqrt(log n)), canonical inputs and polynomial visited space. Do not collapse these bounds into one formalized claim.
+- ETH/SETH, subexponential vs polynomial, and parameter growth in reductions are taught with small examples. Conditional Set Cover lower-bound implications are qualified; an invalidated hypothesis alone supplies no new Set Cover algorithm and does not erase unrelated NP/approximation hardness.
+- Status changes must append evidence, date, old/new wording and impact; retain immutable source/version links. Scheduled daily quiet evidence checks are configured for this chat: no routine unchanged notifications, act only on substantial confirmation/refutation/revision/withdrawal. This does not synchronize student answers or mastery.
+- Set Cover, Subset Sum, modern Flow/Matching and fine-grained reductions are research candidates only; no unverified paper summaries are presented as completed topics.
+- Current run acceptance: docs/LESSON05_FRONTIERS_ACCEPTANCE.md; final public checks are recorded there after deployment.
 
 ## Split/Merge follow-up (20261025c)
 

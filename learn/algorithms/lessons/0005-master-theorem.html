@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>第 5 课：递归树由根决定，还是由叶子决定？</title><meta name="description" content="先逐层比较三棵递归树，再理解 Master Theorem 的三种情形、必要条件与边界。"><link rel="stylesheet" href="../assets/course.css?v=20261027a"><link rel="stylesheet" href="../assets/short-lesson.css?v=20261027a"><script defer src="../assets/quiz.js?v=20261027a"></script><script defer src="../assets/level-work.js?v=20261027a"></script><script defer src="../assets/reflection.js?v=20261027a"></script><script defer src="../assets/compiler-lab.js?v=20261027a"></script><!-- course-data:start -->
+<script type="application/json" data-course-manifest>{"schemaVersion":1,"release":"20261027a","planning":{"topicCount":24,"route":"reference/course-route.html"},"lessons":[{"id":"lesson-0001","topicId":"binary-search-invariant","path":"lessons/0001-binary-search-loop-invariant.html","title":"二分搜索：为什么这半边可以丢？","published":true},{"id":"lesson-0002","topicId":"quadratic-tight-bound","path":"lessons/0002-asymptotic-analysis.html","title":"数清工作量，再写 Θ(n²)","published":true},{"id":"lesson-0003","topicId":"geometric-sum","path":"lessons/0003-doubling-work-sum.html","title":"两层循环，为什么只有 Θ(n)？","published":true},{"id":"lesson-0004","topicId":"merge-sort-recursion-tree","path":"lessons/0004-merge-sort-recursion-tree.html","title":"Merge Sort：递归树怎样算出总工作量？","published":true},{"id":"lesson-0005","topicId":"master-theorem","path":"lessons/0005-master-theorem.html","title":"递归树为什么有时由根决定，有时由叶子决定？","published":true}]}</script>
+<!-- course-data:end -->
+</head>
+<body><nav class="course-nav" aria-label="课程导航"><a href="../index.html">← 算法学习主页</a><span class="crumb">第 5 课 · Master Theorem</span></nav><main>
+<header class="hero"><p class="eyebrow">COMP3711H Prep · Lesson 05</p><h1>递归树的工作，<br>集中在根还是叶子？</h1><p class="lede">同样每次分成两半，只改变每个节点自身的工作，总时间就可能完全不同。先算三串数，再给规律起名字。</p><div class="meta"><span>主线 20–25 分钟</span><span>严格推导与编码可展开</span><span>一个目标 · 判断工作分布</span></div></header>
+<section class="win" data-learning-outcome><strong>今天的成果：</strong>从每层实际工作判断总和由哪里主导，并在使用 Master Theorem 前检查它是否适用。不是记住“有递归就是 n log n”。</section>
+<section><h2>先确认三本账没有混在一起</h2><p>第四课 n=8：深度 1 的一个节点自身 merge 写几次？深度 1 整层呢？整树所有 merge 呢？先口头回答，并解释为什么节点不能再包含子调用费用。</p><details><summary>先想，再核对 4 / 8 / 24</summary><p>单节点 4、整层 2×4=8、整树 8+8+8=24。若仍混淆，先回到<a href="0004-merge-sort-recursion-tree.html">第四课的 Split/Merge 图</a>补看一轮，再回来。这里没有解锁条件，也没有自动判断你已掌握。</p></details></section>
+<section><p class="eyebrow">01 · 先固定一个工作模型</p><h2>两个子问题，外加本节点的工作</h2><p>设输入规模 n=2ᵏ，每次产生两个规模 n/2 的子问题。规模 1 时做 1 单位工作。写成 <code>T(n)=2T(n/2)+n，T(1)=1</code>：前半是两个子调用的总时间；最后的 n 只算当前节点自己的工作。</p><p>例如合并两个有序序列需要线性工作。这和第四课的写入计数不同：本课把<strong>每个叶子的常数工作也明确计为 1</strong>。n=8 的前三层为 8、8、8，最后八个叶子再贡献 8，总数 32；不是第四课只数 merge 得到的 24。</p><div class="exercise" data-activity="prediction" data-quiz><p><strong>深度 2 的每个节点规模 2，这一层合计多少？</strong></p><button type="button" data-answer="incorrect" data-message="2 只是一节点自身工作。这层有 4 个节点，要乘 4；不能漏掉子问题数。" aria-pressed="false">合计 2 单位</button><button type="button" data-answer="correct" data-message="对：4 个节点，每个做 2，共 8。节点工作与整层工作是两本账。" aria-pressed="false">合计 8 单位</button><p class="feedback" data-feedback-output aria-live="polite"></p></div></section>
+<section><p class="eyebrow">02 · 每次只改自身工作</p><h2>n、n²、1：三棵树会怎样？</h2><p>两子问题与边界不变，分别令自身工作 f(m)=m、m²、1。注意 m 是<strong>当前节点</strong>的规模，不能在所有节点都收费 n。先手写 n=8 的各层数，再用图核对。</p><div class="exercise" data-activity="exploration" data-level-work><div class="tree-controls" role="group" aria-label="选择自身工作"><button type="button" data-level-power="1" aria-pressed="true">f(m)=m</button><button type="button" data-level-power="2" aria-pressed="false">f(m)=m²</button><button type="button" data-level-power="0" aria-pressed="false">f(m)=1</button></div><div role="group" aria-label="输入规模"><button type="button" data-level-size="8" aria-pressed="true">n=8</button><button type="button" data-level-size="16" aria-pressed="false">n=16</button><button type="button" data-level-size="1" aria-pressed="false">n=1</button></div><ol data-level-rows aria-label="各层工作量"></ol><button type="button" data-level-next>展开下一层</button><button type="button" data-level-reset>重新开始</button><p data-level-status role="status"></p><noscript><p>n=8，三种层工作分别为：8,8,8,8；64,32,16,8；1,2,4,8。下面还有完整推导。</p></noscript></div>
+<table><thead><tr><th scope="col">自身工作</th><th scope="col">n=8 各层（含叶子）</th><th scope="col">总和</th></tr></thead><tbody><tr><td>m</td><td>8+8+8+8</td><td>32</td></tr><tr><td>m²</td><td>64+32+16+8</td><td>120</td></tr><tr><td>1</td><td>1+2+4+8</td><td>15</td></tr></tbody></table><p>这里按深度记账，不表示程序按层同时执行。观察：第一串各层一样；第二串向下减半，根附近集中；第三串向下翻倍，叶子附近集中。</p></section>
+<section><p class="eyebrow">03 · 用上下界把观察变成结论</p><h2>别只看最大一层，也别漏掉叶子</h2><p>深度 d 有 2ᵈ 个规模 n/2ᵈ 的节点。深度 0,…,k−1 是内部层，深度 k 是叶子，k=log₂n。</p><ol><li><strong>等量：</strong>每个内部层为 2ᵈ(n/2ᵈ)=n；叶子合计 n。因此 T(n)=n(k+1)=Θ(n log n)，n≥2。</li><li><strong>上层集中：</strong>内部层为 2ᵈ(n/2ᵈ)²=n²/2ᵈ；叶子合计 n。总和 n²(1+½+⋯+1/2ᵏ)=2n²−n。于是 n²≤T(n)&lt;2n²，T=Θ(n²)。根这一层已给下界。</li><li><strong>下层集中：</strong>内部层为 2ᵈ；叶子也是 2ᵏ=n。T(n)=1+2+⋯+n=2n−1；n≤T(n)&lt;2n，因此 T=Θ(n)。叶子这一层给下界。</li></ol><p>这三条是对所有 2 的幂的精确模型推导；n=1 均为 1。第三课的几何求和在这里又出现了。</p><details><summary>严格推广：怎样从三例得到 Master Theorem？</summary><p>先限定 n=bᵏ，固定整数 b≥2、a≥1，T(1)=Θ(1)，自身工作 f(n)≥0。深度 d 有 aᵈ 个规模 n/bᵈ 的节点。叶子成本为 Θ(aᵏ)=Θ(nᵖ)，其中 p=log_b a。</p><div class="formula">T(n)=Θ(nᵖ)+∑（d=0,…,k−1）aᵈ f(n/bᵈ)</div><p><strong>情形 1：</strong>若 f(n)=O(nᵖ⁻ᵋ)，固定 ε&gt;0，单层至多 Cnᵖ⁻ᵋbᵈᵋ。几何和为 O(nᵖ)，叶子给 Ω(nᵖ)，所以 Θ(nᵖ)。</p><p><strong>情形 2：</strong>若 f(n)=Θ(nᵖ)，每个内部层都是 Θ(nᵖ)，固定常数不随层改变，k 层合计 Θ(nᵖlog n)。叶子不改增长阶。</p><p><strong>情形 3：</strong>若 f(n)=Ω(nᵖ⁺ᵋ)，且 a f(n/b)≤c f(n)，固定 0&lt;c&lt;1，对充分大 n 成立，那么第 d 层至多 cᵈ f(n)，求和 O(f(n))。根给 Ω(f(n))；叶子和落在固定规模门槛以下的节点共 O(nᵖ)，也被 f(n) 覆盖。故 Θ(f(n))。两项条件都要检查。</p><p>这就是本课使用的<strong>经典三情形版本</strong>。单位代价模型下讨论非负工作；一般实数 b、非幂整数规模及取整需要所用版本相应的定义和正则假设。本课不把幂上的证明自动推广为任意取整递推式。</p></details></section>
+<section><h2>现在才把规律压缩成定理</h2><p>对上面明确的 <code>T(n)=aT(n/b)+f(n)</code> 模型，先算叶子尺度 nᵖ，再比较 f(n)：</p><table><thead><tr><th scope="col">检查</th><th scope="col">结论</th></tr></thead><tbody><tr><td>f(n)=O(nᵖ⁻ᵋ)，某固定 ε&gt;0</td><td>Θ(nᵖ)：下层主导</td></tr><tr><td>f(n)=Θ(nᵖ)</td><td>Θ(nᵖlog n)：各层相近</td></tr><tr><td>f(n)=Ω(nᵖ⁺ᵋ)，且 a f(n/b)≤c f(n)，c&lt;1</td><td>Θ(f(n))：上层主导</td></tr></tbody></table><p>回看三例：a=b=2，所以 p=1。f(n)=1 符合情形 1，ε=1；f(n)=n 符合情形 2；f(n)=n² 符合情形 3，ε=1 且 2f(n/2)=f(n)/2，可取 c=½。</p><p><strong>“略大于”不够：</strong>n log n 比 n 大，但它没有多项式级差距 nᵋ。<code>2T(n/2)+n log₂n</code> 不能套本表的情形 3。按层算为 n(k−d)，和为 n·k(k+1)/2，再加 n 个叶子，得到 Θ(n log²n)。扩展版定理可以处理，但要说明使用哪个版本。</p><p><code>T(n)=T(n−1)+n</code> 更不能直接套：规模是减 1，而非除以固定 b&gt;1。回到第四课的不均衡树求和即可。Master Theorem 是有范围的工具，不是所有递推的通用按钮。</p></section>
+<section data-activity="transfer"><h2>独立迁移：四个半规模子问题</h2><p>设 n=2ᵏ、T(1)=1，<code>T(n)=4T(n/2)+n</code>。不先套公式，写出深度 d 的节点数、单节点工作、整层工作、叶子贡献；给上下界，再检查定理。先算 n=8，看看能否独立完成。</p><div class="independent-work" data-reflection data-exercise-id="l5-four-children"><label for="l5-answer">写下推导、上下界及定理条件；也可说明卡住的一步。</label><textarea id="l5-answer" rows="6"></textarea><button type="button" data-copy-response>复制回答给教师</button><p data-reflection-status class="editor-note" role="status">不自动保存、发送或做字符串批改；需要反馈请自行复制给教师。</p><details><summary>提示</summary><p>节点数是 4ᵈ，不是 2ᵈ；叶子数量也不再是 n。先算 4ᵈ×(n/2ᵈ)。</p></details></div><details><summary>独立写完再核对</summary><p>整层为 n2ᵈ，d=0,…,k−1；叶子为 4ᵏ=n²。T(n)=n(2ᵏ−1)+n²=2n²−n；n=8 为 120。由 n²≤T&lt;2n² 得 Θ(n²)。定理中 a=4、b=2、p=2，f(n)=n=O(n²⁻¹)，情形 1，ε=1。只得 O(n²) 还不够，要说明叶子给匹配下界。</p></details></section>
+<details><summary>可选编码 · 按递归结构数工作，别只计算闭式</summary><p>选择 C++ 或 Python。两个子调用都处理 n/2；在 TODO 处补上自身的 nᵖᵒʷᵉʳ 单位工作。仅接受正的 2 的幂，超出此模型的 n 会明确拒绝。测试检查含叶子的总工作。这里是计数器，不真的执行那么多次工作；计数器自身运行时间不等于被建模算法的时间。</p>
+<div class="code-lab" data-compiler-lab data-programs-source="../assets/master-programs.json?v=20261027a"><div class="language-switch" role="group" aria-label="选择编程语言"><button type="button" data-lab-language="cpp" aria-pressed="true">C++</button><button type="button" data-lab-language="python" aria-pressed="false">Python</button></div><p class="editor-note">切换/重填会覆盖内容，请先复制。OneCompiler 提供编辑与运行；代码载入确认不是测试通过。</p><div class="external-editor is-loading"><iframe data-lab-frame title="C++ 在线代码编辑器" src="https://onecompiler.com/embed/cpp?listenToEvents=true&amp;codeChangeEvent=true&amp;hideLanguageSelection=true&amp;fontSize=16" loading="lazy" allow="clipboard-write" referrerpolicy="strict-origin-when-cross-origin"></iframe></div><p data-lab-status class="editor-note" role="status">等待编辑器响应；完整代码可在下方复制。</p><div class="compiler-controls"><button type="button" data-lab-run disabled>运行当前编辑区代码</button><button type="button" data-lab-starter>重新填入起始代码（覆盖编辑区）</button><button type="button" data-lab-reload>重新加载编辑器（覆盖编辑区）</button><button type="button" data-copy-starter>复制当前语言起始代码</button><a data-lab-open href="https://onecompiler.com/cpp" target="_blank" rel="noopener">独立页面编辑（先复制代码）</a></div><p data-copy-status class="editor-note" role="status"></p>
+<!-- compiler-fallback:start -->
+<details data-lab-fallback-panel class="compiler-fallback"><summary>编辑器不可用？复制完整起始代码（含全部测试）</summary>
+<h3>C++</h3><pre tabindex="0" data-program-code="cpp">#include &lt;iostream&gt;
+#include &lt;stdexcept&gt;
+using namespace std;
+long long countWork(int n, int power) {
+    if (n &lt; 1 || n &gt; 65536 || (n &amp; (n-1)) || power &lt; 0 || power &gt; 2)
+        throw invalid_argument("Use power-of-two n in [1,65536], power in [0,2]");
+    if (n == 1) return 1; // one unit per leaf
+    long long total = countWork(n/2,power) + countWork(n/2,power);
+    long long own = power == 0 ? 1 : power == 1 ? n : 1LL*n*n;
+    return total; // TODO: 加上自身工作 own
+}
+int main() {
+    int ns[] = {1,2,8,8,8,16,16,1};
+    int powers[] = {0,0,0,1,2,1,2,2};
+    long long expected[] = {1,3,15,32,120,80,496,1};
+    int passed=0;
+    for(int k=0;k&lt;8;++k) {
+        auto actual=countWork(ns[k],powers[k]);
+        bool ok=actual==expected[k];passed+=ok;
+        cout&lt;&lt;(ok?"PASS":"FAIL")&lt;&lt;" n="&lt;&lt;ns[k]&lt;&lt;" power="&lt;&lt;powers[k]
+            &lt;&lt;" expected="&lt;&lt;expected[k]&lt;&lt;" got="&lt;&lt;actual&lt;&lt;endl;
+    }
+    cout&lt;&lt;passed&lt;&lt;"/8 passed"&lt;&lt;endl;
+}
+</pre>
+<h3>Python</h3><pre tabindex="0" data-program-code="python">def count_work(n, power):
+    if not (1 &lt;= n &lt;= 65536) or n &amp; (n-1) or power not in (0,1,2):
+        raise ValueError("Use power-of-two n in [1,65536], power in [0,2]")
+    if n == 1:
+        return 1  # one unit per leaf
+    total = count_work(n//2,power) + count_work(n//2,power)
+    own = n**power
+    return total  # TODO: 加上自身工作 own
+
+
+tests = [(1,0,1), (2,0,3), (8,0,15), (8,1,32),
+         (8,2,120), (16,1,80), (16,2,496), (1,2,1)]
+passed = 0
+for n,power,expected in tests:
+    actual = count_work(n,power)
+    ok = actual == expected
+    passed += ok
+    print("PASS" if ok else "FAIL", f"n={n} power={power} expected={expected} got={actual}")
+print(f"{passed}/8 passed")
+</pre>
+</details>
+<!-- compiler-fallback:end -->
+</div></details>
+<section class="self-check" aria-label="本课学习成果自检"><h2>不看答案，我能解释吗？</h2><label><input type="checkbox"> 我能从节点数与规模推出每层工作，解释根、叶子或各层谁主导。</label><label><input type="checkbox"> 我能检查多项式级差距与正则条件，识别本课版本不能直接套的递推。</label><p class="editor-note">自检不是解锁条件，完成标记不代表教师已判定掌握。</p></section><section class="complete-row"><button type="button" data-complete-lesson="lesson-0005" aria-pressed="false">标记本课已完成</button><p data-completion-status aria-live="polite">自愿记录本设备进度。</p></section>
+<section class="sources"><h2>参考与下一步</h2><p><a href="../reference/master-theorem.html">一页复习卡</a>；主参考：<a href="https://www.cs.ucdavis.edu/~bai/ECS122A/Notes/mastertheorem.pdf">UC Davis · Divide-and-Conquer Recurrences</a>，对照一般逐层展开与经典三情形。本文的工作模型与诊断为自编。把迁移推导发给教师，我们再决定补练适用边界，还是进入逆序对的分治。</p></section><nav class="lesson-nav" aria-label="课程切换"><a href="0004-merge-sort-recursion-tree.html">← 第四课：Merge Sort</a><a class="lesson-nav-next" href="../reference/course-route.html">下一主题与课程路线 →</a><a href="../index.html">课程目录</a></nav>
+</main></body></html>

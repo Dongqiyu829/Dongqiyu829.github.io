@@ -4,15 +4,15 @@
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="从一个数组理解递归调用与 merge，再按递归树逐层求和，严谨证明 Merge Sort 的 Θ(n log n)。">
   <title>第 4 课：Merge Sort，递归树怎样算出总工作量？</title>
-  <link rel="stylesheet" href="../assets/course.css?v=20261025c">
-  <link rel="stylesheet" href="../assets/short-lesson.css?v=20261025c">
-  <link rel="stylesheet" href="../assets/recursion-tree.css?v=20261025c">
-  <script defer src="../assets/quiz.js?v=20261025c"></script>
-  <script defer src="../assets/recursion-tree.js?v=20261025c"></script>
-  <script defer src="../assets/compiler-lab.js?v=20261025c"></script>
-  <script defer src="../assets/reflection.js?v=20261025c"></script>
+  <link rel="stylesheet" href="../assets/course.css?v=20261027a">
+  <link rel="stylesheet" href="../assets/short-lesson.css?v=20261027a">
+  <link rel="stylesheet" href="../assets/recursion-tree.css?v=20261027a">
+  <script defer src="../assets/quiz.js?v=20261027a"></script>
+  <script defer src="../assets/recursion-tree.js?v=20261027a"></script>
+  <script defer src="../assets/compiler-lab.js?v=20261027a"></script>
+  <script defer src="../assets/reflection.js?v=20261027a"></script>
 <!-- course-data:start -->
-<script type="application/json" data-course-manifest>{"schemaVersion":1,"release":"20261025c","planning":{"topicCount":24,"route":"reference/course-route.html"},"lessons":[{"id":"lesson-0001","topicId":"binary-search-invariant","path":"lessons/0001-binary-search-loop-invariant.html","title":"二分搜索：为什么这半边可以丢？","published":true},{"id":"lesson-0002","topicId":"quadratic-tight-bound","path":"lessons/0002-asymptotic-analysis.html","title":"数清工作量，再写 Θ(n²)","published":true},{"id":"lesson-0003","topicId":"geometric-sum","path":"lessons/0003-doubling-work-sum.html","title":"两层循环，为什么只有 Θ(n)？","published":true},{"id":"lesson-0004","topicId":"merge-sort-recursion-tree","path":"lessons/0004-merge-sort-recursion-tree.html","title":"Merge Sort：递归树怎样算出总工作量？","published":true}]}</script>
+<script type="application/json" data-course-manifest>{"schemaVersion":1,"release":"20261027a","planning":{"topicCount":24,"route":"reference/course-route.html"},"lessons":[{"id":"lesson-0001","topicId":"binary-search-invariant","path":"lessons/0001-binary-search-loop-invariant.html","title":"二分搜索：为什么这半边可以丢？","published":true},{"id":"lesson-0002","topicId":"quadratic-tight-bound","path":"lessons/0002-asymptotic-analysis.html","title":"数清工作量，再写 Θ(n²)","published":true},{"id":"lesson-0003","topicId":"geometric-sum","path":"lessons/0003-doubling-work-sum.html","title":"两层循环，为什么只有 Θ(n)？","published":true},{"id":"lesson-0004","topicId":"merge-sort-recursion-tree","path":"lessons/0004-merge-sort-recursion-tree.html","title":"Merge Sort：递归树怎样算出总工作量？","published":true},{"id":"lesson-0005","topicId":"master-theorem","path":"lessons/0005-master-theorem.html","title":"递归树为什么有时由根决定，有时由叶子决定？","published":true}]}</script>
 <!-- course-data:end -->
 </head>
 <body>
@@ -97,7 +97,7 @@
 
   <details><summary>可选实践 · 在 C++ / Python 中补完 merge 并核对计数</summary>
     <p>递归和测试已给出。只补 TODO：两侧都有剩余元素时，选择较小的队首写入 out，并把相应下标加 1。下面那条 writes 计数不需要改；剩余元素复制也已经提供。输入数组不被修改。</p>
-    <div class="code-lab" data-compiler-lab data-programs-source="../assets/merge-programs.json?v=20261025c"><div class="language-switch" role="group" aria-label="选择编程语言"><button type="button" data-lab-language="cpp" aria-pressed="true">C++</button><button type="button" data-lab-language="python" aria-pressed="false">Python</button></div><p class="editor-note">切换语言或重填会覆盖内容，请先复制保存。编辑和运行由 OneCompiler 提供；载入确认不代表测试通过。手机可用下方运行按钮，也可复制到独立页面。</p><div class="external-editor is-loading"><iframe data-lab-frame title="C++ 在线代码编辑器" src="https://onecompiler.com/embed/cpp?listenToEvents=true&amp;codeChangeEvent=true&amp;hideLanguageSelection=true&amp;fontSize=16" loading="lazy" allow="clipboard-write" referrerpolicy="strict-origin-when-cross-origin"></iframe></div><p data-lab-status class="editor-note" role="status">等待编辑器响应；完整代码在下方可复制。</p><div class="compiler-controls"><button type="button" data-lab-run disabled>运行当前编辑区代码</button><button type="button" data-lab-starter>重新填入起始代码（覆盖编辑区）</button><button type="button" data-lab-reload>重新加载编辑器（覆盖编辑区）</button><button type="button" data-copy-starter>复制当前语言起始代码</button><a data-lab-open href="https://onecompiler.com/cpp" target="_blank" rel="noopener">独立页面编辑（先复制代码）</a></div><p data-copy-status class="editor-note" role="status"></p>
+    <div class="code-lab" data-compiler-lab data-programs-source="../assets/merge-programs.json?v=20261027a"><div class="language-switch" role="group" aria-label="选择编程语言"><button type="button" data-lab-language="cpp" aria-pressed="true">C++</button><button type="button" data-lab-language="python" aria-pressed="false">Python</button></div><p class="editor-note">切换语言或重填会覆盖内容，请先复制保存。编辑和运行由 OneCompiler 提供；载入确认不代表测试通过。手机可用下方运行按钮，也可复制到独立页面。</p><div class="external-editor is-loading"><iframe data-lab-frame title="C++ 在线代码编辑器" src="https://onecompiler.com/embed/cpp?listenToEvents=true&amp;codeChangeEvent=true&amp;hideLanguageSelection=true&amp;fontSize=16" loading="lazy" allow="clipboard-write" referrerpolicy="strict-origin-when-cross-origin"></iframe></div><p data-lab-status class="editor-note" role="status">等待编辑器响应；完整代码在下方可复制。</p><div class="compiler-controls"><button type="button" data-lab-run disabled>运行当前编辑区代码</button><button type="button" data-lab-starter>重新填入起始代码（覆盖编辑区）</button><button type="button" data-lab-reload>重新加载编辑器（覆盖编辑区）</button><button type="button" data-copy-starter>复制当前语言起始代码</button><a data-lab-open href="https://onecompiler.com/cpp" target="_blank" rel="noopener">独立页面编辑（先复制代码）</a></div><p data-copy-status class="editor-note" role="status"></p>
 <!-- compiler-fallback:start -->
 <details data-lab-fallback-panel class="compiler-fallback"><summary>编辑器不可用？复制完整起始代码（含全部测试）</summary>
 <h3>C++</h3><pre tabindex="0" data-program-code="cpp">#include &lt;algorithm&gt;
@@ -219,7 +219,7 @@ print(f"{passed}/8 passed")
   <details><summary>准备下一课前 · 用三句话区分三种工作量</summary><p>不看图，n=8 时回答：深度 1 的一个节点自身写入几次？该层所有节点合计几次？整棵树的所有 merge 合计几次？再解释为何不能在每个节点都加上子递归总时间。请把理由和迁移题回答一起复制给教师；这不是解锁题。</p><details><summary>自行尝试后核对</summary><p>分别为 4、8、24 次。节点只计自己的 merge；否则子调用会被重复计费。教师需要看到你的解释，而不是完成标记，才决定下一课是否直接比较递归树的三种工作分布。</p></details></details>
   <section class="complete-row"><button type="button" data-complete-lesson="lesson-0004" aria-pressed="false">标记本课已完成</button><p data-completion-status aria-live="polite">自愿记录本设备进度。</p></section>
   <section class="sources"><h2>复习与参考</h2><p><a href="../reference/merge-sort-tree.html">一页参考卡：递归树、merge 与双侧界</a>。主参考：<a href="https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2011/90a37c49b07b105ea7a027abc67eddc6_MIT6_006F11_lec03.pdf#page=18">MIT 6.006 Lecture 03，幻灯片 18 起的 Merge Sort 与 merging</a>；本课数组、图示、写入计数与迁移练习为自编。通用递推定理留到后续短课。</p><p>把迁移推导或卡住的那一步复制给我，我们可以先补清楚，再继续。无需先完成所有可选内容。</p></section>
-  <nav class="lesson-nav" aria-label="课程切换"><a href="0003-doubling-work-sum.html">← 第三课：倍增循环与求和</a><a class="lesson-nav-next" href="../reference/course-route.html">下一主题与课程路线 →</a><a href="../index.html">返回课程目录</a></nav>
+  <nav class="lesson-nav" aria-label="课程切换"><a href="0003-doubling-work-sum.html">← 第三课：倍增循环与求和</a><a class="lesson-nav-next" href="0005-master-theorem.html">第五课：根还是叶子决定工作？ →</a><a href="../index.html">返回课程目录</a></nav>
 </main>
 </body>
 </html>

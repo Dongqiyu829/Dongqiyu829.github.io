@@ -8,7 +8,7 @@ const result={passed:[],failed:[],consoleErrors:[],pageErrors:[],viewports:[1280
 async function test(name,fn){if(process.env.COURSE_TEST_FILTER&&!name.includes(process.env.COURSE_TEST_FILTER))return;try{await fn();result.passed.push(name);console.log('PASS '+name);}catch(error){result.failed.push({name,error:error.stack});console.error('FAIL '+name+': '+error.message);}}
 const key='comp3711h-learning-progress-v1';
 const publishedCount=manifest.lessons.filter(l=>l.published).length;
-const l1='/lessons/0001-binary-search-loop-invariant.html',l2='/lessons/0002-asymptotic-analysis.html',l3='/lessons/0003-doubling-work-sum.html',l4='/lessons/0004-merge-sort-recursion-tree.html';
+const l1='/lessons/0001-binary-search-loop-invariant.html',l2='/lessons/0002-asymptotic-analysis.html',l3='/lessons/0003-doubling-work-sum.html',l4='/lessons/0004-merge-sort-recursion-tree.html',l5='/lessons/0005-master-theorem.html';
 function mockHTML(echo=true){return '<pre id="code"></pre><script>window.messages=0;window.addEventListener("message",e=>{if(e.data.eventType!=="populateCode")return;window.messages++;document.querySelector("pre").textContent=e.data.files[0].content;document.body.dataset.language=e.data.language;'+(echo?'parent.postMessage(e.data,"*");':'')+'});</script>';}
 (async()=>{
   const local=await startServer();server=local.server;const origin=local.origin;
@@ -81,7 +81,7 @@ function mockHTML(echo=true){return '<pre id="code"></pre><script>window.message
   });
   await test('all predictions, explorations and independent responses do not auto-complete',async()=>{
     const {context,page}=await open({context:{viewport:{width:390,height:844}}});
-    for(const lesson of [l1,l2,l3,l4]){
+    for(const lesson of [l1,l2,l3,l4,l5]){
       await page.goto(origin+lesson);
       for(const quiz of await page.locator('[data-quiz]').all()){
         await quiz.locator('[data-answer="incorrect"]').first().click();assert.match(await quiz.locator('[data-feedback-output]').getAttribute('class'),/incorrect/);
@@ -139,10 +139,10 @@ function mockHTML(echo=true){return '<pre id="code"></pre><script>window.message
   });
   await test('blocked third-party editor and JSON requests: complete C++/Python remain copyable',async()=>{
     const {context,page}=await open({mode:'blocked',expectedNetworkFailure:true});await page.route('**/*programs.json*',r=>r.abort());
-    for(const lesson of [l1,l3,l4]){
-      await page.goto(origin+lesson);if(lesson===l4)await page.locator('[data-compiler-lab]').evaluate(el=>el.parentElement.open=true);const lab=page.locator('[data-compiler-lab]');await lab.locator('iframe').scrollIntoViewIfNeeded();
+    for(const lesson of [l1,l3,l4,l5]){
+      await page.goto(origin+lesson);if(lesson===l4||lesson===l5)await page.locator('[data-compiler-lab]').evaluate(el=>el.parentElement.open=true);const lab=page.locator('[data-compiler-lab]');await lab.locator('iframe').scrollIntoViewIfNeeded();
       await page.waitForFunction(()=>['unconfirmed','unavailable'].includes(document.querySelector('[data-compiler-lab]').dataset.editorState),null,{timeout:20000});
-      const file=lesson===l1?'binary-programs.json':lesson===l3?'doubling-programs.json':'merge-programs.json';const programs=JSON.parse(fs.readFileSync(path.join(root,'assets',file),'utf8'));
+      const file=lesson===l1?'binary-programs.json':lesson===l3?'doubling-programs.json':lesson===l4?'merge-programs.json':'master-programs.json';const programs=JSON.parse(fs.readFileSync(path.join(root,'assets',file),'utf8'));
       for(const lang of ['cpp','python'])assert.equal(await lab.locator('[data-program-code="'+lang+'"]').textContent(),programs[lang]);
       await page.evaluate(()=>Object.defineProperty(navigator,'clipboard',{value:{writeText:async()=>{throw new Error('Denied');}},configurable:true}));
       await lab.locator('[data-copy-starter]').click();assert.match(await lab.locator('[data-copy-status]').innerText(),/手动复制/);
@@ -151,9 +151,9 @@ function mockHTML(echo=true){return '<pre id="code"></pre><script>window.message
   });
   await test('JavaScript disabled: lesson text, native disclosures and both complete code banks readable',async()=>{
     const {context,page}=await open({context:{javaScriptEnabled:false,viewport:{width:390,height:844}}});
-    for(const lesson of [l1,l2,l3,l4]){
+    for(const lesson of [l1,l2,l3,l4,l5]){
       await page.goto(origin+lesson);assert.equal(await page.locator('h1').count(),1);assert(await page.locator('main').innerText());
-      if(lesson!==l2){if(lesson===l4)await page.getByText('可选实践 · 在 C++ / Python 中补完 merge 并核对计数',{exact:true}).click();await page.locator('[data-lab-fallback-panel] summary').click();assert(await page.locator('[data-program-code="cpp"]').isVisible());assert(await page.locator('[data-program-code="python"]').isVisible());}
+      if(lesson!==l2){if(lesson===l4)await page.getByText('可选实践 · 在 C++ / Python 中补完 merge 并核对计数',{exact:true}).click();if(lesson===l5)await page.getByText('可选编码 · 按递归结构数工作，别只计算闭式',{exact:true}).click();await page.locator('[data-lab-fallback-panel] summary').click();assert(await page.locator('[data-program-code="cpp"]').isVisible());assert(await page.locator('[data-program-code="python"]').isVisible());}
       assert(await page.locator('a[href="../index.html"]').first().isVisible());
     }
     await context.close();
@@ -175,6 +175,30 @@ function mockHTML(echo=true){return '<pre id="code"></pre><script>window.message
     await page.waitForFunction(count=>document.querySelector('[data-course-progress]').textContent==='1 / '+count,publishedCount);
     await page.locator('[data-lesson-id="lesson-0004"] a').click();await page.locator('.lesson-nav a').first().click();assert(page.url().endsWith(l3));await page.locator('.lesson-nav-next').click();assert(page.url().endsWith(l4));
     await context.close();
+  });
+  await test('Lesson 05 level models at three widths; leaves, reset and active controls',async()=>{
+    const {context,page}=await open();
+    for(const width of [1280,390,320]){
+      await page.setViewportSize({width,height:844});await page.goto(origin+l5);const lab=page.locator('[data-level-work]');
+      for(const n of [1,8,16])for(const power of [0,1,2]){
+        await lab.locator('[data-level-size="'+n+'"]').click();await lab.locator('[data-level-power="'+power+'"]').click();
+        const k=Math.log2(n);let sum=0;
+        for(let d=0;d<=k;d++){if(d)await lab.locator('[data-level-next]').click();const work=d===k?n:2**d*(n/2**d)**power;sum+=work;assert.equal(Number(await lab.locator('[data-depth="'+d+'"]').getAttribute('data-work')),work);assert.equal(Number(await lab.getAttribute('data-total')),sum);assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));}
+        assert(await lab.locator('[data-level-next]').isDisabled());assert.equal(await lab.locator('[data-level-power="'+power+'"]').getAttribute('aria-pressed'),'true');await lab.locator('[data-level-reset]').click();assert.equal(await lab.locator('[data-depth]').count(),1);
+      }
+      await page.screenshot({path:path.join(root,'work/qa/lesson05-'+width+'.png')});
+    }
+    await context.close();
+  });
+  await test('Research dates and status readable, independent responses never alter course records',async()=>{
+    const {context,page}=await open({context:{viewport:{width:390,height:844}}});const before='["lesson-0001","future-id"]';
+    await page.goto(origin+'/research/index.html');await page.evaluate(({key,before})=>localStorage.setItem(key,before),{key,before});
+    for(const file of ['index.html','0001-eth-claim.html']){
+      await page.goto(origin+'/research/'+file);assert.equal(await page.locator('[data-research-status="independent-review"]').count(),1);assert.equal(await page.locator('[data-complete-lesson]').count(),0);assert.equal(await page.evaluate(k=>localStorage.getItem(k),key),before);
+    }
+    await page.locator('textarea').fill('N=n²，所以 2 的根号 N 次方等于 2ⁿ。');
+    await page.evaluate(()=>Object.defineProperty(navigator,'clipboard',{value:{writeText:async text=>{window.__researchCopy=text;}},configurable:true}));await page.locator('[data-copy-response]').click();assert.match(await page.locator('[data-reflection-status]').innerText(),/尚未发送/);assert.equal(await page.evaluate(k=>localStorage.getItem(k),key),before);
+    await page.goto(origin+'/index.html');assert.equal(await page.locator('[data-course-progress]').innerText(),'1 / '+publishedCount);await context.close();
   });
   await test('reference cards in print media remain readable without horizontal overflow',async()=>{
     const {context,page}=await open({context:{viewport:{width:800,height:1100}}});await page.emulateMedia({media:'print'});

@@ -1,0 +1,3 @@
+[data-research-id] { overflow-wrap: anywhere; }
+[data-research-id] table { width: 100%; table-layout: fixed; }
+[data-research-id] code { white-space: normal; overflow-wrap: anywhere; }

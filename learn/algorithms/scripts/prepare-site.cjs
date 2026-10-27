@@ -4,7 +4,7 @@ const path = require('path');
 const root = path.resolve(__dirname, '..');
 const manifest = JSON.parse(fs.readFileSync(path.join(root, 'assets/course-manifest.json'), 'utf8'));
 const check = process.argv.includes('--check');
-const pages = ['index.html', ...['lessons', 'reference'].flatMap(dir => fs.readdirSync(path.join(root, dir)).filter(name => name.endsWith('.html')).map(name => dir + '/' + name))];
+const pages = ['index.html', ...['lessons', 'reference', 'research'].filter(dir=>fs.existsSync(path.join(root,dir))).flatMap(dir => fs.readdirSync(path.join(root, dir)).filter(name => name.endsWith('.html')).map(name => dir + '/' + name))];
 const escaped = text => text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const metadata = '<!-- course-data:start -->\n<script type="application/json" data-course-manifest>' + JSON.stringify(manifest).replace(/</g, '\\u003c') + '</script>\n<!-- course-data:end -->';
 const published = manifest.lessons.filter(item => item.published).length;

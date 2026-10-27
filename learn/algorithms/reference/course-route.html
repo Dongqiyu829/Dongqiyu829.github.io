@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>COMP3711H 短课路线</title>
-  <link rel="stylesheet" href="../assets/course.css?v=20261025c">
+  <link rel="stylesheet" href="../assets/course.css?v=20261027a">
 <!-- course-data:start -->
-<script type="application/json" data-course-manifest>{"schemaVersion":1,"release":"20261025c","planning":{"topicCount":24,"route":"reference/course-route.html"},"lessons":[{"id":"lesson-0001","topicId":"binary-search-invariant","path":"lessons/0001-binary-search-loop-invariant.html","title":"二分搜索：为什么这半边可以丢？","published":true},{"id":"lesson-0002","topicId":"quadratic-tight-bound","path":"lessons/0002-asymptotic-analysis.html","title":"数清工作量，再写 Θ(n²)","published":true},{"id":"lesson-0003","topicId":"geometric-sum","path":"lessons/0003-doubling-work-sum.html","title":"两层循环，为什么只有 Θ(n)？","published":true},{"id":"lesson-0004","topicId":"merge-sort-recursion-tree","path":"lessons/0004-merge-sort-recursion-tree.html","title":"Merge Sort：递归树怎样算出总工作量？","published":true}]}</script>
+<script type="application/json" data-course-manifest>{"schemaVersion":1,"release":"20261027a","planning":{"topicCount":24,"route":"reference/course-route.html"},"lessons":[{"id":"lesson-0001","topicId":"binary-search-invariant","path":"lessons/0001-binary-search-loop-invariant.html","title":"二分搜索：为什么这半边可以丢？","published":true},{"id":"lesson-0002","topicId":"quadratic-tight-bound","path":"lessons/0002-asymptotic-analysis.html","title":"数清工作量，再写 Θ(n²)","published":true},{"id":"lesson-0003","topicId":"geometric-sum","path":"lessons/0003-doubling-work-sum.html","title":"两层循环，为什么只有 Θ(n)？","published":true},{"id":"lesson-0004","topicId":"merge-sort-recursion-tree","path":"lessons/0004-merge-sort-recursion-tree.html","title":"Merge Sort：递归树怎样算出总工作量？","published":true},{"id":"lesson-0005","topicId":"master-theorem","path":"lessons/0005-master-theorem.html","title":"递归树为什么有时由根决定，有时由叶子决定？","published":true}]}</script>
 <!-- course-data:end -->
 </head>
 <body>
@@ -33,7 +33,7 @@
       <li><a href="../lessons/0002-asymptotic-analysis.html"><strong>数清工作量，再写 Θ(n²)：一个例子讲透双侧界</strong></a>；倍增计数等技巧按需要另开短课。</li>
       <li><a href="../lessons/0003-doubling-work-sum.html"><strong>两层循环，为什么只有 Θ(n)？</strong></a>；单独练倍增计数与几何求和，再进入递归树。</li>
       <li><a href="../lessons/0004-merge-sort-recursion-tree.html"><strong>Merge Sort：递归树怎样算出总工作量？</strong></a>；先理解递归调用与合并，再逐层计数、证明双侧界；不使用 Master Theorem。</li>
-      <li>后续规划：Master Theorem——先区分节点、整层与整树，再比较等量、上层集中、下层集中的工作分布；根据实际回答决定深度，尚未发布。</li>
+      <li><a href="../lessons/0005-master-theorem.html"><strong>Master Theorem：根、叶子还是各层决定工作？</strong></a>；开头提供三本账诊断；先比较工作分布，再引入定理与边界。是否补练根据真实解释决定，不靠解锁。</li>
     </ol>
   </section>
 
@@ -79,6 +79,7 @@
       <li>Capstone：一题限时完成四件套并复盘</li>
     </ol>
   </section>
+  <section><h2>互补路线 · 算法前沿</h2><p>主线顺序保留：二分 → 复杂度 → 分治 → 贪心 → DP → 图 → 流 → NP 完全性与近似。专题另外开放，不占主课程课时编号与完成分母。</p><table><thead><tr><th scope="col">专题</th><th scope="col">关联主线与深入时机</th></tr></thead><tbody><tr><td><a href="../research/0001-eth-claim.html">ETH / SETH 研究主张</a></td><td>复杂度、归约、NP 完全性；现在可入门，深读建议 NP-completeness 后</td></tr><tr><td>Set Cover（候选）</td><td>贪心、近似、NP 完全性之后</td></tr><tr><td>Subset Sum / 精确指数（候选）</td><td>分治与 DP 后，再讨论参数与指数改进</td></tr><tr><td>流 / 匹配的现代突破（候选）</td><td>图、网络流与正确性证明之后</td></tr></tbody></table><p><a href="../research/index.html">进入 Research Frontiers</a>；先修建议不限制访问。</p></section>
 </main>
 </body>
 </html>

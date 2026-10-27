@@ -10,7 +10,7 @@ assert(Number.isInteger(catalog.planning.topicCount)&&catalog.planning.topicCoun
 assert(/^[A-Za-z0-9._-]+$/.test(catalog.release));
 for(const lesson of catalog.lessons){assert(typeof lesson.id==='string'&&lesson.id);assert(typeof lesson.topicId==='string'&&lesson.topicId);assert(typeof lesson.published==='boolean');assert(typeof lesson.path==='string'&&lesson.path.startsWith('lessons/'));}
 assert.equal(new Set(catalog.lessons.map(l=>l.path)).size,catalog.lessons.length,'Duplicate lesson path');
-const pages=['index.html',...['lessons','reference'].flatMap(dir=>fs.readdirSync(path.join(root,dir)).filter(n=>n.endsWith('.html')).map(n=>dir+'/'+n))];
+const pages=['index.html',...['lessons','reference','research'].filter(dir=>fs.existsSync(path.join(root,dir))).flatMap(dir=>fs.readdirSync(path.join(root,dir)).filter(n=>n.endsWith('.html')).map(n=>dir+'/'+n))];
 const validator=new HtmlValidate({extends:['html-validate:recommended']});
 const decode=s=>s.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&').replace(/&quot;/g,'"');
 const result={pages:pages.length,htmlErrors:[],links:0,assets:0,anchors:0,outsideCourse:[],jsonFiles:0,javascriptFiles:0};
@@ -56,6 +56,22 @@ const errors=[];
     }
   }
   const published=catalog.lessons.filter(l=>l.published);
+  const research=JSON.parse(fs.readFileSync(path.join(root,'assets/research-catalog.json'),'utf8'));
+  for(const entry of research.entries){
+    assert(!catalog.lessons.some(l=>l.id===entry.id||l.path===entry.path),'Research in completion metadata');
+    assert(/^\d{4}-\d{2}-\d{2}$/.test(entry.lastChecked)&&entry.firstPublicDate<=entry.lastChecked);
+    assert(entry.authors.length&&entry.sources.length>=3&&entry.history.length);
+    assert(entry.sources.some(s=>s.role==='paper'));
+    if(entry.sources.some(s=>s.role==='verification-config'))assert(entry.sources.some(s=>s.role==='lean-scope'));
+    const html=fs.readFileSync(path.join(root,entry.path),'utf8');
+    assert(html.includes('data-research-status="'+entry.status+'"')&&html.includes('data-last-checked="'+entry.lastChecked+'"'));
+    assert(html.includes(entry.statusLabel)&&html.includes(entry.firstPublicDate)&&html.includes('data-research-history'));
+    assert(!html.includes('data-complete-lesson'),'Research must not mark completion');
+    const researchIndex=fs.readFileSync(path.join(root,'research/index.html'),'utf8');
+    const card=researchIndex.match(new RegExp('<article[^>]*data-research-id="'+entry.id+'"[^>]*>[\\s\\S]*?</article>'))?.[0];
+    assert(card&&card.includes('data-research-status="'+entry.status+'"')&&card.includes('data-last-checked="'+entry.lastChecked+'"')&&card.includes(entry.statusLabel),'Stale research index card');
+    for(const source of entry.sources)assert(html.includes(source.url),'Unlinked evidence '+source.role);
+  }
   assert.equal(new Set(catalog.lessons.map(l=>l.id)).size,catalog.lessons.length,'Duplicate lesson metadata');
   for(const lesson of published)assert(pages.includes(lesson.path),'Published page missing: '+lesson.path);
   const prepare=spawnSync(process.execPath,[path.join(root,'scripts/prepare-site.cjs'),'--check'],{encoding:'utf8'});
