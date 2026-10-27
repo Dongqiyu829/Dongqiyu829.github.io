@@ -46,7 +46,12 @@ P/NP、ETH/SETH 的概念与 Set Cover 相关猜想分别参考原始讲义/论�
 
 ## 公开部署复核
 
-待本次代码部署后补记公开页面、资产发布号、新课逐层模型、研究状态/进度隔离、导航以及第五课 C++/Python 真实在线运行。
+代码提交：[7ef2f857](https://github.com/Dongqiyu829/Dongqiyu829.github.io/commit/7ef2f857736c28d67581a8dd8a74ceedab33d8bd)；[Pages 部署成功](https://github.com/Dongqiyu829/Dongqiyu829.github.io/actions/runs/40449423697)。[第五课](https://dongqiyu829.github.io/learn/algorithms/lessons/0005-master-theorem.html)、[算法前沿](https://dongqiyu829.github.io/learn/algorithms/research/index.html)。
+
+- 公开 15 页、13 个去重后的直接 CSS/JS 共享资源、站点根链接均 HTTP 200；全部页面内元数据/引用为 `20261027a`。另核对 course-manifest、research-catalog、master-programs 三个带版本参数 JSON 均 HTTP 200，研究状态对应。
+- 公开 1280/390/320px 无页面级横向溢出；页面 JavaScript 异常 0。第四课六输入/38 状态回归通过，第五课 n=8 的三种模型分别得到 15、32、120；第三→第四→第五→路线导航通过。
+- 旧重复/未知 ID 记录正确显示 1 / 5，新完成标记后为 2 / 5；研究访问不改原始 JSON、无完成按钮。测试使用隔离浏览器，不接触用户的实际进度。
+- **公开父页 + 真实 OneCompiler**：第五课 C++、Python 起始代码可见并有匹配回传，补 TODO 实际运行各 **8/8**；恢复代码、iframe 重载、刷新默认 C++ 通过。JavaScript 页面异常 0；公共控制台仍有站点根 favicon 404 的一条非阻塞网络错误，不宣称全零。
 
 ## 未执行与保留事项
 

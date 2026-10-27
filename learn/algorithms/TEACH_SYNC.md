@@ -91,7 +91,9 @@ Fifth-lesson design is preserved in [docs/LESSON05_PLAN.md](docs/LESSON05_PLAN.m
 - ETH/SETH, subexponential vs polynomial, and parameter growth in reductions are taught with small examples. Conditional Set Cover lower-bound implications are qualified; an invalidated hypothesis alone supplies no new Set Cover algorithm and does not erase unrelated NP/approximation hardness.
 - Status changes must append evidence, date, old/new wording and impact; retain immutable source/version links. Scheduled daily quiet evidence checks are configured for this chat: no routine unchanged notifications, act only on substantial confirmation/refutation/revision/withdrawal. This does not synchronize student answers or mastery.
 - Set Cover, Subset Sum, modern Flow/Matching and fine-grained reductions are research candidates only; no unverified paper summaries are presented as completed topics.
-- Current run acceptance: docs/LESSON05_FRONTIERS_ACCEPTANCE.md; final public checks are recorded there after deployment.
+- Current acceptance: [docs/LESSON05_FRONTIERS_ACCEPTANCE.md](docs/LESSON05_FRONTIERS_ACCEPTANCE.md). Code commit 7ef2f857736c28d67581a8dd8a74ceedab33d8bd; Pages run 40449423697 succeeded. Public 15 pages / 13 direct assets / 3 metadata-program JSONs returned HTTP 200 with release 20261027a. Public desktop/mobile-width layouts, Lesson 05 exact models, research status/progress isolation and navigation passed.
+- This run: static 15 pages / 124 internal references / 55 versioned references / 6 JSON / 9 production JS, no errors; 17 browser scenarios passed with local application console/page errors zero. Master count C++/Python each 51 exact models plus input rejection and 8/8 fixtures, JS 51 models, 11 transfer/gap models and SAT toy truth table verified; earlier algorithms re-executed successfully.
+- Lesson 05 real desktop and 390px touch-viewport C++/Python each ran 8/8 locally with real service; deployed public C++/Python also each ran 8/8 including reset/reload/default-C++ refresh. Public page exceptions zero; one known favicon 404 console network error. No physical phone or Lean proof rebuild is claimed.
 
 ## Split/Merge follow-up (20261025c)
 
