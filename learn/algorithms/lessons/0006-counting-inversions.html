@@ -1,0 +1,116 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>第 6 课：Counting Inversions，怎样跳过逐对枚举？</title><meta name="description" content="亲自设计逆序对分治算法：从三对逆序开始，解释右队首较小时为何一次计入全部左侧剩余元素。"><link rel="stylesheet" href="../assets/course.css?v=20261027b"><link rel="stylesheet" href="../assets/short-lesson.css?v=20261027b"><script defer src="../assets/quiz.js?v=20261027b"></script><script defer src="../assets/inversion-merge.js?v=20261027b"></script><script defer src="../assets/compiler-lab.js?v=20261027b"></script><script defer src="../assets/reflection.js?v=20261027b"></script><!-- course-data:start -->
+<script type="application/json" data-course-manifest>{"schemaVersion":1,"release":"20261027b","planning":{"topicCount":24,"route":"reference/course-route.html"},"lessons":[{"id":"lesson-0001","topicId":"binary-search-invariant","path":"lessons/0001-binary-search-loop-invariant.html","title":"二分搜索：为什么这半边可以丢？","published":true},{"id":"lesson-0002","topicId":"quadratic-tight-bound","path":"lessons/0002-asymptotic-analysis.html","title":"数清工作量，再写 Θ(n²)","published":true},{"id":"lesson-0003","topicId":"geometric-sum","path":"lessons/0003-doubling-work-sum.html","title":"两层循环，为什么只有 Θ(n)？","published":true},{"id":"lesson-0004","topicId":"merge-sort-recursion-tree","path":"lessons/0004-merge-sort-recursion-tree.html","title":"Merge Sort：递归树怎样算出总工作量？","published":true},{"id":"lesson-0005","topicId":"master-theorem","path":"lessons/0005-master-theorem.html","title":"递归树为什么有时由根决定，有时由叶子决定？","published":true},{"id":"lesson-0006","topicId":"counting-inversions","path":"lessons/0006-counting-inversions.html","title":"Counting Inversions：怎样跳过逐对枚举？","published":true}]}</script>
+<!-- course-data:end -->
+</head><body><nav class="course-nav" aria-label="课程导航"><a href="../index.html">← 算法学习主页</a><span class="crumb">第 6 课 · 设计分治算法</span></nav><main>
+<header class="hero"><p class="eyebrow">COMP3711H Prep · Lesson 06</p><h1>Counting Inversions：<br>怎样跳过逐对枚举？</h1><p class="lede">这次不只分析已有算法。我们给 Merge Sort 加一件事：看见一个小数时，一次数出一整段逆序对。</p><div class="meta"><span>主线 20–25 分钟</span><span>证明与代码可展开</span><span>只攻克一次批量计数的理由</span></div></header>
+<section class="win" data-learning-outcome><strong>今天能做什么：</strong>解释并运用“右队首较小时，一次加上左侧剩余长度”，把二次枚举改成 Θ(n log n) 的逆序计数。</section>
+<section data-recall><h2>先回忆 1–3 分钟：为什么一层是线性的？</h2><p>n=8 的 Merge Sort 完整合并层中，节点数翻倍、每个规模减半，为什么整层合并仍只写 8 个元素？如果每次合并顺便多做常数次算术，会改变整棵树的增长阶吗？先口头解释，不用返回旧课。</p><details><summary>想过后核对</summary><p>同层子数组互不重叠，规模总和为 n；2ᵈ×(n/2ᵈ)=n。如果每步合并只多做常数工作，局部仍是 Θ(m)，完整树仍是 Θ(n log n)。任意 n 最后层可能不满，第四课用完整层下界和每层上界处理。今天正要复用这套论证。</p></details></section>
+<section><p class="eyebrow">01 · 先设计一个保证不漏的算法</p><h2>[2,4,1,3,5] 乱了多少对位置？</h2><p><strong>逆序对</strong>是下标对 (i,j)，满足 <code>i&lt;j</code> 且 <code>a[i]&gt;a[j]</code>。下标从 0 开始；相等不算。请先手写所有符合条件的位置对，不只是数值对。</p><details><summary>写完核对三对</summary><p>(0,2)：2&gt;1；(1,2)：4&gt;1；(1,3)：4&gt;3，共 3 对。这里重复值也按不同位置区分，而严格大于才计数。</p></details><p><strong>你来设计：</strong>怎样枚举每一对位置而不重复？先用两句话说，再看基线：</p><pre><code>count = 0
+for i = 0, …, n−1:
+    for j = i+1, …, n−1:
+        if a[i] &gt; a[j]: count += 1</code></pre><p>它检查 n(n−1)/2 对位置，时间 Θ(n²)，额外计数空间常数。第二课分析过同一串求和；现在我们要设计更快的方法，而不是只给基线起复杂度名字。</p></section>
+<section><p class="eyebrow">02 · 拆开的不是数值大小，而是原位置</p><h2>每一对都属于三类之一</h2><p>按原位置切成 <code>[2,4] | [1,3,5]</code>。任意 i&lt;j 恰好属于：都在左半、都在右半、左侧一个且右侧一个。三类互不重叠且覆盖全部位置对。</p><p>递归分别解决左右两类，并让子调用同时返回<strong>计数与排好序的数组</strong>。剩下只数跨区间对。排序没有改变元素来自哪一半：左半每个元素在原数组的位置都早于右半每个元素，所以跨区间 i&lt;j 已经成立，只需比较值。</p><p>上例两半本来各自有序，内部各 0 对；总数应是 0+0+跨区间数。若输入 [3,1,2]，左半 [3]、右半 [1,2]，仍要相加三类；不能只数某个子区间。</p></section>
+<section><p class="eyebrow">03 · 本课最重要的一步</p><h2>右边的 1，为什么一下贡献两对？</h2><p>现在 L=[2,4]、R=[1,3,5]，两者已经有序。i、j 指向各自尚未取出的第一个数。</p><div class="exercise" data-activity="prediction" data-quiz><p><strong>R[j]=1 小于 L[i]=2，应该一次增加几对？</strong></p><button type="button" data-answer="incorrect" data-message="只加 1 会漏掉 4 与 1。L 有序，队首后面的元素都至少是 2，因此也都大于 1。" aria-pressed="false">增加 1 对</button><button type="button" data-answer="correct" data-message="对，剩余 L=[2,4] 都大于 1；两者原位置都早于右半的 1，一次加 2。" aria-pressed="false">增加 2 对</button><p class="feedback" data-feedback-output aria-live="polite"></p></div>
+<p>关键链条是：<strong>L 有序 → 每个剩余 L[t]≥L[i]&gt;R[j] → 它们都与 R[j] 构成跨区间逆序对。</strong>剩余左侧长度为 <code>len(L)−i</code>。只加这个数，不再逐一比较它们；然后把 R[j] 写入合并结果并移动 j。</p><div class="formula formula-key">如果 L[i]&gt;R[j]：<br>cross += len(L)−i；取走 R[j]</div><p>反之，若 <code>L[i]≤R[j]</code>，右侧剩余元素全部 ≥R[j]≥L[i]，所以 L[i] 与它们没有逆序对；取走左队首，增加 0。<strong>相等走左侧分支</strong>，正好保留严格大于的定义。</p>
+<div class="exercise" data-activity="exploration" data-inversion-merge><h3>先预测取谁、加几对，再走一步</h3><p>这里只演示两个有序子结果之间的跨区间计数。i、j 是排序后子数组的下标，不是原数组下标；累计量只包含跨区间对。</p><div role="group" aria-label="合并计数案例"><button type="button" data-inv-case="example" aria-pressed="true">本课数组</button><button type="button" data-inv-case="duplicates" aria-pressed="false">重复值</button><button type="button" data-inv-case="negative" aria-pressed="false">负数</button><button type="button" data-inv-case="reverse" aria-pressed="false">完全跨序</button><button type="button" data-inv-case="empty" aria-pressed="false">左边为空</button><button type="button" data-inv-case="equal" aria-pressed="false">全部相等</button></div><p data-inv-left></p><p data-inv-right></p><p data-inv-output></p><p data-inv-state role="status"></p><button type="button" data-inv-next>走下一步</button><button type="button" data-inv-reset>重新开始</button><noscript><p>L=[2,4]、R=[1,3,5]：依次取 1（+2）、2（+0）、3（+1）、4（+0）、5（+0），合计 3，对应三对逆序；合并输出 [1,2,3,4,5]。</p></noscript></div>
+<p>同一个 1 被取走后不会再计；下次取到右侧 3，只剩 L=[4]，再加 1。左侧已取走的 2 不该与 3 计数。这样批量处理，也没有重复。</p></section>
+<section><p class="eyebrow">04 · 把三个小算法拼起来</p><h2>返回两个东西：排好序的数组与逆序数</h2><pre><code>sortCount(A):
+    若长度 ≤ 1：返回 (A 的副本, 0)
+    按原位置平分成两半
+    (L, leftCount)   = sortCount(左半)
+    (R, rightCount)  = sortCount(右半)
+    (sorted, cross)  = mergeCount(L, R)
+    返回 (sorted, leftCount + rightCount + cross)</code></pre><p>只返回计数不够：父调用还要利用子数组的有序性，才能再次批量计数。现在你设计的子问题契约是“既排序、又计数”。</p><details><summary>严格证明：为什么不漏计、不重计？</summary><p><strong>mergeCount 的局部不变量：</strong>输出前缀有序，已消费的元素恰好是这个前缀；尚未处理的潜在跨区间对只涉及两个未消费后缀。取左元素时，它≤所有未消费右元素，没有新对；与先前取走的右元素形成的逆序已经在当时计过。</p><p>取右元素时，若左侧非空且右队首更小，它与所有且仅与当前未消费的左元素形成尚未计入的逆序，数量 len(L)−i。已消费的左元素不大于当前右元素（它们当时不大于彼时右队首），不会漏计。每个右元素只被消费一次，且一个跨区间对仅在其右元素被取走时计入，因此恰好一次。一边用尽后直接复制，新增 0；指针前进保证结束。</p><p><strong>对数组长度归纳：</strong>长度≤1 无逆序。更长数组的两半更短，由归纳假设各自返回正确内部计数及有序数组。局部论证给出准确跨区间数与有序合并结果；三类位置对不交且穷尽，所以相加恰为总逆序数，并返回正确排序结果。子问题规模严格减小，整个算法终止。</p></details><details><summary>严格分析：批量计数为什么不又花线性一段？</summary><p>一次合并总长 m，指针总共前进 m 次；每步的比较、下标更新、len(L)−i 与累加按单位代价为常数。写出左侧剩余长度无需逐个列出元素，所以非递归工作 Θ(m)。数组切分、分配与复制也在线性范围内。</p><p>对 n≥2，树与第四课相同。深度 0 到 ⌊log₂n⌋−1 都是完整合并层，每层写 n 次，给下界；每层合并长度之和≤n，至多 ⌈log₂n⌉ 个合并层，给上界。故合并写入 W 满足 <code>n⌊log₂n⌋≤W≤n⌈log₂n⌉</code>，包括常数边界开销后 T=Θ(n log n)。无需假定所有层都满；n=0、1 为 Θ(1)。</p><p>本课按整数比较、索引和计数算术为单位代价；C++ 用 long long 计数，Python 用整数。逆序数最多 n(n−1)/2，不能因元素值装得进 int 就用 int 存计数。顺序递归、复制数组的实现峰值辅助空间 Θ(n)，栈自身 Θ(log n)，与累计写入次数不同。</p></details><p>主线结论：合并时每次只加一个长度，仍是线性合并；把同一件线性工作放回均衡树，就从二次枚举降到 Θ(n log n)。</p></section>
+<section data-activity="transfer"><h2>独立迁移：把相等也走右侧，会发生什么？</h2><p>某同学把条件写成“只有 L[i]&lt;R[j] 才取左边，否则取右边并加 len(L)−i”。请构造一个<strong>最小反例</strong>，写出正确计数与错误计数，指出证明中哪一个严格不等式失效，再给修复条件。随后检验 [2,2,1]。</p><div class="independent-work" data-reflection data-exercise-id="l6-equality"><label for="l6-answer">写反例、两种计数与理由，不只给出一个比较符号。</label><textarea id="l6-answer" rows="6"></textarea><button type="button" data-copy-response>复制回答给教师</button><p data-reflection-status class="editor-note" role="status">不自动判分、上传或同步；需要反馈请复制到教师对话。</p><details><summary>提示</summary><p>长度 1 不会发生合并；长度 2 能否放两个相等元素？原定义是 &gt;，不是 ≥。</p></details></div><details><summary>独立作答后核对</summary><p>[1,1] 即为最小反例：正确 0，错误分支加 1。右队首与左队首相等，无法推出所有剩余左元素都<strong>严格大于</strong>它。应在 L[i]≤R[j] 时取左、不加；只在 R[j]&lt;L[i] 时计入剩余长度。</p><p>[2,2,1] 正确 2：两个位置上的 2 各与 1 构成逆序，两个 2 彼此不构成。错误写法会把相等的一对也算入，得到 3。不要把它理解成“重复值都不计”：重复的大数与后面的小数仍各有一对。</p></details></section>
+<details><summary>可选实践 · C++ / Python 中完成一次批量计数</summary><p>递归、排序合并与测试已提供，只补右队首更小时那条计数语句。输入不被修改，返回有序副本及总逆序数。先预测 [2,2,1] 和逆序数组的答案，再运行。</p><div class="code-lab" data-compiler-lab data-programs-source="../assets/inversion-programs.json?v=20261027b"><div class="language-switch" role="group" aria-label="选择编程语言"><button type="button" data-lab-language="cpp" aria-pressed="true">C++</button><button type="button" data-lab-language="python" aria-pressed="false">Python</button></div><p class="editor-note">切换/重填会覆盖编辑区，请先复制答案。OneCompiler 提供编辑与运行；载入确认不代表代码正确。下方提供完整起始代码备用。</p><div class="external-editor is-loading"><iframe data-lab-frame title="C++ 在线代码编辑器" src="https://onecompiler.com/embed/cpp?listenToEvents=true&amp;codeChangeEvent=true&amp;hideLanguageSelection=true&amp;fontSize=16" loading="lazy" allow="clipboard-write" referrerpolicy="strict-origin-when-cross-origin"></iframe></div><p data-lab-status class="editor-note" role="status">等待编辑器响应。</p><div class="compiler-controls"><button type="button" data-lab-run disabled>运行当前编辑区代码</button><button type="button" data-lab-starter>重新填入起始代码（覆盖编辑区）</button><button type="button" data-lab-reload>重新加载编辑器（覆盖编辑区）</button><button type="button" data-copy-starter>复制当前语言起始代码</button><a data-lab-open href="https://onecompiler.com/cpp" target="_blank" rel="noopener">独立页面编辑（先复制代码）</a></div><p data-copy-status class="editor-note" role="status"></p>
+<!-- compiler-fallback:start -->
+<details data-lab-fallback-panel class="compiler-fallback"><summary>编辑器不可用？复制完整起始代码（含全部测试）</summary>
+<h3>C++</h3><pre tabindex="0" data-program-code="cpp">#include &lt;algorithm&gt;
+#include &lt;iostream&gt;
+#include &lt;stdexcept&gt;
+#include &lt;vector&gt;
+using namespace std;
+struct Result { vector&lt;int&gt; values; long long count; };
+Result sortCount(const vector&lt;int&gt;&amp; a) {
+    if (a.size() &lt;= 1) return {a, 0};
+    size_t mid = a.size()/2;
+    auto left = sortCount(vector&lt;int&gt;(a.begin(),a.begin()+mid));
+    auto right = sortCount(vector&lt;int&gt;(a.begin()+mid,a.end()));
+    long long answer = left.count + right.count;
+    vector&lt;int&gt; out; out.reserve(a.size());
+    size_t i=0,j=0;
+    while (i&lt;left.values.size() &amp;&amp; j&lt;right.values.size()) {
+        if (left.values[i] &lt;= right.values[j]) out.push_back(left.values[i++]);
+        else {
+            throw runtime_error("TODO: 一次计入左侧剩余元素");
+            out.push_back(right.values[j++]);
+        }
+    }
+    while (i&lt;left.values.size()) out.push_back(left.values[i++]);
+    while (j&lt;right.values.size()) out.push_back(right.values[j++]);
+    return {out,answer};
+}
+int main() {
+    vector&lt;vector&lt;int&gt;&gt; tests={{},{7},{2,4,1,3,5},{1,2,3,4,5},{5,4,3,2,1},{2,2,1},{-1,-3,-2},{4,1,3,2}};
+    long long expected[]={0,0,3,0,10,2,2,4};
+    int passed=0;
+    for(int k=0;k&lt;8;++k) {
+        auto original=tests[k],sorted=original; sort(sorted.begin(),sorted.end());
+        try {
+            auto actual=sortCount(tests[k]);
+            bool ok=actual.count==expected[k] &amp;&amp; actual.values==sorted &amp;&amp; tests[k]==original;
+            passed+=ok;
+            cout&lt;&lt;(ok?"PASS":"FAIL")&lt;&lt;" n="&lt;&lt;tests[k].size()&lt;&lt;" expected="&lt;&lt;expected[k]
+                &lt;&lt;" got="&lt;&lt;actual.count&lt;&lt;" sorted=[";
+            for(int v:actual.values) cout&lt;&lt;v&lt;&lt;' ';
+            cout&lt;&lt;"]"&lt;&lt;endl;
+        } catch(const exception&amp; error) { cout&lt;&lt;"FAIL error="&lt;&lt;error.what()&lt;&lt;endl; }
+    }
+    cout&lt;&lt;passed&lt;&lt;"/8 passed"&lt;&lt;endl;
+}
+</pre>
+<h3>Python</h3><pre tabindex="0" data-program-code="python">def sort_count(a):
+    if len(a) &lt;= 1:
+        return a[:], 0
+    mid = len(a)//2
+    left, left_count = sort_count(a[:mid])
+    right, right_count = sort_count(a[mid:])
+    answer = left_count + right_count
+    out = []
+    i = j = 0
+    while i &lt; len(left) and j &lt; len(right):
+        if left[i] &lt;= right[j]:
+            out.append(left[i])
+            i += 1
+        else:
+            raise NotImplementedError("TODO: 一次计入左侧剩余元素")
+            out.append(right[j])
+            j += 1
+    while i &lt; len(left):
+        out.append(left[i])
+        i += 1
+    while j &lt; len(right):
+        out.append(right[j])
+        j += 1
+    return out, answer
+
+
+tests = [([],0), ([7],0), ([2,4,1,3,5],3), ([1,2,3,4,5],0),
+         ([5,4,3,2,1],10), ([2,2,1],2), ([-1,-3,-2],2), ([4,1,3,2],4)]
+passed = 0
+for a,expected in tests:
+    original = a[:]
+    try:
+        actual,count = sort_count(a)
+        ok = count == expected and actual == sorted(original) and a == original
+        passed += ok
+        print("PASS" if ok else "FAIL", f"n={len(a)} expected={expected} got={count} sorted={actual}")
+    except Exception as error:
+        print(f"FAIL error={error}")
+print(f"{passed}/8 passed")
+</pre>
+</details>
+<!-- compiler-fallback:end -->
+</div><p>8 个样例覆盖空、单元素、有序、逆序、重复、负数及奇偶长度，同时检查计数、排序结果和原输入不变。随机/穷举验收另与二次基线对照；有限测试不代替证明。</p></details>
+<details><summary>可选挑战 · 先别把普通逆序模板硬套上去</summary><p><a href="https://leetcode.com/problems/count-of-smaller-numbers-after-self/">LeetCode 315</a> 要求每个位置右侧较小元素的数量，而非一个总数，需要保留原位置与逐元素贡献。<a href="https://leetcode.com/problems/reverse-pairs/">LeetCode 493</a> 把条件改成 a[i]&gt;2a[j]，用于排序的队首比较与用于计数的条件不再相同；先另行论证双指针计数，不要只替换本课 if。C++ 还需注意倍乘溢出。两题都不是本课完成条件。</p></details>
+<section class="self-check" aria-label="本课学习成果自检"><h2>不看答案，我能说清吗？</h2><label><input type="checkbox"> 我能从有序性推出右队首与所有剩余左元素构成逆序，并解释为何不漏不重。</label><label><input type="checkbox"> 我能用相等元素反例修正条件，并用原来的逐层求和证明总时间。</label><p class="editor-note">点击自检或完成按钮不表示教师已认定掌握，也不用于解锁。</p></section><section class="complete-row"><button type="button" data-complete-lesson="lesson-0006" aria-pressed="false">标记本课已完成</button><p data-completion-status aria-live="polite">自愿记录本设备进度。</p></section><section class="sources"><h2>参考与提问</h2><p><a href="../reference/counting-inversions.html">一页参考卡</a>；主参考 <a href="https://github.com/kevin-wayne/algs4/blob/master/src/main/java/edu/princeton/cs/algs4/Inversions.java">Sedgewick / Wayne · Inversions.java</a>。本课小数组、严格重复值约定、互动与迁移为自编。把你的一次批量计数理由或反例发给教师，我们再决定继续还是补练。</p></section><nav class="lesson-nav" aria-label="课程切换"><a href="0005-master-theorem.html">← 第五课：递归树与 Master Theorem</a><a class="lesson-nav-next" href="../reference/course-route.html">下一主题与路线 →</a><a href="../index.html">课程目录</a></nav></main></body></html>

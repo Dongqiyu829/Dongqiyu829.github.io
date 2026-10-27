@@ -5,15 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="先看懂二分搜索为什么可以排除一半，再学边界、不变量与 C++ / Python 实现。">
   <title>第 1 课：二分搜索，为什么这半边可以丢？</title>
-  <link rel="stylesheet" href="../assets/course.css?v=20261027a">
-  <link rel="stylesheet" href="../assets/short-lesson.css?v=20261027a">
-  <link rel="stylesheet" href="../assets/binary-search-demo.css?v=20261027a">
-  <script defer src="../assets/quiz.js?v=20261027a"></script>
-  <script defer src="../assets/binary-search-demo.js?v=20261027a"></script>
-  <script defer src="../assets/compiler-lab.js?v=20261027a"></script>
-  <script defer src="../assets/reflection.js?v=20261027a"></script>
+  <link rel="stylesheet" href="../assets/course.css?v=20261027b">
+  <link rel="stylesheet" href="../assets/short-lesson.css?v=20261027b">
+  <link rel="stylesheet" href="../assets/binary-search-demo.css?v=20261027b">
+  <script defer src="../assets/quiz.js?v=20261027b"></script>
+  <script defer src="../assets/binary-search-demo.js?v=20261027b"></script>
+  <script defer src="../assets/compiler-lab.js?v=20261027b"></script>
+  <script defer src="../assets/reflection.js?v=20261027b"></script>
 <!-- course-data:start -->
-<script type="application/json" data-course-manifest>{"schemaVersion":1,"release":"20261027a","planning":{"topicCount":24,"route":"reference/course-route.html"},"lessons":[{"id":"lesson-0001","topicId":"binary-search-invariant","path":"lessons/0001-binary-search-loop-invariant.html","title":"二分搜索：为什么这半边可以丢？","published":true},{"id":"lesson-0002","topicId":"quadratic-tight-bound","path":"lessons/0002-asymptotic-analysis.html","title":"数清工作量，再写 Θ(n²)","published":true},{"id":"lesson-0003","topicId":"geometric-sum","path":"lessons/0003-doubling-work-sum.html","title":"两层循环，为什么只有 Θ(n)？","published":true},{"id":"lesson-0004","topicId":"merge-sort-recursion-tree","path":"lessons/0004-merge-sort-recursion-tree.html","title":"Merge Sort：递归树怎样算出总工作量？","published":true},{"id":"lesson-0005","topicId":"master-theorem","path":"lessons/0005-master-theorem.html","title":"递归树为什么有时由根决定，有时由叶子决定？","published":true}]}</script>
+<script type="application/json" data-course-manifest>{"schemaVersion":1,"release":"20261027b","planning":{"topicCount":24,"route":"reference/course-route.html"},"lessons":[{"id":"lesson-0001","topicId":"binary-search-invariant","path":"lessons/0001-binary-search-loop-invariant.html","title":"二分搜索：为什么这半边可以丢？","published":true},{"id":"lesson-0002","topicId":"quadratic-tight-bound","path":"lessons/0002-asymptotic-analysis.html","title":"数清工作量，再写 Θ(n²)","published":true},{"id":"lesson-0003","topicId":"geometric-sum","path":"lessons/0003-doubling-work-sum.html","title":"两层循环，为什么只有 Θ(n)？","published":true},{"id":"lesson-0004","topicId":"merge-sort-recursion-tree","path":"lessons/0004-merge-sort-recursion-tree.html","title":"Merge Sort：递归树怎样算出总工作量？","published":true},{"id":"lesson-0005","topicId":"master-theorem","path":"lessons/0005-master-theorem.html","title":"递归树为什么有时由根决定，有时由叶子决定？","published":true},{"id":"lesson-0006","topicId":"counting-inversions","path":"lessons/0006-counting-inversions.html","title":"Counting Inversions：怎样跳过逐对枚举？","published":true}]}</script>
 <!-- course-data:end -->
 </head>
 <body>
@@ -141,7 +141,7 @@
       <p>C++ 中，这里的非负整数除法自动向下取整；Python 用 //。<code>len(a)</code> 与 <code>a.size()</code> 都是在取数组长度。</p>
     </details>
     <p>现在把上面的代码暂时遮住。在下面的练习中补两条更新，再运行测试。先做本课的 lower_bound；严格大于 x 的变体留作可选进阶。</p>
-    <div class="code-lab" data-compiler-lab data-programs-source="../assets/binary-programs.json?v=20261027a">
+    <div class="code-lab" data-compiler-lab data-programs-source="../assets/binary-programs.json?v=20261027b">
       <div class="language-switch" role="group" aria-label="选择编程语言"><button type="button" data-lab-language="cpp" aria-pressed="true">C++</button><button type="button" data-lab-language="python" aria-pressed="false">Python</button></div>
       <p class="editor-note">切换语言或重填会覆盖编辑区内容，请先复制保留答案。载入确认不代表测试通过，运行结果请看控制台。手机上可用页面的运行按钮；长代码可横向滚动，或先复制到独立页面编辑。</p>
       <div class="external-editor is-loading"><iframe data-lab-frame title="C++ 在线代码编辑器" src="https://onecompiler.com/embed/cpp?listenToEvents=true&amp;codeChangeEvent=true&amp;hideLanguageSelection=true&amp;fontSize=16" loading="lazy" allow="clipboard-write" referrerpolicy="strict-origin-when-cross-origin"></iframe></div>

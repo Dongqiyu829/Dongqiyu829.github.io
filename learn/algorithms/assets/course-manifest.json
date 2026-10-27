@@ -1,12 +1,13 @@
 {
   "schemaVersion": 1,
-  "release": "20261027a",
+  "release": "20261027b",
   "planning": { "topicCount": 24, "route": "reference/course-route.html" },
   "lessons": [
     { "id": "lesson-0001", "topicId": "binary-search-invariant", "path": "lessons/0001-binary-search-loop-invariant.html", "title": "二分搜索：为什么这半边可以丢？", "published": true },
     { "id": "lesson-0002", "topicId": "quadratic-tight-bound", "path": "lessons/0002-asymptotic-analysis.html", "title": "数清工作量，再写 Θ(n²)", "published": true },
     { "id": "lesson-0003", "topicId": "geometric-sum", "path": "lessons/0003-doubling-work-sum.html", "title": "两层循环，为什么只有 Θ(n)？", "published": true },
     { "id": "lesson-0004", "topicId": "merge-sort-recursion-tree", "path": "lessons/0004-merge-sort-recursion-tree.html", "title": "Merge Sort：递归树怎样算出总工作量？", "published": true },
-    { "id": "lesson-0005", "topicId": "master-theorem", "path": "lessons/0005-master-theorem.html", "title": "递归树为什么有时由根决定，有时由叶子决定？", "published": true }
+    { "id": "lesson-0005", "topicId": "master-theorem", "path": "lessons/0005-master-theorem.html", "title": "递归树为什么有时由根决定，有时由叶子决定？", "published": true },
+    { "id": "lesson-0006", "topicId": "counting-inversions", "path": "lessons/0006-counting-inversions.html", "title": "Counting Inversions：怎样跳过逐对枚举？", "published": true }
   ]
 }

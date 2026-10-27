@@ -16,6 +16,12 @@ details .formula, .formula { overflow-wrap: anywhere; }
 .sources h2 { font-size: 1.25rem; }
 [data-level-work] [role="group"] { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0; }
 [data-level-work] [aria-pressed="true"] { color: #fff; background: var(--accent); }
+[data-inversion-merge] [role="group"] { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0; }
+[data-inversion-merge] [aria-pressed="true"] { color: #fff; background: var(--accent); }
+[data-inversion-merge] [data-inv-state] { border-left: 4px solid var(--accent); padding: 10px 12px; background: #edf5f1; }
+.draft-controls { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+.draft-controls button { min-height: 44px; }
+@media (max-width:600px) { .draft-controls button { width: 100%; } }
 @media (max-width: 600px) {
   .exercise, details { padding: 15px; }
   .count-picture { padding: 10px; margin: 18px 0; }

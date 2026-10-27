@@ -8,7 +8,7 @@ const result={passed:[],failed:[],consoleErrors:[],pageErrors:[],viewports:[1280
 async function test(name,fn){if(process.env.COURSE_TEST_FILTER&&!name.includes(process.env.COURSE_TEST_FILTER))return;try{await fn();result.passed.push(name);console.log('PASS '+name);}catch(error){result.failed.push({name,error:error.stack});console.error('FAIL '+name+': '+error.message);}}
 const key='comp3711h-learning-progress-v1';
 const publishedCount=manifest.lessons.filter(l=>l.published).length;
-const l1='/lessons/0001-binary-search-loop-invariant.html',l2='/lessons/0002-asymptotic-analysis.html',l3='/lessons/0003-doubling-work-sum.html',l4='/lessons/0004-merge-sort-recursion-tree.html',l5='/lessons/0005-master-theorem.html';
+const l1='/lessons/0001-binary-search-loop-invariant.html',l2='/lessons/0002-asymptotic-analysis.html',l3='/lessons/0003-doubling-work-sum.html',l4='/lessons/0004-merge-sort-recursion-tree.html',l5='/lessons/0005-master-theorem.html',l6='/lessons/0006-counting-inversions.html';
 function mockHTML(echo=true){return '<pre id="code"></pre><script>window.messages=0;window.addEventListener("message",e=>{if(e.data.eventType!=="populateCode")return;window.messages++;document.querySelector("pre").textContent=e.data.files[0].content;document.body.dataset.language=e.data.language;'+(echo?'parent.postMessage(e.data,"*");':'')+'});</script>';}
 (async()=>{
   const local=await startServer();server=local.server;const origin=local.origin;
@@ -81,7 +81,7 @@ function mockHTML(echo=true){return '<pre id="code"></pre><script>window.message
   });
   await test('all predictions, explorations and independent responses do not auto-complete',async()=>{
     const {context,page}=await open({context:{viewport:{width:390,height:844}}});
-    for(const lesson of [l1,l2,l3,l4,l5]){
+    for(const lesson of [l1,l2,l3,l4,l5,l6]){
       await page.goto(origin+lesson);
       for(const quiz of await page.locator('[data-quiz]').all()){
         await quiz.locator('[data-answer="incorrect"]').first().click();assert.match(await quiz.locator('[data-feedback-output]').getAttribute('class'),/incorrect/);
@@ -139,10 +139,10 @@ function mockHTML(echo=true){return '<pre id="code"></pre><script>window.message
   });
   await test('blocked third-party editor and JSON requests: complete C++/Python remain copyable',async()=>{
     const {context,page}=await open({mode:'blocked',expectedNetworkFailure:true});await page.route('**/*programs.json*',r=>r.abort());
-    for(const lesson of [l1,l3,l4,l5]){
-      await page.goto(origin+lesson);if(lesson===l4||lesson===l5)await page.locator('[data-compiler-lab]').evaluate(el=>el.parentElement.open=true);const lab=page.locator('[data-compiler-lab]');await lab.locator('iframe').scrollIntoViewIfNeeded();
+    for(const lesson of [l1,l3,l4,l5,l6]){
+      await page.goto(origin+lesson);if(lesson===l4||lesson===l5||lesson===l6)await page.locator('[data-compiler-lab]').evaluate(el=>el.parentElement.open=true);const lab=page.locator('[data-compiler-lab]');await lab.locator('iframe').scrollIntoViewIfNeeded();
       await page.waitForFunction(()=>['unconfirmed','unavailable'].includes(document.querySelector('[data-compiler-lab]').dataset.editorState),null,{timeout:20000});
-      const file=lesson===l1?'binary-programs.json':lesson===l3?'doubling-programs.json':lesson===l4?'merge-programs.json':'master-programs.json';const programs=JSON.parse(fs.readFileSync(path.join(root,'assets',file),'utf8'));
+      const file=lesson===l1?'binary-programs.json':lesson===l3?'doubling-programs.json':lesson===l4?'merge-programs.json':lesson===l5?'master-programs.json':'inversion-programs.json';const programs=JSON.parse(fs.readFileSync(path.join(root,'assets',file),'utf8'));
       for(const lang of ['cpp','python'])assert.equal(await lab.locator('[data-program-code="'+lang+'"]').textContent(),programs[lang]);
       await page.evaluate(()=>Object.defineProperty(navigator,'clipboard',{value:{writeText:async()=>{throw new Error('Denied');}},configurable:true}));
       await lab.locator('[data-copy-starter]').click();assert.match(await lab.locator('[data-copy-status]').innerText(),/手动复制/);
@@ -151,9 +151,9 @@ function mockHTML(echo=true){return '<pre id="code"></pre><script>window.message
   });
   await test('JavaScript disabled: lesson text, native disclosures and both complete code banks readable',async()=>{
     const {context,page}=await open({context:{javaScriptEnabled:false,viewport:{width:390,height:844}}});
-    for(const lesson of [l1,l2,l3,l4,l5]){
+    for(const lesson of [l1,l2,l3,l4,l5,l6]){
       await page.goto(origin+lesson);assert.equal(await page.locator('h1').count(),1);assert(await page.locator('main').innerText());
-      if(lesson!==l2){if(lesson===l4)await page.getByText('可选实践 · 在 C++ / Python 中补完 merge 并核对计数',{exact:true}).click();if(lesson===l5)await page.getByText('可选编码 · 按递归结构数工作，别只计算闭式',{exact:true}).click();await page.locator('[data-lab-fallback-panel] summary').click();assert(await page.locator('[data-program-code="cpp"]').isVisible());assert(await page.locator('[data-program-code="python"]').isVisible());}
+      if(lesson!==l2){if(lesson===l4)await page.getByText('可选实践 · 在 C++ / Python 中补完 merge 并核对计数',{exact:true}).click();if(lesson===l5)await page.getByText('可选编码 · 按递归结构数工作，别只计算闭式',{exact:true}).click();if(lesson===l6)await page.getByText('可选实践 · C++ / Python 中完成一次批量计数',{exact:true}).click();await page.locator('[data-lab-fallback-panel] summary').click();assert(await page.locator('[data-program-code="cpp"]').isVisible());assert(await page.locator('[data-program-code="python"]').isVisible());}
       assert(await page.locator('a[href="../index.html"]').first().isVisible());
     }
     await context.close();
@@ -199,6 +199,35 @@ function mockHTML(echo=true){return '<pre id="code"></pre><script>window.message
     await page.locator('textarea').fill('N=n²，所以 2 的根号 N 次方等于 2ⁿ。');
     await page.evaluate(()=>Object.defineProperty(navigator,'clipboard',{value:{writeText:async text=>{window.__researchCopy=text;}},configurable:true}));await page.locator('[data-copy-response]').click();assert.match(await page.locator('[data-reflection-status]').innerText(),/尚未发送/);assert.equal(await page.evaluate(k=>localStorage.getItem(k),key),before);
     await page.goto(origin+'/index.html');assert.equal(await page.locator('[data-course-progress]').innerText(),'1 / '+publishedCount);await context.close();
+  });
+  await test('inversion merge: exact step additions, ties, negatives, empty, reset and navigation',async()=>{
+    const {context,page}=await open();
+    for(const width of [1280,390,320]){await page.setViewportSize({width,height:844});await page.goto(origin+l6);const lab=page.locator('[data-inversion-merge]');
+      for(const [name,adds]of[['example',[2,0,1,0,0]],['duplicates',[0,0,0,0,0]],['negative',[2,0,1,0,0]],['reverse',[2,2,2,0,0]],['empty',[0]],['equal',[0,0,0]]]){
+        await lab.locator('[data-inv-case="'+name+'"]').click();assert.equal(await lab.getAttribute('data-count'),'0');let count=0;
+        for(const add of adds){await lab.locator('[data-inv-next]').click();count+=add;assert.equal(Number(await lab.getAttribute('data-count')),count);assert((await lab.locator('[data-inv-state]').innerText()).includes('本步 +'+add));assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));}
+        assert(await lab.locator('[data-inv-next]').isDisabled());assert.equal(await lab.getAttribute('data-done'),'true');await lab.locator('[data-inv-reset]').click();assert.equal(await lab.getAttribute('data-step'),'0');
+      }
+      await page.screenshot({path:path.join(root,'work/qa/inversions-'+width+'.png')});
+    }
+    const validator=new HtmlValidate({extends:['html-validate:recommended'],rules:{'attribute-boolean-style':'off'}});assert((await validator.validateString((await page.content()).replace(/\sstyle=""/g,''))).valid);
+    await page.locator('[data-complete-lesson]').click();await page.locator('a[href="../index.html"]').first().click();await page.waitForFunction(n=>document.querySelector('[data-course-progress]').textContent==='1 / '+n,publishedCount);
+    await page.locator('[data-lesson-id="lesson-0005"] a').click();await page.locator('.lesson-nav-next').click();assert(page.url().endsWith(l6));await page.locator('.lesson-nav-next').click();assert(page.url().endsWith('/reference/course-route.html'));await context.close();
+  });
+  await test('drafts opt-in save/load/delete, page isolation, no auto-load or completion mutation',async()=>{
+    const {context,page}=await open();await page.goto(origin+l6);const box=page.locator('[data-reflection]');const before='["lesson-0001","future-id"]';await page.evaluate(({key,before})=>localStorage.setItem(key,before),{key,before});
+    await box.locator('textarea').fill('我的草稿：相等时不能计入。');assert.deepEqual(await page.evaluate(()=>Object.keys(localStorage).filter(k=>k.startsWith('comp3711h-draft-v1:'))),[]);
+    await box.locator('[data-draft-action="save"]').click();assert.match(await box.locator('[data-draft-status]').innerText(),/已保存本机/);
+    const draftKey=await page.evaluate(()=>Object.keys(localStorage).find(k=>k.startsWith('comp3711h-draft-v1:')));assert(draftKey);await page.reload();assert.equal(await page.locator('textarea').inputValue(),'');
+    await page.locator('[data-draft-action="load"]').click();assert.equal(await page.locator('textarea').inputValue(),'我的草稿：相等时不能计入。');assert.equal(await page.evaluate(k=>localStorage.getItem(k),key),before);
+    await page.goto(origin+l5);await page.locator('[data-draft-action="load"]').click();assert.equal(await page.locator('textarea').inputValue(),'');assert.match(await page.locator('[data-draft-status]').innerText(),/没有本机草稿/);
+    await page.goto(origin+l6);await page.locator('[data-draft-action="load"]').click();await page.locator('[data-draft-action="delete"]').click();assert.equal(await page.evaluate(k=>localStorage.getItem(k),draftKey),null);assert.equal(await page.locator('textarea').inputValue(),'我的草稿：相等时不能计入。');assert.equal(await page.evaluate(k=>localStorage.getItem(k),key),before);
+    await page.evaluate(k=>localStorage.setItem(k,'{broken'),draftKey);await page.locator('[data-draft-action="load"]').click();assert.match(await page.locator('[data-draft-status]').innerText(),/格式异常/);assert.equal(await page.evaluate(k=>localStorage.getItem(k),draftKey),'{broken');await context.close();
+  });
+  for(const mode of ['denied','quota'])await test('draft storage '+mode+' degrades without losing current answer or copy',async()=>{
+    const {context,page}=await open();await page.addInitScript(mode=>{if(mode==='denied')Object.defineProperty(window,'localStorage',{get(){throw new DOMException('Denied','SecurityError');}});else Storage.prototype.setItem=()=>{throw new DOMException('Quota','QuotaExceededError');};},mode);await page.goto(origin+l6);
+    await page.locator('textarea').fill('存储失败仍能保留当前输入');await page.locator('[data-draft-action="save"]').click();assert.match(await page.locator('[data-draft-status]').innerText(),/不可用或已满/);assert.equal(await page.locator('textarea').inputValue(),'存储失败仍能保留当前输入');
+    await page.evaluate(()=>Object.defineProperty(navigator,'clipboard',{value:{writeText:async text=>{window.__copy=text;}},configurable:true}));await page.locator('[data-copy-response]').click();assert.match(await page.evaluate(()=>window.__copy),/存储失败/);await context.close();
   });
   await test('reference cards in print media remain readable without horizontal overflow',async()=>{
     const {context,page}=await open({context:{viewport:{width:800,height:1100}}});await page.emulateMedia({media:'print'});

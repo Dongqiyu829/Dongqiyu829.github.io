@@ -2,15 +2,16 @@ const {fs,path,root,startServer,launch,save}=require('./test-utils.cjs');
 const assert=require('assert/strict');
 const {complete}=require('./merge-test-utils.cjs');
 const {complete:completeMaster}=require('./master-test-utils.cjs');
+const {complete:completeInversions}=require('./inversion-test-utils.cjs');
 let browser,server,page;
 (async()=>{
   const local=await startServer();server=local.server;const origin=process.env.COURSE_TEST_ORIGIN||local.origin;
   browser=await launch();
   const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
   page=await context.newPage();const results=[];
-  const cases=[['0001-binary-search-loop-invariant.html','binary-programs.json'],['0003-doubling-work-sum.html','doubling-programs.json'],['0004-merge-sort-recursion-tree.html','merge-programs.json'],['0005-master-theorem.html','master-programs.json']];
+  const cases=[['0001-binary-search-loop-invariant.html','binary-programs.json'],['0003-doubling-work-sum.html','doubling-programs.json'],['0004-merge-sort-recursion-tree.html','merge-programs.json'],['0005-master-theorem.html','master-programs.json'],['0006-counting-inversions.html','inversion-programs.json']];
   for(const [lesson,file]of cases.filter(([name])=>!process.env.COURSE_EDITOR_LESSON||name.startsWith(process.env.COURSE_EDITOR_LESSON))){
-    await page.goto(origin+'/lessons/'+lesson);if(/^(0004|0005)/.test(lesson))await page.locator('[data-compiler-lab]').evaluate(el=>el.parentElement.open=true);const lab=page.locator('[data-compiler-lab]');
+    await page.goto(origin+'/lessons/'+lesson);if(/^(0004|0005|0006)/.test(lesson))await page.locator('[data-compiler-lab]').evaluate(el=>el.parentElement.open=true);const lab=page.locator('[data-compiler-lab]');
     for(const language of ['cpp','python']){
       if(language==='python')await lab.locator('[data-lab-language="python"]').tap();
       await lab.locator('[data-lab-frame]').scrollIntoViewIfNeeded();
@@ -28,6 +29,7 @@ let browser,server,page;
       if(lesson.startsWith('0001'))code=language==='cpp'?code.replace('throw runtime_error("TODO 1: 替换为 lo 的更新");','lo=mid+1;').replace('throw runtime_error("TODO 2: 替换为 hi 的更新");','hi=mid;'):code.replace('raise NotImplementedError("TODO 1: 替换为 lo 的更新")','lo=mid+1').replace('raise NotImplementedError("TODO 2: 替换为 hi 的更新")','hi=mid');
       else if(lesson.startsWith('0004'))code=complete(language,code);
         else if(lesson.startsWith('0005'))code=completeMaster(language,code);
+        else if(lesson.startsWith('0006'))code=completeInversions(language,code);
       else code=language==='cpp'?code.replace('// TODO: 每执行一次 work，让 count 加 1','++count;'):code.replace('pass  # TODO: 每执行一次 work，让 count 加 1','count += 1');
       await page.evaluate(({language,code})=>document.querySelector('[data-lab-frame]').contentWindow.postMessage({eventType:'populateCode',language,files:[{name:language==='cpp'?'main.cpp':'main.py',content:code}]},'https://onecompiler.com'),{language,code});
       await page.waitForTimeout(600);await lab.locator('[data-lab-run]').tap();
