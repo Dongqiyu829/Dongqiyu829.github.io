@@ -1,39 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><meta charset="utf-8"><title>Layout harness</title></head>
+<head><meta charset="utf-8"><title>Knot course interaction and layout harness</title><style>iframe{width:390px;height:844px;border:0}</style></head>
 <body>
-  <iframe id="mobile" title="Mobile lesson layout" src="../index.html" style="width:390px;height:844px;border:0"></iframe>
+  <iframe id="mobile" title="Mobile lesson layout" src="../index.html"></iframe>
   <output id="result">pending</output>
   <script>
     document.getElementById("mobile").addEventListener("load", function () {
       const lesson = this.contentDocument;
       const doc = lesson.documentElement;
-      lesson.querySelector('[data-poly="positive"]').click();
-      const derivativePass = lesson.querySelector("[data-derivative-result]").textContent.includes("−24");
+      lesson.querySelector("[data-reset-progress]").click();
+
+      function retryQuiz(selector) {
+        const quiz = lesson.querySelector(selector);
+        quiz.querySelector('[data-answer="incorrect"]').click();
+        const wrong = quiz.querySelector("[data-feedback]").dataset.result === "incorrect";
+        quiz.querySelector('[data-answer="correct"]').click();
+        const right = quiz.querySelector("[data-feedback]").dataset.result === "correct";
+        return wrong && right;
+      }
+
+      const termsRetryPass = retryQuiz('[data-progress-key="terms"]');
+      const detectorRetryPass = retryQuiz('[data-progress-key="detector"]');
+
+      const derivative = lesson.querySelector("[data-derivative-practice]");
+      derivative.querySelector("[data-derivative-first]").value = "-9";
+      derivative.querySelector("[data-derivative-second]").value = "13";
+      derivative.querySelector("[data-check-derivative]").click();
+      const derivativeWrongPass = derivative.querySelector("[data-derivative-feedback]").dataset.result === "incorrect";
+      derivative.querySelector("[data-derivative-first]").value = "-10";
+      derivative.querySelector("[data-derivative-second]").value = "12";
+      derivative.querySelector("[data-check-derivative]").click();
+      const derivativeRightPass = derivative.querySelector("[data-derivative-feedback]").dataset.result === "correct";
+      derivative.querySelector("[data-reset-derivative]").click();
+      const derivativeResetPass = derivative.querySelector("[data-derivative-first]").value === "" && derivative.querySelector("[data-derivative-feedback]").textContent === "" && lesson.activeElement === derivative.querySelector("[data-derivative-first]");
+
+      lesson.querySelector('[data-poly="negative"]').click();
+      const polynomialPass = lesson.querySelector("[data-derivative-result]").textContent.includes("−24");
+
       const slider = lesson.querySelector("[data-k-slider]");
-      slider.value = "8";
-      slider.dispatchEvent(new Event("input", { bubbles: true }));
-      const correctionPass = lesson.querySelector("[data-total-change]").textContent === "0";
+      const totals = [];
+      for (const k of ["-1", "1", "0"]) {
+        slider.value = k;
+        slider.dispatchEvent(new Event("input", { bubbles: true }));
+        totals.push(lesson.querySelector("[data-total-change]").textContent);
+      }
+      const correctionPass = totals.every((value) => value === "0") && lesson.querySelector("[data-correction-coverage]").textContent.includes("3 / 3");
+
       const next = lesson.querySelector("[data-step-next]");
-      for (let i = 0; i < 9; i += 1) next.click();
-      const endPass = lesson.querySelector("[data-step-count]").textContent.includes("5 / 5");
+      for (let i = 0; i < 10; i += 1) next.click();
+      const stepEndPass = lesson.querySelector("[data-step-count]").textContent.includes("6 / 6");
       lesson.querySelector("[data-step-reset]").click();
-      const resetPass = lesson.querySelector("[data-step-count]").textContent.includes("1 / 5");
-      lesson.querySelector('[data-quiz] [data-answer="correct"]').click();
-      const quizPass = lesson.querySelector('[data-quiz] [data-feedback]').dataset.result === "correct";
+      const stepResetPass = lesson.querySelector("[data-step-count]").textContent.includes("1 / 6");
+      const productRetryPass = retryQuiz('[data-progress-key="product"]');
+
+      lesson.querySelector('[data-components="-24,0"]').click();
+      const calculatorPass = lesson.querySelector("[data-final-result]").textContent === "−176";
+      const livePass = lesson.querySelector("[data-final-result]").closest("[aria-live]").getAttribute("aria-live") === "polite";
+
+      const comprehensive = lesson.querySelector("[data-comprehensive-exercise]");
+      comprehensive.querySelector("[data-answer-a]").value = "0";
+      comprehensive.querySelector("[data-answer-b]").value = "0";
+      comprehensive.querySelector("[data-answer-s]").value = "-176";
+      comprehensive.querySelector("[data-answer-difference]").value = "-192";
+      comprehensive.querySelector("[data-answer-conclusion]").value = "different-polynomial";
+      comprehensive.querySelector("[data-check-comprehensive]").click();
+      const comprehensiveWrongPass = comprehensive.querySelector("[data-comprehensive-feedback]").dataset.result === "incorrect";
+      comprehensive.querySelector("[data-answer-a]").value = "-24";
+      comprehensive.querySelector("[data-check-comprehensive]").click();
+      const comprehensiveRightPass = comprehensive.querySelector("[data-comprehensive-feedback]").dataset.result === "correct";
+      comprehensive.querySelector("[data-reset-comprehensive]").click();
+      const comprehensiveResetPass = comprehensive.querySelector("[data-answer-a]").value === "" && comprehensive.querySelector("[data-answer-conclusion]").value === "" && comprehensive.querySelector("[data-comprehensive-feedback]").textContent === "" && lesson.activeElement === comprehensive.querySelector("[data-answer-a]");
+
+      const progressPass = lesson.querySelector("[data-study-progress]").textContent === "6 / 6";
       const keyboardTarget = lesson.querySelector('[data-poly="negative"]');
       keyboardTarget.focus();
       const focusPass = lesson.activeElement === keyboardTarget;
+      const noHorizontalOverflow = doc.scrollWidth <= doc.clientWidth;
+
       const result = document.getElementById("result");
       result.textContent = JSON.stringify({
         clientWidth: doc.clientWidth,
         scrollWidth: doc.scrollWidth,
-        noHorizontalOverflow: doc.scrollWidth <= doc.clientWidth,
-        derivativePass,
+        noHorizontalOverflow,
+        termsRetryPass,
+        detectorRetryPass,
+        derivativeWrongPass,
+        derivativeRightPass,
+        derivativeResetPass,
+        polynomialPass,
         correctionPass,
-        endPass,
-        resetPass,
-        quizPass,
+        stepEndPass,
+        stepResetPass,
+        productRetryPass,
+        calculatorPass,
+        livePass,
+        comprehensiveWrongPass,
+        comprehensiveRightPass,
+        comprehensiveResetPass,
+        progressPass,
         focusPass
       });
       result.setAttribute("data-ready", "true");

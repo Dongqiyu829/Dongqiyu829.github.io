@@ -3,370 +3,352 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="中文互动课：用 Jones 多项式在 x=1 的二阶导数，排除局部系三叶结候选与两个平凡分量候选的相等可能。">
-  <title>局部系三叶结的二阶排除法 · 互动教学课</title>
-  <link rel="stylesheet" href="assets/course.css?v=20261107a">
-  <script defer src="assets/course.js?v=20261107a"></script>
+  <meta name="description" content="中文互动自学课：从结与链环、Laurent 多项式负幂求导，逐步走到局部系三叶结的二阶排除法。">
+  <title>局部系三叶结的二阶排除法 · 互动自学课</title>
+  <link rel="stylesheet" href="assets/course.css?v=20261107b">
+  <script defer src="assets/course.js?v=20261107b"></script>
 </head>
 <body>
   <nav class="course-nav" aria-label="课程导航">
     <a href="../../">← 董骐与 · 个人主页</a>
-    <span>结理论专题 · 二阶导数检测</span>
+    <span>结理论专题 · 二阶排除法</span>
   </nav>
 
   <main>
     <header class="hero">
-      <p class="eyebrow">Interactive Knot Theory Note</p>
+      <p class="eyebrow">Example-first Interactive Knot Theory</p>
       <h1>局部系三叶结的<br>二阶排除法</h1>
-      <p class="lede">不靠“图看起来不一样”，而是把 Jones 多项式在 <span class="math">x=1</span> 附近放大：若二阶导数不同，多项式一定不同。先算三叶结，再一步步建立适用于本题的公式。</p>
+      <p class="lede">我们想排除两类链环候选的多项式相等。方法不是背一串公式，而是反复完成同一个学习循环：先问“为什么需要这一步”，手算一个具体例子，再换一道自己做，最后把结果放回证明。</p>
       <div class="meta">
-        <span>中文 · 初学者友好</span>
-        <span>约 45–65 分钟</span>
-        <span>5 个互动检查</span>
-        <span>手机可读</span>
+        <span>中文自学版</span><span>约 70–100 分钟</span><span>具体例子驱动</span><span>可分两次学习</span>
       </div>
-      <nav class="route" aria-label="本课路线">
-        <a href="#language"><span>01</span>先会说“结”</a>
-        <a href="#detector"><span>02</span>理解二阶检测</a>
-        <a href="#proof"><span>03</span>走完整证明</a>
-        <a href="#application"><span>04</span>代入局部三叶结</a>
+      <nav class="route" aria-label="本课目录">
+        <a href="#question"><span>01</span>研究问题</a>
+        <a href="#foundations"><span>02</span>术语与图</a>
+        <a href="#calculus"><span>03</span>负幂与二阶</a>
+        <a href="#proof"><span>04</span>逐步推导</a>
+        <a href="#worked"><span>05</span>完整例题</a>
+        <a href="#practice"><span>06</span>独立练习</a>
       </nav>
     </header>
 
-    <section class="win" aria-label="学习目标">
-      <strong>学完应当能：</strong>区分结、链环、分量与链接数；解释“二阶导数不同”为什么足以否定两个 Laurent 多项式相等；复述校正量如何消去链接数变化；最后算出 <span class="math">−176</span> 与 <span class="math">16</span> 的差。
+    <section class="study-dashboard" aria-labelledby="study-plan-title">
+      <div>
+        <p class="eyebrow">Study Plan</p>
+        <h2 id="study-plan-title">建议怎样学</h2>
+        <ol>
+          <li><strong>第一次（35–50 分钟）：</strong>完成术语、负幂求导与二阶检测，不急着看完整证明。</li>
+          <li><strong>第二次（35–50 分钟）：</strong>完成换叉、校正量、乘积法则和综合题。</li>
+          <li>每个“轮到你”先写在纸上，再点核对。错一次没有关系，反馈会指出是哪一步出了问题。</li>
+        </ol>
+      </div>
+      <div class="progress-card">
+        <span>本设备练习进度</span>
+        <strong data-study-progress>0 / 6</strong>
+        <div class="progress-track" aria-hidden="true"><i data-progress-bar></i></div>
+        <p data-progress-note aria-live="polite">完成六个关键检查后，你就走完主线。</p>
+        <button type="button" data-reset-progress>清除本课练习记录</button>
+      </div>
     </section>
 
-    <section id="language">
-      <p class="eyebrow">Part 1 · Language Before Algebra</p>
-      <h2>先把图形语言说清楚</h2>
-      <p>把一根绳子的两端粘起来，得到空间中的闭合圈。我们允许连续拉伸、弯曲，但不许剪断，也不许让绳子穿过自己。结理论研究的是：经过这些允许的变形，两个图形能否互相变成。</p>
+    <section id="question">
+      <p class="eyebrow">Part 1 · Why This Problem?</p>
+      <h2>我们究竟想区分什么？</h2>
+      <p>设 <span class="math">H=H₁∪H₂</span> 是一个<strong>两个分量各自均为平凡结、且 <span class="math">lk(H)=0</span></strong> 的二分量链环。我们在一个不碰 <span class="math">H₂</span> 的小球里，给第一分量局部系上一个三叶结，得到 <span class="math">L=H#₁J<sub>±</sub></span>。研究中要比较它与另一类候选 <span class="math">L′</span>：后者的两个分量也分别都是平凡结，且 <span class="math">lk(L′)=0</span>。</p>
+      <div class="question-flow" role="group" aria-label="研究问题的推理路线">
+        <div><span>对象</span><strong>L 与 L′</strong><small>它们可能看起来都很复杂</small></div>
+        <div><span>比较</span><strong>S<sub>L</sub> 与 S<sub>L′</sub></strong><small>某个 Laurent 多项式组合</small></div>
+        <div><span>便宜检测</span><strong>只算 S″(1)</strong><small>不同即可排除多项式相等</small></div>
+      </div>
+      <div class="win"><strong>本课的直接目标：</strong>在上述完整假设下证明两类候选的 <span class="math">S</span> 多项式不相等。固定本课的定向与归一化后，<span class="math">S</span> 是链环不变量，因此不同的 <span class="math">S</span> 也能排除相应同痕；但本课不尝试完整分类，更不解决所有 Jones 多项式碰撞。</div>
+    </section>
 
+    <section id="foundations">
+      <p class="eyebrow">Part 2 · Objects Before Formulas</p>
+      <h2>先看懂对象和投影图</h2>
       <div class="concept-grid">
-        <article class="concept-card">
-          <p class="mini-label">一个圈</p>
-          <h3>结（knot）</h3>
-          <p>只有一个闭合圈，也就是只有一个<strong>分量</strong>。最简单的圆圈叫<strong>平凡结</strong> <span class="math">U</span>。</p>
-        </article>
-        <article class="concept-card">
-          <p class="mini-label">多个圈</p>
-          <h3>链环（link）</h3>
-          <p>由两个或更多互不相交的闭合圈组成。本课只处理两个分量，记作 <span class="math">M=K₁∪K₂</span>。</p>
-        </article>
-        <article class="concept-card">
-          <p class="mini-label">看交叉属于谁</p>
-          <h3>自交叉与混合交叉</h3>
-          <p>两段都来自同一分量，叫<strong>自交叉</strong>；来自不同分量，叫<strong>混合交叉</strong>。后者的换叉会改变链接数。</p>
-        </article>
-        <article class="concept-card">
-          <p class="mini-label">沿方向重新接线</p>
-          <h3>定向平滑</h3>
-          <p>在一个交叉处剪开四个短端，再按箭头方向接回。结的自交叉平滑会得到二分量链环；二分量链环的混合交叉平滑会得到一个结。</p>
-        </article>
+        <article class="concept-card"><p class="mini-label">一个闭合圈</p><h3>结（knot）</h3><p>空间中的一个闭合圈。允许连续拉伸、弯曲，不许剪断或让绳子穿过自己。最简单的圆圈叫<strong>平凡结</strong> <span class="math">U</span>。</p></article>
+        <article class="concept-card"><p class="mini-label">多个闭合圈</p><h3>链环（link）与分量</h3><p>几个互不相交的闭合圈合在一起叫链环；每一个圈叫一个<strong>分量</strong>。本课只处理两个分量 <span class="math">K₁∪K₂</span>。</p></article>
+        <article class="concept-card"><p class="mini-label">二维图保存三维信息</p><h3>投影与交叉</h3><p>把空间曲线投到平面会出现交叉。图上必须用断口记录哪一段在上、哪一段在下；没有上下信息的平面曲线不是完整的结图。</p></article>
+        <article class="concept-card"><p class="mini-label">交叉属于谁</p><h3>自交叉与混合交叉</h3><p>两段来自同一分量叫自交叉；来自不同分量叫混合交叉。改变混合交叉可能改变两个分量之间的 linking number。</p></article>
       </div>
 
-      <div class="diagram-row" role="group" aria-label="结与链环示意图">
+      <div class="diagram-row" role="group" aria-label="结、链环与局部替换示意">
         <figure class="diagram">
-          <svg viewBox="0 0 200 130" role="img" aria-label="一个平凡结示意">
-            <ellipse class="rope" cx="100" cy="65" rx="61" ry="42"></ellipse>
-          </svg>
+          <svg viewBox="0 0 200 130" role="img" aria-label="一个平凡结示意"><ellipse class="rope" cx="100" cy="65" rx="61" ry="42"></ellipse></svg>
           <figcaption>一个分量：平凡结 U</figcaption>
         </figure>
         <figure class="diagram">
           <svg viewBox="0 0 200 130" role="img" aria-label="两个闭合分量交替上下穿越的链环投影示意">
-            <ellipse class="rope" cx="75" cy="65" rx="45" ry="35"></ellipse>
-            <ellipse class="rope alt" cx="125" cy="65" rx="45" ry="35"></ellipse>
-            <path class="crossing-gap" d="M91 31 L109 41"></path>
-            <path class="rope crossing-bridge" d="M91 31 L109 41"></path>
-            <path class="crossing-gap" d="M91 89 L109 99"></path>
-            <path class="rope alt crossing-bridge" d="M91 89 L109 99"></path>
+            <ellipse class="rope" cx="75" cy="65" rx="45" ry="35"></ellipse><ellipse class="rope alt" cx="125" cy="65" rx="45" ry="35"></ellipse>
+            <path class="crossing-gap" d="M91 31 L109 41"></path><path class="rope crossing-bridge" d="M91 31 L109 41"></path>
+            <path class="crossing-gap" d="M91 89 L109 99"></path><path class="rope alt crossing-bridge" d="M91 89 L109 99"></path>
           </svg>
-          <figcaption>链环投影示意：白色断口让上方绳段“跨过”下方；两个交叉处轮流由不同分量在上</figcaption>
+          <figcaption>链环投影示意：白色断口表示上方绳段跨过下方</figcaption>
         </figure>
         <figure class="diagram">
           <svg viewBox="0 0 240 170" role="img" aria-label="同一分量的一段弧在局部球内替换前后示意">
-            <text class="diagram-label" x="8" y="22">替换前</text>
-            <circle class="local-ball" cx="132" cy="38" r="30"></circle>
-            <path class="rope local-arc" d="M52 38 H212"></path>
-            <text class="diagram-label" x="8" y="100">替换后</text>
-            <circle class="local-ball" cx="132" cy="126" r="38"></circle>
+            <text class="diagram-label" x="8" y="22">替换前</text><circle class="local-ball" cx="132" cy="38" r="30"></circle><path class="rope local-arc" d="M52 38 H212"></path>
+            <text class="diagram-label" x="8" y="100">替换后</text><circle class="local-ball" cx="132" cy="126" r="38"></circle>
             <path class="rope local-arc" d="M52 126 H94 C100 91,143 92,145 124 C147 155,104 158,103 128 C102 100,151 98,171 126 H212"></path>
-            <path class="crossing-gap" d="M105 117 L119 108"></path>
-            <path class="rope crossing-bridge" d="M105 117 L119 108"></path>
+            <path class="crossing-gap" d="M105 117 L119 108"></path><path class="rope crossing-bridge" d="M105 117 L119 108"></path>
           </svg>
-          <figcaption>局部连通和示意：上下两行是替换前后，不是两条分量；同一条弧只在虚线小球内改成带结的弧，球外接回原分量</figcaption>
+          <figcaption>局部系结示意：上下两行是替换前后，不是两个分量；同一条弧只在虚线小球内改变</figcaption>
         </figure>
       </div>
 
-      <h3>链接数 <span class="math">lk</span>、分离与局部连通和</h3>
-      <p>给两个分量都选定方向。在图上给每个混合交叉一个 <span class="math">+1</span> 或 <span class="math">−1</span> 的符号，把它们相加再除以 2，得到整数链接数 <span class="math">lk(M)</span>。它记录两个分量代数意义上的缠绕。</p>
-      <p><strong>分离</strong>比“链接数为零”强：若空间中存在一个球面把两个分量放到两侧，链环才叫分离。<strong>局部连通和</strong>是在一个不碰另一分量的小球里，把第一分量的一小段弧替换成带结的弧；记作 <span class="math">H#₁J</span>。</p>
-
+      <h3>linking number：只记录“带符号的总缠绕”</h3>
+      <p>先给两个分量定向。每个<strong>混合交叉</strong>按标准定向约定记作 <span class="math">+1</span> 或 <span class="math">−1</span>，再把符号和除以 2：</p>
+      <div class="formula"><span class="math">lk(M)=½ ×（所有混合交叉的符号和）</span></div>
+      <div class="example-cycle">
+        <h3>小例子 · 符号会抵消</h3>
+        <p>某个投影的四个混合交叉符号依次是 <span class="math">+1,+1,−1,−1</span>。于是符号和为 0，<span class="math">lk=0</span>。</p>
+        <p><strong>但我们不能接着说“所以链环分离”。</strong>这个整数忘掉了交叉如何排列；不同的链环可以得到同一个数。</p>
+      </div>
       <div class="warning">
-        <strong>两条常见误判：</strong>
-        <ul class="scope-list">
-          <li><span class="math">lk=0</span> 不等于链环分离；正负缠绕可以在代数和中抵消。</li>
-          <li>每个分量单独看都是平凡结，也不等于整个链环是平凡或分离的。</li>
-        </ul>
+        <strong>必须分清：</strong>
+        <ul><li><strong>split link（分离链环）</strong>是存在一个球面把两个分量隔在两侧；<strong>unlink</strong> 还要求分离后的每个分量都是平凡结。</li><li><span class="math">lk=0</span> 不等于 split，更不等于 unlink。</li><li>两个分量各自都是平凡结，也不等于整个链环是 unlink。</li><li>局部系结改变某一个分量自身的结型；linking number 描述两个分量之间的代数缠绕，二者不是同一件事。</li></ul>
       </div>
 
-      <div class="checkpoint" data-quiz>
-        <h3>理解自检 1：哪一句一定正确？</h3>
-        <button type="button" data-answer="incorrect" data-message="不一定。链接数只保留带符号交叉的代数和；lk=0 的链环仍可能不分离。">lk=0，所以两个分量一定分离</button>
-        <button type="button" data-answer="correct" data-message="正确。分离可以推出链接数为 0；反方向一般不成立。">两个分量分离，所以 lk=0</button>
+      <div class="checkpoint" data-quiz data-progress-key="terms">
+        <h3>轮到你 1 · 条件辨析</h3>
+        <p>已知二分量链环 <span class="math">M</span> 的两个分量都为平凡结且 <span class="math">lk(M)=0</span>。哪一个结论一定成立？</p>
+        <button type="button" data-answer="incorrect" data-message="不成立。Whitehead link 就有两个平凡分量且 linking number 为 0，但它不是二分量 unlink。错误原因是把“一个整数相同”当成了完整分类。">M 一定是二分量 unlink</button>
+        <button type="button" data-answer="correct" data-message="正确。题目只给出了分量结型与 linking number；是否为 unlink 还需要更多信息。">无法仅由这些信息判断 M 是否为 unlink</button>
         <p class="feedback" data-feedback aria-live="polite"></p>
       </div>
-
-      <h3>Laurent 多项式是什么？</h3>
-      <p>普通多项式只允许非负整数幂；Laurent 多项式还允许负幂，例如 <span class="math">x<sup>−2</sup>+x<sup>6</sup>−x<sup>8</sup></span>。它在 <span class="math">x=1</span> 没有极点，所以可以像普通函数一样求导、代入。这里所有导数都对 <span class="math">x</span> 求。</p>
     </section>
 
-    <section id="detector">
-      <p class="eyebrow">Part 2 · The Detector</p>
-      <h2>为什么看二阶导数就能排除相等？</h2>
-      <p>如果两个 Laurent 多项式处处相等，那么它们的差恒为零，因此在 <span class="math">x=1</span> 的函数值、一阶导数、二阶导数……全部相等。于是：</p>
+    <section id="calculus">
+      <p class="eyebrow">Part 3 · Laurent Calculus</p>
+      <h2>先学会负幂求导，再谈 Jones 多项式</h2>
+      <h3>变量约定和符号是什么意思？</h3>
+      <p>Jones 多项式通常写成变量 <span class="math">t</span> 的 Laurent 多项式。本课把 <span class="math">t<sup>1/2</sup></span> 改名为 <span class="math">x</span>：</p>
+      <div class="formula"><span class="math">f<sub>M</sub>(x)=V<sub>M</sub>(t)|<sub>t<sup>1/2</sup>=x</sub></span></div>
+      <p>这是<strong>变量替换与归一化约定</strong>，不是新的拓扑操作。Laurent 多项式允许负整数幂，例如 <span class="math">x<sup>−2</sup></span>。因为 <span class="math">x=1≠0</span>，这些负幂在 1 附近没有极点，可以正常求导和代入。</p>
+
+      <h3>为什么取 <span class="math">x=1</span>？为什么看到二阶？</h3>
+      <ul class="reason-list">
+        <li><strong>计算简单：</strong>任何整数 <span class="math">n</span> 都有 <span class="math">1<sup>n</sup>=1</span>。</li>
+        <li><strong>归一化值简单：</strong>本课所用 Jones 归一化在 1 处给出结的值 1、二分量链环的值 −2。</li>
+        <li><strong>一阶已经有明确含义：</strong>对二分量链环，稍后会推出 <span class="math">f′(1)=−6lk</span>。当 <span class="math">lk=0</span> 时一阶看不出区别，于是查看下一层——二阶。</li>
+      </ul>
+      <div class="note"><strong>不是因为二阶能分类链环。</strong>二阶只是本题中第一个能排除候选的便宜检测量。</div>
+
+      <h3>手算例子 · 负幂也用同一条幂法则</h3>
       <div class="formula">
-        <span class="line">若 <span class="math">P(x)=Q(x)</span>，则必有 <span class="math">P″(1)=Q″(1)</span>。</span>
-        <span class="line"><strong>逆否命题：</strong>若 <span class="math">P″(1)≠Q″(1)</span>，则 <span class="math">P(x)≠Q(x)</span>。</span>
+        <span class="line"><span class="math">(cx<sup>n</sup>)′=cnx<sup>n−1</sup></span></span>
+        <span class="line"><span class="math">(cx<sup>n</sup>)″=cn(n−1)x<sup>n−2</sup></span></span>
       </div>
-      <p>这是一个<strong>排除器</strong>：发现不同就可以立即否定相等；没有发现不同则不能下结论。两个不同多项式完全可能碰巧有相同二阶导数。</p>
-
-      <div class="checkpoint" data-quiz>
-        <h3>理解自检 2：若 <span class="math">P″(1)=Q″(1)</span>，能推出什么？</h3>
-        <button type="button" data-answer="incorrect" data-message="不能。相同的二阶导数只是没有被这个检测器区分；例如 1 与 1+(x−1)³ 在 x=1 的二阶导数都为 0。">P 与 Q 一定相同</button>
-        <button type="button" data-answer="correct" data-message="正确。检测结果相同只表示这一次检测没有排除相等，不能证明多项式相同。">什么也不能确定，还需别的信息</button>
-        <p class="feedback" data-feedback aria-live="polite"></p>
+      <div class="worked-grid">
+        <article class="panel"><h3><span class="math">x<sup>−2</sup></span></h3><p>一阶：<span class="math">−2x<sup>−3</sup></span>，所以在 1 处是 −2。</p><p>二阶：<span class="math">(−2)(−3)x<sup>−4</sup>=6x<sup>−4</sup></span>，所以在 1 处是 6。</p></article>
+        <article class="panel"><h3><span class="math">−x<sup>−8</sup></span></h3><p>一阶：<span class="math">(−1)(−8)x<sup>−9</sup>=8x<sup>−9</sup></span>，在 1 处是 8。</p><p>二阶：<span class="math">(−1)(−8)(−9)x<sup>−10</sup>=−72x<sup>−10</sup></span>，在 1 处是 −72。</p></article>
       </div>
+      <p>最容易错的是二阶系数：它是 <span class="math">n(n−1)</span>，不是 <span class="math">n²</span>；当 <span class="math">n</span> 为负数时，<span class="math">n−1</span> 会更负。</p>
 
-      <h3>先算三叶结：每个单项式逐项求导</h3>
-      <p>本课采用变量 <span class="math">t<sup>1/2</sup>=x</span>。选一个结，表格会显示单项式 <span class="math">cx<sup>n</sup></span> 在 <span class="math">x=1</span> 对一阶导数贡献 <span class="math">cn</span>，对二阶导数贡献 <span class="math">cn(n−1)</span>。</p>
-
-      <div class="lab" data-derivative-lab>
-        <div class="lab-head">
-          <h3>互动 1 · 选择结并核对导数</h3>
-          <p>用方向键或 Tab 移动焦点，Enter/空格选择。</p>
+      <div class="practice-card" data-derivative-practice>
+        <p class="mini-label">Try → Diagnose → Retry</p>
+        <h3>轮到你 2 · 先算再核对</h3>
+        <p>设 <span class="math">g(x)=2x<sup>−3</sup>−x⁴+5</span>。先逐项写出在 1 处的贡献，再填总和。</p>
+        <div class="input-grid">
+          <label><span class="math">g′(1)=</span><input type="number" inputmode="numeric" data-derivative-first aria-label="g 在 1 处的一阶导数"></label>
+          <label><span class="math">g″(1)=</span><input type="number" inputmode="numeric" data-derivative-second aria-label="g 在 1 处的二阶导数"></label>
         </div>
+        <button type="button" class="primary" data-check-derivative>核对计算</button><button type="button" data-reset-derivative>重置</button>
+        <p class="feedback" data-derivative-feedback aria-live="polite"></p>
+        <details><summary>需要提示？只展开第一步</summary><p><span class="math">g′(1)=2(−3)−4+0</span>；<span class="math">g″(1)=2(−3)(−4)−4·3+0</span>。</p></details>
+        <details><summary>完整解答</summary><p><span class="math">g′(1)=−6−4=−10</span>；<span class="math">g″(1)=24−12=12</span>。常数 5 的一、二阶贡献都是 0。</p></details>
+      </div>
+
+      <h3>三叶结具体算一遍</h3>
+      <p>下面不是只显示结论；表格把每一个单项式对一阶、二阶的贡献列出来。先选 <span class="math">J₋</span>，特别观察刚练过的 <span class="math">x<sup>−2</sup></span> 与 <span class="math">−x<sup>−8</sup></span>。</p>
+      <div class="lab" data-derivative-lab>
+        <div class="lab-head"><h3>互动 · 逐项核对 U、J₊、J₋</h3></div>
         <div class="lab-body">
           <div class="choice-row" role="group" aria-label="选择结">
-            <button type="button" data-poly="unknot" aria-pressed="true">平凡结 U</button>
-            <button type="button" data-poly="positive" aria-pressed="false">三叶结 J₊</button>
-            <button type="button" data-poly="negative" aria-pressed="false">镜像三叶结 J₋</button>
+            <button type="button" data-poly="unknot" aria-pressed="true">平凡结 U</button><button type="button" data-poly="positive" aria-pressed="false">三叶结 J₊</button><button type="button" data-poly="negative" aria-pressed="false">镜像三叶结 J₋</button>
           </div>
           <div class="formula"><strong data-poly-name>平凡结 U</strong><br><span data-poly-formula>f(x) = 1</span></div>
-          <div class="term-table-wrap">
-            <table>
-              <thead><tr><th>单项式</th><th>对 f′(1) 的贡献</th><th>对 f″(1) 的贡献</th></tr></thead>
-              <tbody data-term-body></tbody>
-            </table>
-          </div>
+          <div class="term-table-wrap"><table><thead><tr><th>单项式</th><th>对 f′(1) 的贡献</th><th>对 f″(1) 的贡献</th></tr></thead><tbody data-term-body></tbody></table></div>
           <p class="readout" data-derivative-result aria-live="polite"></p>
         </div>
       </div>
-
       <div class="formula">
         <span class="line"><span class="math">f<sub>J₊</sub>=x²+x⁶−x⁸</span>：<span class="math">f′(1)=2+6−8=0</span>，<span class="math">f″(1)=2+30−56=−24</span>。</span>
         <span class="line"><span class="math">f<sub>J₋</sub>=x<sup>−2</sup>+x<sup>−6</sup>−x<sup>−8</sup></span>：<span class="math">f′(1)=−2−6+8=0</span>，<span class="math">f″(1)=6+42−72=−24</span>。</span>
       </div>
-      <p class="note"><strong>读数：</strong>两种手性的三叶结都有 <span class="math">f″(1)=−24</span>。这足够服务本题，但不能据此声称两种 Jones 多项式相同。</p>
+
+      <h3>二阶检测是单向的</h3>
+      <p>若两个 Laurent 多项式相等，则它们在 1 处的二阶导数必相等。因此二阶值不同足以排除相等。反方向不成立。</p>
+      <div class="comparison-table"><div><strong>P(x)=1</strong><span>P″(1)=0</span></div><div><strong>Q₂(x)=1+(x−1)²</strong><span>Q₂″(1)=2</span><small>不同，所以 P≠Q₂</small></div><div><strong>Q₃(x)=1+(x−1)³</strong><span>Q₃″(1)=0</span><small>相同，但 P≠Q₃</small></div></div>
+      <p class="note">这里的 <span class="math">P,Q₂,Q₃</span> 只是一般多项式教学例子，<strong>不声称</strong>它们都是某个结或链环的 Jones 多项式。</p>
+      <div class="checkpoint" data-quiz data-progress-key="detector">
+        <h3>轮到你 3 · 这个检测器能说什么？</h3>
+        <button type="button" data-answer="incorrect" data-message="错误在把必要条件当成充分条件。P 与 Q₃ 的二阶值都为 0，但两个多项式显然不同。">二阶值相同，就能证明多项式相同</button>
+        <button type="button" data-answer="correct" data-message="正确。不同可以排除相等；相同只能说这次检测没有区分出来。">二阶值不同可排除相等；相同则不能判断</button>
+        <p class="feedback" data-feedback aria-live="polite"></p>
+      </div>
     </section>
 
     <section id="proof">
-      <p class="eyebrow">Part 3 · Build the Formula</p>
-      <h2>从换叉到二阶校正量</h2>
-      <p>先固定归一化。对任意链环 <span class="math">M</span>，令</p>
-      <div class="formula">
-        <span class="line"><span class="math">f<sub>M</sub>(x)=V<sub>M</sub>(t)|<sub>t<sup>1/2</sup>=x</sub></span>，<span class="math">δ=−(x+x<sup>−1</sup>)</span>，<span class="math">f<sub>U</sub>=1</span>。</span>
-        <span class="line">Jones skein 关系：<span class="math">x<sup>−2</sup>f<sub>+</sub>−x²f<sub>−</sub>=(x−x<sup>−1</sup>)f<sub>0</sub></span>。</span>
-      </div>
-      <p>符号 <span class="math">+</span>、<span class="math">−</span> 表示同一小区域的正、负交叉，<span class="math">0</span> 表示定向平滑。把 skein 关系在 <span class="math">x=1</span> 处求导，就是下面两轮计算的发动机。</p>
-
-      <div class="proof-steps">
-        <article class="step-card">
-          <h3>零阶值先固定</h3>
-          <p>在 <span class="math">x=1</span>，任意结 <span class="math">K</span> 有 <span class="math">f<sub>K</sub>(1)=1</span>；任意二分量链环 <span class="math">M</span> 有 <span class="math">f<sub>M</sub>(1)=−2</span>。记 <span class="math">F=f<sub>+</sub>(1)=f<sub>−</sub>(1)</span>。</p>
-        </article>
-        <article class="step-card">
-          <h3>一阶换叉公式</h3>
-          <p>对 skein 关系求一次导并代入 <span class="math">x=1</span>：</p>
-          <div class="formula"><span class="math">f′<sub>+</sub>−f′<sub>−</sub>=4F+2f<sub>0</sub></span>。</div>
-          <p>若换的是结的自交叉，平滑后是二分量链环，所以右边为 <span class="math">4·1+2·(−2)=0</span>。任何结都能通过换自交叉变成平凡结，而 <span class="math">f′<sub>U</sub>(1)=0</span>，故<strong>所有结都满足 <span class="math">f′<sub>K</sub>(1)=0</span></strong>。</p>
-          <p>若换的是二分量链环的混合交叉，平滑后是结，所以右边为 <span class="math">4·(−2)+2·1=−6</span>。按这里的符号约定，从负交叉改为正交叉使 <span class="math">lk</span> 加 1，因此</p>
-          <div class="formula"><span class="math">f′<sub>M</sub>(1)=−6lk(M)</span>。</div>
-        </article>
-        <article class="step-card">
-          <h3>为什么能走到分离端？</h3>
-          <p>只改变混合交叉，可以把两个分量分开，同时不改变每个分量自身的结型。分离端满足</p>
-          <div class="formula"><span class="math">f<sub>split</sub>=δf<sub>K₁</sub>f<sub>K₂</sub></span>。</div>
-          <p>其一阶导数在 <span class="math">x=1</span> 为 0，因为 <span class="math">δ′(1)=0</span>，且两个结的一阶导数都是 0。沿换叉路径每使 <span class="math">lk</span> 增加 1，<span class="math">f′</span> 就减少 6，于是得到上一行公式。</p>
-        </article>
-        <article class="step-card">
-          <h3>二阶展开</h3>
-          <p>再求一次导数，逐项在 <span class="math">x=1</span> 展开：</p>
-          <div class="formula">
-            <span class="line"><span class="math">(x<sup>−2</sup>f<sub>+</sub>)″=6F−4f′<sub>+</sub>+f″<sub>+</sub></span></span>
-            <span class="line"><span class="math">(x²f<sub>−</sub>)″=2F+4f′<sub>−</sub>+f″<sub>−</sub></span></span>
-            <span class="line"><span class="math">((x−x<sup>−1</sup>)f<sub>0</sub>)″=−2f<sub>0</sub>+4f′<sub>0</sub></span></span>
-          </div>
-          <p>整理为</p>
-          <div class="formula"><span class="math">f″<sub>+</sub>−f″<sub>−</sub>=4(f′<sub>+</sub>+f′<sub>−</sub>)−4F−2f<sub>0</sub>+4f′<sub>0</sub></span>。</div>
-        </article>
+      <p class="eyebrow">Part 4 · From Examples to the Proof</p>
+      <h2>每一步需要什么事实，又推出什么？</h2>
+      <div class="fact-box">
+        <p class="mini-label">本课采用的已知事实与假设</p>
+        <ol>
+          <li><strong>归一化：</strong><span class="math">δ=−(x+x<sup>−1</sup>)</span>，<span class="math">f<sub>U</sub>=1</span>；在 <span class="math">x=1</span>，结的值为 1，二分量链环的值为 −2。</li>
+          <li><strong>Jones skein 关系：</strong><span class="math">x<sup>−2</sup>f<sub>+</sub>−x²f<sub>−</sub>=(x−x<sup>−1</sup>)f<sub>0</sub></span>。这里三幅链环图在一个小球外完全相同；球内 <span class="math">M₊</span>、<span class="math">M₋</span> 分别放同一处正、负交叉，<span class="math">M₀</span> 则按箭头方向重新接线，称为定向平滑。记 <span class="math">f₊=f<sub>M₊</sub>(x)</span>、<span class="math">f₋=f<sub>M₋</sub>(x)</span>、<span class="math">f₀=f<sub>M₀</sub>(x)</span>。</li>
+          <li><strong>分离乘法公式：</strong>若两个分量分离，则 <span class="math">f<sub>split</sub>=δf<sub>K₁</sub>f<sub>K₂</sub></span>。</li>
+          <li><strong>换叉路径：</strong>只改混合交叉可以把两个分量分离，且不改变两个分量各自的结型。</li>
+        </ol>
+        <p>若被平滑的是一个结的自交叉，沿方向重接会把一个分量拆成两个；若是二分量链环的混合交叉，重接会把两个分量接成一个结。下文记 <span class="math">F=f₊(1)=f₋(1)</span>；符号 <span class="math">|₁</span> 表示“求完导后代入 <span class="math">x=1</span>”。为缩短公式，未写自变量的 <span class="math">f₀、f′₀</span> 等也都指在 1 处的取值。</p>
+        <p>这些是本证明的输入，不在本页从零证明。本页做的是对它们求导、代数整理并应用到指定候选。</p>
       </div>
 
-      <h3>混合换叉时，二阶导数会怎样变？</h3>
-      <p>混合交叉处有 <span class="math">F=−2</span>，平滑后是结，所以 <span class="math">f<sub>0</sub>=1</span>、<span class="math">f′<sub>0</sub>=0</span>。令负交叉状态的链接数为 <span class="math">lk(M<sub>−</sub>)=k</span>，正交叉状态就是 <span class="math">lk(M<sub>+</sub>)=k+1</span>。代入 <span class="math">f′=−6lk</span>：</p>
-      <div class="formula"><span class="math">Δf″=f″<sub>+</sub>−f″<sub>−</sub>=−48k−18</span>。</div>
-      <p>这个变化依赖中途的 <span class="math">k</span>。不能因为最终想研究 <span class="math">lk=0</span>，就把每次换叉前的 <span class="math">k</span> 擅自设成 0。</p>
+      <h3>学习循环 A · 一阶导数为什么变成 linking number？</h3>
+      <p><strong>为什么需要：</strong>二阶换叉公式会含有 <span class="math">f′<sub>+</sub>+f′<sub>−</sub></span>，所以必须先知道一阶导数。</p>
+      <div class="derivation-lines">
+        <p><span>左边第一项</span><span class="math">(x<sup>−2</sup>f<sub>+</sub>)′|₁=−2F+f′<sub>+</sub></span></p>
+        <p><span>左边第二项</span><span class="math">(x²f<sub>−</sub>)′|₁=2F+f′<sub>−</sub></span></p>
+        <p><span>右边</span><span class="math">((x−x<sup>−1</sup>)f₀)′|₁=2f₀</span></p>
+      </div>
+      <p>右边没有 <span class="math">f′₀</span>，因为乘它的因子 <span class="math">x−x<sup>−1</sup></span> 在 1 处等于 0。整理得到：</p>
+      <div class="formula"><span class="math">f′<sub>+</sub>−f′<sub>−</sub>=4F+2f₀</span></div>
+      <div class="two-column">
+        <article class="panel"><h3>自交叉</h3><p>原对象是结，<span class="math">F=1</span>；定向平滑后是二分量链环，<span class="math">f₀=−2</span>。</p><p>变化量 <span class="math">4−4=0</span>。最终所有结都有 <span class="math">f′<sub>K</sub>(1)=0</span>。</p></article>
+        <article class="panel"><h3>混合交叉</h3><p>原对象是二分量链环，<span class="math">F=−2</span>；定向平滑后是结，<span class="math">f₀=1</span>。</p><p>从负交叉改正交叉使 <span class="math">lk</span> 加 1，而 <span class="math">f′</span> 改变 −6，因此 <span class="math">f′<sub>M</sub>(1)=−6lk(M)</span>。</p></article>
+      </div>
 
+      <h3>学习循环 B · 二阶换叉与校正量</h3>
+      <p><strong>为什么需要：</strong>原始 <span class="math">f″</span> 在混合换叉下会随中途的 linking number 改变。我们要加一个恰好抵消变化的项，才能安全走到分离端。</p>
+      <details class="deep-dive">
+        <summary>展开完整二阶求导（进阶阅读）</summary>
+        <div class="formula">
+          <span class="line"><span class="math">(x<sup>−2</sup>f<sub>+</sub>)″|₁=6F−4f′<sub>+</sub>+f″<sub>+</sub></span></span>
+          <span class="line"><span class="math">(x²f<sub>−</sub>)″|₁=2F+4f′<sub>−</sub>+f″<sub>−</sub></span></span>
+          <span class="line"><span class="math">((x−x<sup>−1</sup>)f₀)″|₁=−2f₀+4f′₀</span></span>
+        </div>
+        <p>整理后：<span class="math">f″<sub>+</sub>−f″<sub>−</sub>=4(f′<sub>+</sub>+f′<sub>−</sub>)−4F−2f₀+4f′₀</span>。</p>
+      </details>
+      <p>对混合交叉，<span class="math">F=−2</span>，平滑后是结，所以 <span class="math">f₀=1,f′₀=0</span>。若负交叉状态的 <span class="math">lk=k</span>，正交叉状态的 <span class="math">lk=k+1</span>，代入 <span class="math">f′=−6lk</span> 得：</p>
+      <div class="formula"><span class="math">Δf″=f″<sub>+</sub>−f″<sub>−</sub>=−48k−18</span></div>
+      <div class="example-cycle">
+        <h3>手算三个具体 k</h3>
+        <ul><li><span class="math">k=−1</span>：原二阶项变化 30，平方校正变化 −24，线性校正变化 −6，总变化 0。</li><li><span class="math">k=0</span>：<span class="math">−18+24−6=0</span>。</li><li><span class="math">k=1</span>：<span class="math">−66+72−6=0</span>。</li></ul>
+        <p>“总变化为 0”指<strong>校正后的量不随这次换叉改变</strong>，不是说校正量本身等于 0。</p>
+      </div>
       <div class="lab" data-correction-lab>
-        <div class="lab-head">
-          <h3>互动 2 · 让校正量在任意整数 k 下抵消</h3>
-          <p>拖动滑块。这里是在核对代数恒等式；滑块上的每个参数值<strong>不承诺</strong>都有某个具体链环图实现。</p>
-        </div>
+        <div class="lab-head"><h3>轮到你 4 · 检查任意中途 k</h3><p>先预测三个变化项，再拖动滑块核对。代数参数用于检验恒等式，不承诺每个参数都对应一个已指定的链环图。</p></div>
         <div class="lab-body">
-          <label for="k-slider"><strong>负交叉状态的链接数 k</strong></label>
-          <div class="slider-line">
-            <input id="k-slider" type="range" min="-8" max="8" step="1" value="0" data-k-slider>
-            <output class="k-value" for="k-slider" data-k-value>k = 0</output>
-          </div>
-          <div class="cancel-grid" aria-live="polite">
-            <div><span>原二阶项变化 −48k−18</span><strong data-raw-change>−18</strong></div>
-            <div><span>24lk² 的变化 24(2k+1)</span><strong data-square-change>24</strong></div>
-            <div><span>−6lk 的变化</span><strong data-linear-change>−6</strong></div>
-          </div>
-          <p class="readout">总变化：<strong data-total-change>0</strong>。所以校正量在每一次混合换叉下保持不变。</p>
+          <label for="k-slider"><strong>负交叉状态的 linking number k</strong></label>
+          <div class="slider-line"><input id="k-slider" type="range" min="-4" max="4" step="1" value="0" data-k-slider><output class="k-value" for="k-slider" data-k-value>k = 0</output></div>
+          <div class="cancel-grid" aria-live="polite"><div><span>Δf″=−48k−18</span><strong data-raw-change>−18</strong></div><div><span>Δ(24lk²)=24(2k+1)</span><strong data-square-change>24</strong></div><div><span>Δ(−6lk)</span><strong data-linear-change>−6</strong></div></div>
+          <p class="readout">校正后总变化：<strong data-total-change>0</strong>；因此下面这个量沿换叉路径保持<strong>恒定</strong>。</p>
+          <p class="lab-hint" data-correction-coverage aria-live="polite">关键值 k=−1,0,1 已核对 1 / 3。</p>
         </div>
       </div>
+      <div class="formula"><span class="math">Q<sub>corr</sub>(M)=f″<sub>M</sub>(1)+24lk(M)²−6lk(M)</span></div>
 
-      <div class="formula"><strong>校正不变量：</strong> <span class="math">Q<sub>corr</sub>(M)=f″<sub>M</sub>(1)+24lk(M)²−6lk(M)</span>。</div>
-      <p>它在混合换叉下不变。走到分离端时，设</p>
-      <div class="formula">
-        <span class="line"><span class="math">a=f″<sub>K₁</sub>(1)</span>，<span class="math">b=f″<sub>K₂</sub>(1)</span>，<span class="math">p=f<sub>K₁</sub>f<sub>K₂</sub></span>；</span>
-        <span class="line"><span class="math">p(1)=1</span>，<span class="math">p′(1)=0</span>，<span class="math">p″(1)=a+b</span>；</span>
-        <span class="line"><span class="math">δ(1)=−2</span>，<span class="math">δ′(1)=0</span>，<span class="math">δ″(1)=−2</span>。</span>
-      </div>
-      <p>因为 <span class="math">f<sub>split</sub>=δp</span>，二阶乘积法则给出 <span class="math">f″<sub>split</sub>=−2−2(a+b)</span>。所以对任意二分量 <span class="math">M</span>：</p>
-      <div class="formula"><span class="math">f″<sub>M</sub>(1)+24lk(M)²−6lk(M)=−2−2(a+b)</span>。</div>
+      <h3>学习循环 C · 到分离端后怎样求二阶？</h3>
+      <p>设 <span class="math">a=f″<sub>K₁</sub>(1)</span>、<span class="math">b=f″<sub>K₂</sub>(1)</span>，并记 <span class="math">p=f<sub>K₁</sub>f<sub>K₂</sub></span>。两个结都满足 <span class="math">f(1)=1,f′(1)=0</span>，因此：</p>
+      <div class="formula"><span class="math">p(1)=1，p′(1)=0，p″(1)=a+b</span></div>
+      <p>最后一式来自二阶乘积法则：</p>
+      <div class="formula"><span class="math">p″=f″<sub>K₁</sub>f<sub>K₂</sub>+2f′<sub>K₁</sub>f′<sub>K₂</sub>+f<sub>K₁</sub>f″<sub>K₂</sub></span></div>
+      <p>在 1 处，中间交叉项是 <span class="math">2·0·0=0</span>，不是被随手省略。又因 <span class="math">δ(1)=−2,δ′(1)=0,δ″(1)=−2</span>，分离端 <span class="math">f<sub>split</sub>=δp</span> 给出 <span class="math">f″<sub>split</sub>=−2−2(a+b)</span>。由校正量沿路径恒定：</p>
+      <div class="formula"><span class="math">f″<sub>M</sub>(1)+24lk(M)²−6lk(M)=−2−2(a+b)</span></div>
 
-      <h3>只在 <span class="math">lk=0</span> 时引入本题的 <span class="math">S<sub>M</sub></span></h3>
-      <div class="warning"><strong>适用范围与直接定义：</strong>从这里到本节结束都假设 <span class="math">lk(M)=0</span>。本课直接定义需要比较的 Laurent 多项式组合为 <span class="math">S<sub>M</sub>(x)=δ(x)f<sub>M</sub>(x)+δ(x)²p(x)</span>。后续只使用这个公式，不需要引入其他记号。</div>
-      <p>此时校正公式化成 <span class="math">f″<sub>M</sub>=−2−2(a+b)</span>。下面逐步展开两个乘积。特别留意：乘积求导的交叉项不是“被省略”，而是因为一阶导数在 <span class="math">x=1</span> 恰好为零。</p>
-
+      <h3>本题的 <span class="math">S<sub>M</sub></span> 与二阶乘积法则</h3>
+      <div class="warning"><strong>从这里起假设 <span class="math">lk(M)=0</span>。</strong>本课直接定义 <span class="math">S<sub>M</sub>(x)=δ(x)f<sub>M</sub>(x)+δ(x)²p(x)</span>。定义里的 <span class="math">p=f<sub>K₁</sub>f<sub>K₂</sub></span> 只记录两个分量各自的 Jones 多项式乘积。</div>
+      <p>先把 <span class="math">δ²</span> 的二阶数据算清楚。由 <span class="math">δ=−x−x<sup>−1</sup></span>，可直接平方：</p>
+      <div class="formula"><span class="math">δ²=x²+2+x<sup>−2</sup></span><br><span class="math">(δ²)′(1)=2−2=0</span><br><strong><span class="math">(δ²)″(1)=2+6=8</span></strong></div>
+      <p>这里的 6 正是前面算过的 <span class="math">x<sup>−2</sup></span> 的二阶贡献。</p>
       <div class="lab" data-product-stepper>
-        <div class="lab-head">
-          <h3>互动 3 · 逐步揭示乘积求导</h3>
-          <p>可以来回检查，也可以随时复位到第一步。</p>
-        </div>
+        <div class="lab-head"><h3>互动 · 把乘积法则每一项放回去</h3><p>每一步都显示“从哪一项来”；到最后一步才合并。</p></div>
         <div class="lab-body">
           <div class="stepper-stage" tabindex="-1" data-step-stage aria-live="polite"></div>
-          <div class="step-controls">
-            <button type="button" data-step-prev>← 上一步</button>
-            <button type="button" class="primary" data-step-next>下一步 →</button>
-            <button type="button" data-step-reset>复位</button>
-            <span class="step-count" data-step-count></span>
-          </div>
+          <div class="step-controls"><button type="button" data-step-prev>← 上一步</button><button type="button" class="primary" data-step-next>下一步 →</button><button type="button" data-step-reset>复位</button><span class="step-count" data-step-count></span></div>
         </div>
       </div>
-
-      <div class="formula">
-        <span class="line"><span class="math">(δf<sub>M</sub>)″=4−2f″<sub>M</sub></span></span>
-        <span class="line"><span class="math">(δ²p)″=8+4(a+b)</span>，因为 <span class="math">(δ²)′(1)=0</span>、<span class="math">(δ²)″(1)=8</span>。</span>
-        <span class="line"><strong><span class="math">S″<sub>M</sub>(1)=16+8(a+b)</span></strong>。</span>
+      <div class="checkpoint" data-quiz data-progress-key="product">
+        <h3>轮到你 5 · 哪个展开完整？</h3>
+        <p>对 <span class="math">δ²p</span> 求二阶，正确公式是哪一个？</p>
+        <button type="button" data-answer="incorrect" data-message="少了交叉项。即使它代入 x=1 后会因一阶值为 0 而消失，写乘积法则时仍必须先写出 2(δ²)′p′。">(δ²p)″=(δ²)″p+δ²p″</button>
+        <button type="button" data-answer="correct" data-message="正确。三项必须先完整写出；随后用 (δ²)′(1)=0 与 p′(1)=0 消掉中间项。">(δ²p)″=(δ²)″p+2(δ²)′p′+δ²p″</button>
+        <p class="feedback" data-feedback aria-live="polite"></p>
       </div>
+      <div class="formula"><span class="line"><span class="math">(δf<sub>M</sub>)″=4−2f″<sub>M</sub></span></span><span class="line"><span class="math">(δ²p)″=8+4(a+b)</span></span><span class="line"><strong><span class="math">S″<sub>M</sub>(1)=16+8(a+b)</span></strong></span></div>
     </section>
 
-    <section id="application">
-      <p class="eyebrow">Part 4 · Apply the Formula</p>
-      <h2>局部系三叶结后，数值落在哪里？</h2>
-      <p>设 <span class="math">H=H₁∪H₂</span> 的两个分量本来都是平凡结，且 <span class="math">lk(H)=0</span>。在一个完全不碰 <span class="math">H₂</span> 的小球里，把 <span class="math">H₁</span> 的一段弧替换成三叶结弧，得到</p>
-      <div class="formula"><span class="math">L=H#₁J<sub>±</sub></span>。</div>
-      <p>第一分量从平凡结变成 <span class="math">J<sub>±</sub></span>，第二分量仍是平凡结；由于修改只发生在不碰第二分量的小球里，链接数保持为 0。</p>
+    <section id="worked">
+      <p class="eyebrow">Part 5 · Fully Worked Examples</p>
+      <h2>把公式用在三个具体对象上</h2>
+      <article class="worked-example">
+        <h3>例题 A · 二分量 unlink 的校准</h3>
+        <p><strong>已知：</strong>两个分量都是 <span class="math">U</span>，所以 <span class="math">a=b=0</span>，且 <span class="math">lk=0</span>。</p>
+        <ol><li>用通式：<span class="math">S″(1)=16+8(0+0)=16</span>。</li><li>独立核对：<span class="math">S=2δ²=2(x²+2+x<sup>−2</sup>)</span>。</li><li>因此 <span class="math">S″(1)=2(2+6)=16</span>，两种算法一致。</li></ol>
+      </article>
+      <article class="worked-example">
+        <h3>例题 B · Whitehead link 为什么也是 16？</h3>
+        <p>Whitehead link 的两个分量各自都是平凡结，且 linking number 为 0。因此在本课公式中仍有 <span class="math">a=b=0</span>，得到 <span class="math">S″(1)=16</span>。</p>
+        <p class="warning"><strong>这不表示 Whitehead link 与二分量 unlink 是同一个链环。</strong>它们只是被这个二阶数值检测器赋予同一个值。这正是“相同不变量值不能推出同痕”的具体例子。</p>
+      </article>
+      <article class="worked-example emphasis">
+        <h3>例题 C · 局部系三叶结后的完整排除</h3>
+        <ol>
+          <li><strong>确认假设：</strong>替换球不碰第二分量，所以第一分量变成 <span class="math">J<sub>±</sub></span>，第二分量仍为 <span class="math">U</span>，且 linking number 不变为 0。</li>
+          <li><strong>读分量数据：</strong><span class="math">a=f″<sub>J±</sub>(1)=−24</span>，<span class="math">b=f″<sub>U</sub>(1)=0</span>。</li>
+          <li><strong>代入：</strong><span class="math">S″<sub>L</sub>(1)=16+8(−24+0)=−176</span>。</li>
+          <li><strong>比较候选：</strong>任意两个平凡分量且 <span class="math">lk=0</span> 的 <span class="math">L′</span> 都给 <span class="math">S″<sub>L′</sub>(1)=16</span>。</li>
+          <li><strong>作出单向结论：</strong>差为 <span class="math">−176−16=−192≠0</span>，所以 <span class="math">S<sub>L</sub>≠S<sub>L′</sub></span>。</li>
+        </ol>
+        <p>Laurent 多项式在 <span class="math">x=1</span> 没有极点，因此若两个多项式相等，二阶导数必须相等；这里不同，故可排除相等。</p>
+      </article>
+    </section>
 
-      <div class="two-column">
-        <article class="panel">
-          <h3>直观层</h3>
-          <p>把小球想成一个封闭工作台：只在里面给第一根绳子系结，第二根绳子没有进入工作台。因而第一分量的结型改变，但两个分量之间的整体缠绕数不变。</p>
-        </article>
-        <article class="panel">
-          <h3>深入层</h3>
-          <p>新旧两段弧之差完全位于一个不交 <span class="math">H₂</span> 的球内，并在该球内界定一个 2-chain。因此它与 <span class="math">H₂</span> 的代数交数为零，链接数不变。</p>
-        </article>
-      </div>
-      <p class="note">这是局部连通和操作，不要与 Whitehead double 混为一谈。本课的排除法包含 Whitehead 基础特例，但讨论的是这里指定的局部系三叶结候选。</p>
-
+    <section id="practice">
+      <p class="eyebrow">Part 6 · Independent Practice</p>
+      <h2>先探索，再独立完成研究情境题</h2>
       <div class="lab" data-final-calculator>
-        <div class="lab-head">
-          <h3>互动 4 · 把分量的二阶数据送进公式</h3>
-          <p>选择两个分量的结型，观察 <span class="math">S″=16+8(a+b)</span>。这些按钮用于代数对照，不表示每种组合都已指定一个实际链环。</p>
-        </div>
+        <div class="lab-head"><h3>探索器 · 改变两个分量的二阶数据</h3><p>按钮只做代数对照，不声称每个组合都已经指定了实际链环。</p></div>
         <div class="lab-body">
-          <div class="choice-row">
-            <button type="button" data-components="0,0" aria-pressed="true">U 与 U</button>
-            <button type="button" data-components="-24,0" aria-pressed="false">J₊ 与 U</button>
-            <button type="button" data-components="0,-24" aria-pressed="false">U 与 J₋</button>
-            <button type="button" data-components="-24,-24" aria-pressed="false">J₊ 与 J₋</button>
-          </div>
+          <div class="choice-row"><button type="button" data-components="0,0" aria-pressed="true">U 与 U</button><button type="button" data-components="-24,0" aria-pressed="false">J₊ 与 U</button><button type="button" data-components="0,-24" aria-pressed="false">U 与 J₋</button><button type="button" data-components="-24,-24" aria-pressed="false">J₊ 与 J₋</button></div>
           <div class="formula"><span class="math">a=<span data-a>0</span></span>，<span class="math">b=<span data-b>0</span></span>，<span class="math">a+b=<span data-sum>0</span></span></div>
           <p class="readout" aria-live="polite" aria-atomic="true"><span class="math">S″(1)=16+8(a+b)=</span> <strong data-final-result>16</strong></p>
         </div>
       </div>
 
-      <div class="result-grid">
-        <article class="result-card contrast">
-          <p class="mini-label">局部系三叶结候选 L</p>
-          <p><span class="math">a=−24</span>，<span class="math">b=0</span></p>
-          <p class="final-number">−176</p>
-          <p><span class="math">S″<sub>L</sub>(1)=16+8(−24)=−176</span></p>
-        </article>
-        <article class="result-card">
-          <p class="mini-label">两个平凡分量且 lk=0 的 L′</p>
-          <p><span class="math">a=b=0</span></p>
-          <p class="final-number">16</p>
-          <p><span class="math">S″<sub>L′</sub>(1)=16</span></p>
-        </article>
+      <div class="practice-card" data-comprehensive-exercise>
+        <p class="mini-label">Final Practice</p>
+        <h3>轮到你 6 · 不看例题，完成整条计算</h3>
+        <p>一个二分量链环满足 <span class="math">lk=0</span>。第一分量局部系上 <span class="math">J₋</span>，第二分量仍为 <span class="math">U</span>。另一个候选的两个分量都是 <span class="math">U</span> 且 <span class="math">lk=0</span>。</p>
+        <div class="input-grid four">
+          <label><span class="math">a=</span><input type="number" data-answer-a aria-label="第一分量二阶数据 a"></label>
+          <label><span class="math">b=</span><input type="number" data-answer-b aria-label="第二分量二阶数据 b"></label>
+          <label><span class="math">S″<sub>L</sub>(1)=</span><input type="number" data-answer-s aria-label="局部系结候选的 S 二阶值"></label>
+          <label><span class="math">S″<sub>L</sub>−S″<sub>L′</sub>=</span><input type="number" data-answer-difference aria-label="两个二阶值的差"></label>
+        </div>
+        <label class="select-label">由这些数值能推出什么？
+          <select data-answer-conclusion><option value="">请选择</option><option value="same-link">两个链环是同一个链环</option><option value="different-polynomial">两个 S 多项式不相等</option><option value="all-collisions">已经解决所有 Jones 多项式碰撞</option></select>
+        </label>
+        <div><button type="button" class="primary" data-check-comprehensive>核对整题</button><button type="button" data-reset-comprehensive>重置本题</button></div>
+        <p class="feedback" data-comprehensive-feedback aria-live="polite"></p>
+        <details><summary>提示 1 · 先找 a、b</summary><p>从三叶结表读出 <span class="math">f″<sub>J−</sub>(1)=−24</span>；平凡结二阶值为 0。</p></details>
+        <details><summary>提示 2 · 再代公式</summary><p>使用 <span class="math">S″=16+8(a+b)</span>，并把结果与两个平凡分量的 16 相减。</p></details>
+        <details><summary>完整解答</summary><p><span class="math">a=−24,b=0</span>；<span class="math">S″<sub>L</sub>=−176</span>；候选 <span class="math">L′</span> 的值为 16，所以差为 −192。二阶值不同足以推出两个 <span class="math">S</span> 多项式不相等；由于 <span class="math">S</span> 是本课约定下的链环不变量，也能排除这两个候选同痕。但这不是完整分类，也没有解决所有不变量碰撞。</p></details>
       </div>
-
-      <div class="formula">
-        <span class="line"><span class="math">S″<sub>L</sub>(1)−S″<sub>L′</sub>(1)=−176−16=−192≠0</span>。</span>
-        <span class="line">Laurent 多项式在 <span class="math">x=1</span> 无极点，所以<strong><span class="math">S<sub>L</sub>≠S<sub>L′</sub></span></strong>。</span>
-      </div>
-
-      <h3>用最简单的对象做校准</h3>
-      <p>对二分量平凡链环 <span class="math">U₂</span>，本归一化给出</p>
-      <div class="formula"><span class="math">S=2δ²=2(x²+2+x<sup>−2</sup>)</span>，所以 <span class="math">S″(1)=2(2+6)=16</span>。</div>
-      <p>这个独立计算与通式在 <span class="math">a=b=0</span> 时的结果一致，是一个重要的归一化校准。</p>
-
-      <div class="checkpoint" data-quiz>
-        <h3>理解自检 3：本课真正证明了什么？</h3>
-        <button type="button" data-answer="correct" data-message="正确。二阶值相差 −192，足以排除这两类候选的 S 多项式相等。">指定局部系三叶结候选与任意“两个平凡分量且 lk=0”候选的 S 多项式不同</button>
-        <button type="button" data-answer="incorrect" data-message="范围过大。本课没有解决一般的多项式碰撞，也没有排除所有局部打结。">所有不同链环都能被二阶导数区分</button>
-        <p class="feedback" data-feedback aria-live="polite"></p>
-      </div>
-
-      <details class="deep-dive">
-        <summary>最后复述：四句话串起整条证明</summary>
-        <ol>
-          <li>由 skein 关系的一阶导数，结满足 <span class="math">f′(1)=0</span>，二分量链环满足 <span class="math">f′(1)=−6lk</span>。</li>
-          <li>二阶换叉变化是 <span class="math">−48k−18</span>，而 <span class="math">24lk²−6lk</span> 的变化正好是 <span class="math">48k+18</span>。</li>
-          <li>走到分离端并在 <span class="math">lk=0</span> 条件下展开乘积，得到 <span class="math">S″=16+8(a+b)</span>。</li>
-          <li>局部三叶结给 <span class="math">a+b=−24</span>，两个平凡分量给 0，于是 <span class="math">−176≠16</span>，故两个 Laurent 多项式不相等。</li>
-        </ol>
-      </details>
     </section>
 
-    <section class="warning" aria-label="结论边界">
-      <h2>结论边界</h2>
-      <ul class="scope-list">
-        <li>这是包含 Whitehead 基础特例在内的<strong>特定局部系三叶结候选排除</strong>。</li>
-        <li>它不是一般 Jones 型多项式碰撞问题的解决方案，也不排除所有局部打结。</li>
-        <li>相同二阶导数不能证明多项式相同；本课只使用“不同则必不相同”的方向。</li>
-        <li>本页是学习材料，不声称新颖、发表或正式同行评审；自动化核对也不能代替你亲自理解每一步。</li>
-      </ul>
+    <section id="research" class="scope-section">
+      <p class="eyebrow">Part 7 · Research Use and Limits</p>
+      <h2>这对当前研究有什么用？又不能推出什么？</h2>
+      <div class="two-column">
+        <article class="panel"><h3>可以推出</h3><ul><li>在开篇完整假设下，局部系 <span class="math">J₊</span> 或 <span class="math">J₋</span> 的候选给出 −176。</li><li>任意两个平凡分量且 <span class="math">lk=0</span> 的候选给出 16。</li><li>因此这两类候选的 <span class="math">S</span> Laurent 多项式不相等；在固定定向与归一化下，也可排除相应同痕。</li></ul></article>
+        <article class="panel"><h3>不能推出</h3><ul><li>二阶值相同不能证明多项式相同。</li><li>不变量值相同不能自动证明链环同痕。</li><li><span class="math">lk=0</span> 不能证明是 split 或 unlink。</li><li>本课没有排除所有局部打结，也没有解决一般碰撞问题。</li></ul></article>
+      </div>
+      <p class="note">这是对既有证明的教学化整理，不声称新颖、发表或正式同行评审。自动测试保证计算与页面行为一致，但不能代替你亲自检查假设是否适用于新的研究对象。</p>
     </section>
 
-    <nav class="lesson-nav" aria-label="页尾导航">
-      <a href="#language">↑ 回到基础概念</a>
-      <a href="../../">返回个人主页 →</a>
-    </nav>
+    <nav class="lesson-nav" aria-label="页尾导航"><a href="#question">↑ 从研究问题重学</a><a href="../../">返回个人主页 →</a></nav>
   </main>
 </body>
 </html>
