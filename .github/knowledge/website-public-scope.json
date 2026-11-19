@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "publicLessonDirectories": ["learn/algorithms/lessons", "learn/linear-algebra/lessons"],
+  "publicPages": {
+    "index.html": ["projects", "learning"],
+    "learn/knot-theory/index.html": []
+  }
+}

@@ -1,0 +1,26 @@
+name: Check course index after Pages
+on: deployment_status
+permissions:
+  contents: read
+jobs:
+  check:
+    if: >-
+      github.repository == 'Dongqiyu829/Dongqiyu829.github.io' &&
+      github.event.deployment.environment == 'github-pages' &&
+      github.event.deployment.ref == 'main' &&
+      github.event.deployment_status.state == 'success' &&
+      github.event.deployment_status.environment_url == 'https://dongqiyu829.github.io/'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: refs/heads/main
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: /.github/knowledge/
+      - name: Build checked index and record the release fingerprint
+        run: |
+          set -eu
+          python3 .github/knowledge/pages_event_build.py --event-file "$GITHUB_EVENT_PATH" > "$RUNNER_TEMP/receipt.json"
+          cat "$RUNNER_TEMP/receipt.json" >> "$GITHUB_STEP_SUMMARY"
