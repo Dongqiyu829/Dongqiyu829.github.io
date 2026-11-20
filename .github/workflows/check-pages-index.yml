@@ -22,5 +22,15 @@ jobs:
       - name: Build checked index and record the release fingerprint
         run: |
           set -eu
-          python3 .github/knowledge/pages_event_build.py --event-file "$GITHUB_EVENT_PATH" > "$RUNNER_TEMP/receipt.json"
-          cat "$RUNNER_TEMP/receipt.json" >> "$GITHUB_STEP_SUMMARY"
+          python3 .github/knowledge/pages_event_build.py --event-file "$GITHUB_EVENT_PATH" --bundle-out "$RUNNER_TEMP/pages-index-candidate" >> "$GITHUB_STEP_SUMMARY"
+      - name: Keep the verified candidate for review
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: pages-index-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/pages-index-candidate/READY
+            ${{ runner.temp }}/pages-index-candidate/index.json
+            ${{ runner.temp }}/pages-index-candidate/manifest.json
+            ${{ runner.temp }}/pages-index-candidate/receipt.json
+          if-no-files-found: error
+          retention-days: 3

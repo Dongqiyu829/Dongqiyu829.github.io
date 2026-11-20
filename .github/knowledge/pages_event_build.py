@@ -2,6 +2,7 @@
 import argparse
 import json
 import re
+import shutil
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
@@ -36,7 +37,7 @@ def verify_latest(read, expected):
         raise ValueError('pages_event_superseded')
 
 
-def build_event(event, read):
+def build_event(event, read, *, bundle_out=None):
     if event['repository']['full_name'] != REPO:
         raise ValueError('ineligible_pages_event')
     identity = deployment_identity(event['deployment'], event['deployment_status'])
@@ -84,15 +85,32 @@ def build_event(event, read):
             if sha(read(SITE + path)) != hashes['/' + path]:
                 raise ValueError('cdn_mismatch')
         verify_latest(read, identity)
-        return {'deploymentId': identity[0], 'commit': commit, 'statusId': identity[2],
+        receipt = {'deploymentId': identity[0], 'commit': commit, 'statusId': identity[2],
                 'pages': len(paths), 'chunks': report['chunks'], 'indexSha256': sha(index_bytes),
                 'manifestSha256': sha(manifest_bytes)}
+        if bundle_out is not None:
+            # The caller supplies a fresh path on its own filesystem. Never overwrite
+            # a previous release. Keep only index data, not downloaded HTML.
+            bundle_out = Path(bundle_out)
+            if bundle_out.exists():
+                raise FileExistsError(bundle_out)
+            with TemporaryDirectory(dir=bundle_out.parent) as stage:
+                staged = Path(stage) / 'bundle'
+                staged.mkdir()
+                for name in ('READY', 'index.json', 'manifest.json'):
+                    shutil.copyfile(output / name, staged / name)
+                (staged / 'receipt.json').write_text(
+                    json.dumps(receipt, sort_keys=True) + '\n', encoding='utf-8')
+                staged.rename(bundle_out)
+        return receipt
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--event-file', required=True, type=Path)
+    parser.add_argument('--bundle-out', type=Path, help='Save the verified bundle in a new local directory.')
     args = parser.parse_args()
     transport = PublicPagesTransport(enabled=True, website=True)
-    result = build_event(strict_json(args.event_file.read_bytes()), lambda url: transport(url)['body'])
+    result = build_event(strict_json(args.event_file.read_bytes()), lambda url: transport(url)['body'],
+                         bundle_out=args.bundle_out)
     print(json.dumps(result, sort_keys=True))
